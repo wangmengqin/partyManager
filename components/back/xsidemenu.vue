@@ -1,11 +1,11 @@
 <template>
-	<div >
+	<div style="float: left;">
 		<ul>
 			<li v-for="(obj,index) in menuArr">
 				<p @click="changeIsShow(index)"><img :src="obj.isShow?selectImg:img"/><span v-text="obj.txt"></span></p>
 				<ul v-show="obj.isShow">
-					<li><a href="##">增</a></li>
-					<li><a href="##">查</a></li>
+					<li><a :href="obj.url1">增</a></li>
+					<li><a :href="obj.url2">查</a></li>
 				</ul>
 			</li>
 		</ul>
@@ -20,42 +20,58 @@
 					{
 						id:0,
 						txt:"新闻管理",
-						isShow:false
+						isShow:false,
+						url1:"#/tab/addnews",
+						url2:"#/tab/searchnews"
 					},
 					{
 						id:1,
 						txt:"新闻管理",
-						isShow:false
+						isShow:false,
+						url1:"#/tab/addnews",
+						url2:"#/tab/searchnews"
 					},
 					{
 						id:2,
 						txt:"新闻管理",
-						isShow:false
+						isShow:false,
+						url1:"#/tab/addnews",
+						url2:"#/tab/searchnews"
 					},
 					{
 						id:3,
 						txt:"新闻管理",
-						isShow:false
+						isShow:false,
+						url1:"#/tab/addnews",
+						url2:"#/tab/searchnews"
 					},
 					{
 						id:4,
 						txt:"新闻管理",
-						isShow:false
+						isShow:false,
+						url1:"#/tab/addnews",
+						url2:"#/tab/searchnews"
 					},
 					{
 						id:5,
 						txt:"新闻管理",
-						isShow:false
+						isShow:false,
+						url1:"#/tab/addnews",
+						url2:"#/tab/searchnews"
 					},
 					{
 						id:6,
 						txt:"新闻管理",
-						isShow:false
+						isShow:false,
+						url1:"#/tab/addnews",
+						url2:"#/tab/searchnews"
 					},
 					{
 						id:7,
 						txt:"新闻管理",
-						isShow:false
+						isShow:false,
+						url1:"#/tab/addnews",
+						url2:"#/tab/searchnews"
 					}
 				],
 				img:"/imgs/jia.png",

@@ -1,7 +1,11 @@
 <template>
     <div style="width: 1200px;margin: 0 auto;">
-        <router-view></router-view>
-        <xsidemenu />
+    	<xheader />
+    	<div style="width: 1200px;margin: 0 auto;overflow: hidden;">
+    		<xsidemenu />
+        	<router-view></router-view>
+    	</div>
+        
 		<xfooter />
     </div>
 </template>
@@ -9,11 +13,12 @@
 // 引入公共组件
 import xsidemenu from "../xsidemenu.vue";
 import xfooter from "../xfooter.vue";
-
+import xheader from "../xheader.vue";
 export default {
   components:{
       xsidemenu,
-    xfooter
+    xfooter,
+    xheader
   }
 }
 </script>

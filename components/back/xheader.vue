@@ -1,7 +1,7 @@
 <template>
 	<header>
 		<h3><img src="/imgs/logo1.png"	/>党务管理工作平台</h3>
-		<p>当前用户：XXX <a href="##">[退出]</a>|<a href="##">修改密码</a></p>
+		<p>当前用户：XXX <a href="##">[退出]</a>|<a href="#/tab/editpassword">修改密码</a></p>
 	</header>
 </template>
 

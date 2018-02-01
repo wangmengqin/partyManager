@@ -7,7 +7,7 @@
 			<p><span>标题：</span><input type="text" placeholder="请输入标题" /></p>
 			<p><span>标题：</span><input type="text" placeholder="请输入标题" /></p>
 			<p><span>标题：</span><input type="text" placeholder="请输入标题" /></p>
-			
+			<p><button>确认</button></p>
 		</div>
 	</div>
 </template>
@@ -20,6 +20,7 @@
 		width: 950px;
 		float: right;
 		background: #f9f9f9;
+		min-height: 620px;
 	}
 	h4{
 		padding-left: 20px;
@@ -40,5 +41,15 @@
 		border: 0;
 		border: 1px solid #eee;
 		padding-left: 10px;
+	}
+	button{
+		height: 30px;
+		text-align: center;
+		line-height: 30px;
+		border: 0;
+		background: #D93732;
+		outline: none;
+		color: #fff;
+		padding:0 10px;
 	}
 </style>
