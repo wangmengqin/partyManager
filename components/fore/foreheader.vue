@@ -15,6 +15,7 @@
 		/*background: url(/imgs/ss.jpg) no-repeat;
 		background-size: contain;*/
 		line-height: 50px;
+		background:#FDFDFD;
 	}
 	header p{
 		padding: 0 20px;

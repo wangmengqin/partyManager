@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<forebanner/>
+		<xbanner/>
 		<xmenu />
 		<indexContent />
 	</div>
@@ -9,12 +9,12 @@
 <script>
 // 引入公共组件
 import xmenu from "../xmenu.vue";
-import forebanner from "../forebanner.vue";
+import xbanner from "../xbanner.vue";
 import indexContent from "../container/index_content.vue";
 export default {
   components:{
       xmenu,
-    forebanner,
+    xbanner,
     indexContent
   }
 }

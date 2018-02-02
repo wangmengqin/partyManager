@@ -16,6 +16,7 @@ import tab from "./components/back/container/tab.vue";
 //前端组件
 import foretab from "./components/fore/container/foretab.vue";
 import xindex from "./components/fore/tab/xindex.vue";
+import studyKnow from "./components/fore/tab/forestudy_know.vue";
 //登录组件
 import login from "./components/login.vue";
 
@@ -57,7 +58,11 @@ var router = new VueRouter({
             	{
                     path: "index",
                     component: xindex
-               }
+	            },
+	            {
+	              	path:"studyKnow",
+	              	component:studyKnow
+	            }
             ]
        }
     ]
