@@ -17,6 +17,10 @@ import tab from "./components/back/container/tab.vue";
 import foretab from "./components/fore/container/foretab.vue";
 import xindex from "./components/fore/tab/xindex.vue";
 import studyKnow from "./components/fore/tab/forestudy_know.vue";
+import allActivities from "./components/fore/tab/foreactivities.vue";
+import message from "./components/fore/tab/foremessage.vue";
+import mine from "./components/fore/tab/foremine.vue";
+import organize from "./components/fore/tab/foreorganization.vue";
 //登录组件
 import login from "./components/login.vue";
 
@@ -62,6 +66,22 @@ var router = new VueRouter({
 	            {
 	              	path:"studyKnow",
 	              	component:studyKnow
+	            },
+	            {
+	              	path:"allActivities",
+	              	component:allActivities
+	            },
+	            {
+	              	path:"message",
+	              	component:message
+	            },
+	            {
+	              	path:"mine",
+	              	component:mine
+	            },
+	            {
+	              	path:"organize",
+	              	component:organize
 	            }
             ]
        }
