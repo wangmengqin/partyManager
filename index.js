@@ -21,6 +21,11 @@ import allActivities from "./components/fore/tab/foreactivities.vue";
 import message from "./components/fore/tab/foremessage.vue";
 import mine from "./components/fore/tab/foremine.vue";
 import organize from "./components/fore/tab/foreorganization.vue";
+import life from "./components/fore/tab/democratic_life.vue";
+import excellence from "./components/fore/tab/fore_excellence.vue";
+import apply from "./components/fore/tab/fore_apply.vue";
+import partyFree from "./components/fore/tab/fore_partyFree.vue";
+import activeFree from "./components/fore/tab/fore_activeFree.vue";
 //登录组件
 import login from "./components/login.vue";
 
@@ -56,34 +61,54 @@ var router = new VueRouter({
             ]
        },
        {
-			path: "/fore",
-            component: foretab,
-            children: [
-            	{
-                    path: "index",
-                    component: xindex
-	            },
-	            {
-	              	path:"studyKnow",
-	              	component:studyKnow
-	            },
-	            {
-	              	path:"allActivities",
-	              	component:allActivities
-	            },
-	            {
-	              	path:"message",
-	              	component:message
-	            },
-	            {
-	              	path:"mine",
-	              	component:mine
-	            },
-	            {
-	              	path:"organize",
-	              	component:organize
-	            }
-            ]
+			    path: "/fore",
+          component: foretab,
+          children: [
+          	{
+                  path: "index",
+                  component: xindex
+            },
+            {
+              	path:"studyKnow",
+              	component:studyKnow
+            },
+            {
+              	path:"allActivities",
+              	component:allActivities
+            },
+            {
+              	path:"message",
+              	component:message
+            },
+            {
+              	path:"mine",
+              	component:mine
+            },
+            {
+              	path:"organize",
+              	component:organize
+            },
+            {
+                path:"life",
+                component:life
+            },
+            {
+              path:"excellence",
+              component:excellence
+            },
+            {
+              path:"apply",
+              component:apply
+            },
+            {
+              path:"partyFree",
+              component:partyFree
+            },
+            {
+              path:"activeFree",
+              component:activeFree
+            }
+          ]
        }
     ]
 });

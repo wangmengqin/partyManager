@@ -12,17 +12,17 @@
 				</ul>
 			</li>
 			<li><a href="#/fore/allActivities">查看活动</a></li>
-			<li @mouseover="changeShowFill" @mouseout="changeShowFill"><a href="##">我要缴费</a>
+			<li @mouseover="changeShowFill" @mouseout="changeShowFill"><a href="#/fore/partyFree">我要缴费</a>
 				<ul v-show="isShowFill">
-					<li><a href="##">党费</a></li>
-					<li><a href="##">活动经费</a></li>
+					<li><a href="#/fore/partyFree">党费</a></li>
+					<li><a href="#/fore/activeFree">活动经费</a></li>
 				</ul>
 			</li>
-			<li><a href="##">民主生活</a></li>
-			<li><a href="##">争先创优</a></li>
+			<li><a href="#/fore/life">民主生活</a></li>
+			<li><a href="#/fore/excellence">争先创优</a></li>
 			<li><a href="#/fore/organize">组织结构</a></li>
 			<li><a href="#/fore/message">论坛</a></li>
-			<li><a href="##">申请入党</a></li>
+			<li><a href="#/fore/apply">申请入党</a></li>
 			<li><a href="#/fore/mine">我的</a></li>
 		</ul>
 	</div>

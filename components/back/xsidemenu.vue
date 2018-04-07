@@ -4,8 +4,8 @@
 			<li v-for="(obj,index) in menuArr">
 				<p @click="changeIsShow(index)"><img :src="obj.isShow?selectImg:img"/><span v-text="obj.txt"></span></p>
 				<ul v-show="obj.isShow">
-					<li><a :href="obj.url1">增</a></li>
-					<li><a :href="obj.url2">查</a></li>
+					<li><a :href="obj.url1">{{obj.menu1}}</a></li>
+					<li><a :href="obj.url2">{{obj.menu2}}</a></li>
 				</ul>
 			</li>
 		</ul>
@@ -22,56 +22,72 @@
 						txt:"新闻管理",
 						isShow:false,
 						url1:"#/tab/addnews",
-						url2:"#/tab/searchnews"
+						url2:"#/tab/searchnews",
+						menu1: '增加新闻',
+						menu2: '查询新闻信息'
 					},
 					{
 						id:1,
-						txt:"新闻管理",
+						txt:"活动管理",
 						isShow:false,
 						url1:"#/tab/addnews",
-						url2:"#/tab/searchnews"
+						url2:"#/tab/searchnews",
+						menu1: '增加活动',
+						menu2: '查询活动'
 					},
 					{
 						id:2,
-						txt:"新闻管理",
+						txt:"组织管理",
 						isShow:false,
 						url1:"#/tab/addnews",
-						url2:"#/tab/searchnews"
+						url2:"#/tab/searchnews",
+						menu1: '查看组织',
+						menu2: '审核组织关系'
 					},
 					{
 						id:3,
-						txt:"新闻管理",
+						txt:"党员管理",
 						isShow:false,
 						url1:"#/tab/addnews",
-						url2:"#/tab/searchnews"
+						url2:"#/tab/searchnews",
+						menu1: '审核新增党员',
+						menu2: '查询党员信息'
 					},
 					{
 						id:4,
-						txt:"新闻管理",
+						txt:"党费管理",
 						isShow:false,
 						url1:"#/tab/addnews",
-						url2:"#/tab/searchnews"
+						url2:"#/tab/searchnews",
+						menu1: '审核党费情况',
+						menu2: '查询党费收缴'
 					},
 					{
 						id:5,
-						txt:"新闻管理",
+						txt:"党校管理",
 						isShow:false,
 						url1:"#/tab/addnews",
-						url2:"#/tab/searchnews"
+						url2:"#/tab/searchnews",
+						menu1: '增加党课',
+						menu2: '查询党校信息'
 					},
 					{
 						id:6,
-						txt:"新闻管理",
+						txt:"留言管理",
 						isShow:false,
 						url1:"#/tab/addnews",
-						url2:"#/tab/searchnews"
+						url2:"#/tab/searchnews",
+						menu1: '留言审核',
+						menu2: '查看留言'
 					},
 					{
 						id:7,
-						txt:"新闻管理",
+						txt:"党务管理",
 						isShow:false,
 						url1:"#/tab/addnews",
-						url2:"#/tab/searchnews"
+						url2:"#/tab/searchnews",
+						menu1: '增加',
+						menu2: '查询党务信息'
 					}
 				],
 				img:"/imgs/jia.png",
@@ -122,5 +138,8 @@
 	}
 	a{
 		color: #333;
+	}
+	span{
+		cursor: pointer;
 	}
 </style>
