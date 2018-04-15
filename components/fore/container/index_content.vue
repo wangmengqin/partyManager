@@ -4,30 +4,32 @@
 			<h3><img src="/imgs/icon_stydy.png"/>我要学习</h3>
 			<ul>
 				<h4>理论学习</h4>
-				<li><a href="##">高举起民族复兴的思想旗帜</a></li>
-				<li><a href="##">坚持党中央权威和集中统一领导</a></li>
+				<li v-for="item in theoryData"><a href="##">{{item.title}}</a></li>
+				<!-- <li><a href="##">坚持党中央权威和集中统一领导</a></li>
 				<li><a href="##">社会主要矛盾转变与社会政策创新发展</a></li>
 				<li><a href="##">周淑真：政党是构建人类命运共同体的重要力量</a></li>
 				<li><a href="##">新知新觉：新时代必将有力推动人的全面发展</a></li>
-				<li><a href="##">热点辨析：加强党的政治建设不能有半点含糊</a></li>
+				<li><a href="##">热点辨析：加强党的政治建设不能有半点含糊</a></li> -->
 			</ul>
 			<ul style="border-left: 1px solid #ccc;border-right: 1px solid #ccc;">
 				<h4>时政新闻</h4>
-				<li><a href="##">高举起民族复兴的思想旗帜</a></li>
+				<li v-for="item in newsData"><a href="##">{{item.title}}</a></li>
+				<!-- <li><a href="##">高举起民族复兴的思想旗帜</a></li>
 				<li><a href="##">坚持党中央权威和集中统一领导</a></li>
 				<li><a href="##">社会主要矛盾转变与社会政策创新发展</a></li>
 				<li><a href="##">周淑真：政党是构建人类命运共同体的重要力量</a></li>
 				<li><a href="##">新知新觉：新时代必将有力推动人的全面发展</a></li>
-				<li><a href="##">热点辨析：加强党的政治建设不能有半点含糊</a></li>
+				<li><a href="##">热点辨析：加强党的政治建设不能有半点含糊</a></li> -->
 			</ul>
 			<ul>
 				<h4>党史纵览</h4>
-				<li><a href="##">学习传承老一辈革命家的优良家风</a></li>
+				<li v-for="item in historyData"><a href="##">{{item.title}}</a></li>
+				<!-- <li><a href="##">学习传承老一辈革命家的优良家风</a></li>
 				<li><a href="##">历史名人的过年轶事</a></li>
 				<li><a href="##">邓小平在顺义是怎样调研的</a></li>
 				<li><a href="##">辗转西迁：周恩来在1938</a></li>
 				<li><a href="##">毛泽东在水口主持首次连队建党</a></li>
-				<li><a href="##">胡耀邦三请黄克诚</a></li>
+				<li><a href="##">胡耀邦三请黄克诚</a></li> -->
 			</ul>
 		</div>
 		<div class="active_box">
@@ -116,6 +118,49 @@
 </template>
 
 <script>
+import $ from 'jQuery'
+export default {
+	data(){
+		return{
+			theoryData: [], // 理论知识数据
+			newsData: [], // 时政新闻数据
+			historyData: [] // 党史数据
+		}
+	},
+	mounted() {
+		var _this = this;
+		$.ajax({
+    		url: 'http://localhost:5555/getNewsByTheme',
+    		type: 'POST',
+    		dataType: 'json',
+    		data: {theme: '理论学习'},
+    		success(data){
+    			console.log(data)
+    			_this.theoryData = data
+    		}
+    	})
+    	$.ajax({
+    		url: 'http://localhost:5555/getNewsByTheme',
+    		type: 'POST',
+    		dataType: 'json',
+    		data: {theme: '时政新闻'},
+    		success(data){
+    			console.log(data)
+    			_this.newsData = data
+    		}
+    	})
+    	$.ajax({
+    		url: 'http://localhost:5555/getNewsByTheme',
+    		type: 'POST',
+    		dataType: 'json',
+    		data: {theme: '党史纵览'},
+    		success(data){
+    			console.log(data)
+    			_this.historyData = data
+    		}
+    	})
+	}
+}
 </script>
 
 <style scoped>
@@ -154,6 +199,10 @@
 		line-height: 26px;
 		overflow: hidden;
 		zoom: 1;
+		width: 295px;
+		white-space: pre;
+		text-overflow: ellipsis;
+		overflow: hidden;
 	}
 	ul li a{
 		color: #333;

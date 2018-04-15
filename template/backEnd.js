@@ -37,6 +37,42 @@ app.post("/allcolumns",function(req,res){
 		res.send(JSON.stringify(results));
 	});
 })
+// 根据id查询专栏信息
+app.post("/getColumnById",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from newscolumn where id like '%${req.body.id}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据名称查询专栏信息
+app.post("/getColumnByName",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from newscolumn where columnName like '%${req.body.name}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id修改专栏信息
+app.post("/editColumnById",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update newscolumn set columnName = '${req.body.name}', columnDescribe = '${req.body.describe}' where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id删除专栏信息
+app.post("/deleteColumnById",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `delete from newscolumn where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
 // 添加新闻专栏
 app.post("/addcolumns",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
@@ -46,10 +82,84 @@ app.post("/addcolumns",function(req,res){
 		res.send(JSON.stringify(results));
 	});
 })
+
+/* 新闻模块 */
+//查询所有信息
+app.post("/allNews",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from news`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id查询新闻信息
+app.post("/getNewsById",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from news where id like '%${req.body.id}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据标题查询新闻信息
+app.post("/getNewsByTitle",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from news where title like '%${req.body.title}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据摘要查询新闻信息
+app.post("/getNewsByRemark",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from news where remark like '%${req.body.remark}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据作者查询新闻信息
+app.post("/getNewsByAuthor",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from news where author like '%${req.body.author}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据专题查询新闻信息
+app.post("/getNewsByTheme",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from news where theme like '%${req.body.theme}%' order by id desc LIMIT 6 `;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id修改新闻信息
+app.post("/editNewsById",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update news set title = '${req.body.title}', author = '${req.body.author}', remark = '${req.body.remark}', theme = '${req.body.theme}', content = '${req.body.content}' where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id删除新闻信息
+app.post("/deleteNewsById",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `delete from news where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
 // 添加新闻
 app.post("/addNews",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `INSERT INTO news(title, author, remark, theme, content, time) VALUES ('${req.body.title}','${req.body.author}', '${req.body.remark}','${req.body.theme}','${req.body.content}','${req.body.time}')`;
+	var sql = `INSERT INTO news(title, author, remark, theme, content, time) VALUES ('${req.body.title}','${req.body.author}', '${req.body.remark}','${req.body.column}','${req.body.content}','${req.body.time}')`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));

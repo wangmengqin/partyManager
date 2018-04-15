@@ -9,10 +9,12 @@ Vue.use(Vuex);
 // 全局样式
 import "./template/base.css";
 //后台组件
-import xaddnews from "./components/back/tab/xadd_news_tab.vue";
-import xsearchnews from "./components/back/tab/xsearch_news_tab.vue";
+import xaddnews from "./components/back/tab/news/xadd_news_tab.vue";
+import xsearchnews from "./components/back/tab/news/xsearch_news_tab.vue";
+import xeditnews from "./components/back/tab/news/edit_news_tab.vue";
 import xaddColumn from "./components/back/tab/xadd_column_tab.vue";
 import xsearchColumn from "./components/back/tab/xsearch_column_tab.vue";
+import xeditColumn from "./components/back/tab/edit_column_tab.vue";
 import xeditpassword from "./components/back/container/xedit_password.vue";
 import tab from "./components/back/container/tab.vue";
 //前端组件
@@ -42,33 +44,41 @@ var router = new VueRouter({
 		//登录页面
 		{
 			path: "/login",
-            component: login
-       },
+        component: login
+      },
        {
-            path: "/tab",
-            component: tab,
-            children: [
-            	{
-                path: "addnews",
-                component: xaddnews
-              },
-              {
-                path: "searchnews",
-                component: xsearchnews
-              },
-              {
-                path: "addColumn",
-                component: xaddColumn
-              },
-              {
-                path: "searColumn",
-                component: xsearchColumn
-              },
-              {
-                path: "editpassword",
-                component: xeditpassword
-              }
-            ]
+          path: "/tab",
+          component: tab,
+          children: [
+          	{
+              path: "addnews",
+              component: xaddnews
+            },
+            {
+              path: "searchnews",
+              component: xsearchnews
+            },
+            {
+              path: "editnews/:id",
+              component: xeditnews
+            },
+            {
+              path: "addColumn",
+              component: xaddColumn
+            },
+            {
+              path: "searchColumn",
+              component: xsearchColumn
+            },
+            {
+              path: "editColumn/:id",
+              component: xeditColumn
+            },
+            {
+              path: "editpassword",
+              component: xeditpassword
+            }
+          ]
        },
        {
 			    path: "/fore",

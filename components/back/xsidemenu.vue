@@ -31,7 +31,7 @@
 						txt:"新闻专题",
 						isShow:false,
 						url1:"#/tab/addColumn",
-						url2:"#/tab/searColumn",
+						url2:"#/tab/searchColumn",
 						menu1: '增加专题',
 						menu2: '查询新闻专题'
 					},

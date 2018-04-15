@@ -1,89 +1,126 @@
 <template>
 	<div class="content_box">
-		<h4><img src="/imgs/icon_search.png"/>查看新闻专栏</h4>
+		<h4><img src="/imgs/icon_search.png"/>查看新闻</h4>
 		<p>
 			
-			<input type="text" placeholder="请输入关键字" v-model="inputContent" />
-			<button @click="getColumnById">通过id搜索</button>
-			<button @click="getColumnByName">通过专栏名称搜索</button>
+			<input type="text" placeholder="请输入关键字" v-model="inputContent"/>
+			<button @click="getNewsById">通过id搜索</button>
+			<button @click="getNewsByTitle">通过新闻标题搜索</button>
+			<button @click="getNewsByRemark">通过摘要内容搜索</button>
+			<button @click="getNewsByAuthor">通过作者搜索</button>
 		</p>
 		<table>
 			<thead>
 				<tr>
 					<th>ID</th>
-					<th>名称</th>
-					<th>描述</th>
+					<th>标题</th>
+					<th>作者</th>
+					<th>摘要</th>
+					<th>专题</th>
+					<th>时间</th>
 					<th>操作</th>
 				</tr>
 			</thead>
-			<tr v-for="item in columnData">
+			<tr v-for="item in newsData">
 				<td>{{item.id}}</td>
-				<td>{{item.columnName}}</td>
-				<td>{{item.columnDescribe}}</td>
-				<td><a :href="'#/tab/editColumn/'+item.id" class="edit">编辑</a><b class="del" @click="deleteColumn(item.id)">删除</b></td>
+				<td>{{item.title}}</td>
+				<td>{{item.author}}</td>
+				<td>{{item.remark}}</td>
+				<td>{{item.theme}}</td>
+				<td>{{item.time | formatDate}}</td>
+				<td><a :href="'#/tab/editnews/'+item.id" class="edit">编辑</a><b @click="deleteNewsById(item.id)" class="del">删除</b></td>
 			</tr>
 		</table>
-		<xpagination></xpagination>
+		<xpagination />
 	</div>
 </template>
 
 <script>
-	import $ from 'jQuery'
-	import xpagination from "../xpagination.vue";
+	import xpagination from "../../xpagination.vue";
+	import {formatDate} from '../../../../template/date.js';
+	import $ from 'jQuery';
 	export default {
 	  components: {
 	    xpagination
 	  },
 	  data() {
 	  	return {
-	  		inputContent: null, // 搜索框的内容
-	  		columnData: [] // 专题内容
+	  		inputContent: '',
+	  		newsData: [] // 新闻数据
 	  	}
 	  },
 	  methods: {
 	  	getAll() {
 	  		var _this = this
 	    	$.ajax({
-	    		url: 'http://localhost:5555/allcolumns',
+	    		url: 'http://localhost:5555/allNews',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		success(data) {
-	    			_this.columnData = data
+	    			_this.newsData = data
 	    		}
 	    	})
 	  	},
-	  	getColumnById() {
+	  	getNewsById() {
 	  		var _this = this
 	    	$.ajax({
-	    		url: 'http://localhost:5555/getColumnById',
+	    		url: 'http://localhost:5555/getNewsById',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
 	    			id: _this.inputContent
 	    		},
 	    		success(data) {
-	    			_this.columnData = data
+	    			_this.newsData = data
 	    		}
 	    	})
 	  	},
-	  	getColumnByName(){
+	  	getNewsByTitle(){
 	  		var _this = this
 	  		$.ajax({
-	    		url: 'http://localhost:5555/getColumnByName',
+	    		url: 'http://localhost:5555/getNewsByTitle',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
-	    			name: _this.inputContent
+	    			title: _this.inputContent
 	    		},
 	    		success(data) {
-	    			_this.columnData = data
+	    			_this.newsData = data
 	    		}
 	    	})
 	  	},
-	  	deleteColumn(id){
+	  	getNewsByRemark(){
 	  		var _this = this
 	  		$.ajax({
-	    		url: 'http://localhost:5555/deleteColumnById',
+	    		url: 'http://localhost:5555/getNewsByRemark',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		data: {
+	    			remark: _this.inputContent
+	    		},
+	    		success(data) {
+	    			_this.newsData = data
+	    		}
+	    	})
+	  	},
+	  	getNewsByAuthor(){
+	  		var _this = this
+	  		$.ajax({
+	    		url: 'http://localhost:5555/getNewsByAuthor',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		data: {
+	    			author: _this.inputContent
+	    		},
+	    		success(data) {
+	    			_this.newsData = data
+	    		}
+	    	})
+	  	},
+	  	deleteNewsById(id){
+	  		var _this = this
+	  		$.ajax({
+	    		url: 'http://localhost:5555/deleteNewsById',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
@@ -95,14 +132,20 @@
 	    	})
 	  	}
 	  },
+	  filters: {
+        formatDate(time) {
+            var date = new Date(Number(time));
+            return formatDate(date, 'yyyy-MM-dd hh:mm');
+        }
+	  },
 	  mounted() {
 	  	var _this = this
     	$.ajax({
-    		url: 'http://localhost:5555/allcolumns',
+    		url: 'http://localhost:5555/allNews',
     		type: 'POST',
     		dataType: 'json',
     		success(data) {
-    			_this.columnData = data
+    			_this.newsData = data
     		}
     	})
 	  }

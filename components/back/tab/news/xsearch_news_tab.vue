@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import xsearchNews from "../container/xsearch_news.vue";
+import xsearchNews from "../../container/news/xsearch_news.vue";
 export default {
   components: {
     xsearchNews

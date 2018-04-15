@@ -77,7 +77,7 @@ export default{
 .page-wrap {
   text-align: center;
   font-size: 18px;
-  margin-top: 180px;
+  margin-top: 20px;
 }
 .page-wrap ul {
     display: inline-block;

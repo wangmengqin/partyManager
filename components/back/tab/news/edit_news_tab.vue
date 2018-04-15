@@ -1,14 +1,14 @@
 <template>
 	<div>
-		<xaddNews />
+		<editNews />
 	</div>
 </template>
 
 <script>
-import xaddNews from "../container/xadd_news.vue";
+import editNews from "../../container/news/edit_news.vue";
 export default {
   components: {
-    xaddNews
+    editNews
   }
 };
 </script>
