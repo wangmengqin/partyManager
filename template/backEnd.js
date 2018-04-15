@@ -165,6 +165,146 @@ app.post("/addNews",function(req,res){
 		res.send(JSON.stringify(results));
 	});
 })
+
+/* 活动模块 */
+// 添加活动
+app.post("/addActivity",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `INSERT INTO activities(activity_name, speaker, place, time, branch, img, activity_describe) VALUES ('${req.body.name}','${req.body.speaker}', '${req.body.place}','${req.body.time}','${req.body.branch}','${req.body.img}', '${req.body.describe}')`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//查询所有信息
+app.post("/allActivity",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from activities`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据活动名称查询活动信息
+app.post("/getActivityByName",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from activities where activity_name like '%${req.body.name}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据活动编号查询活动信息
+app.post("/getActivityById",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from activities where id like '%${req.body.id}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据活动举办支部查询活动信息
+app.post("/getActivityByBranch",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from activities where branch like '%${req.body.branch}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据活动描述查询活动信息
+app.post("/getActivityByDescribe",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from activities where activity_describe like '%${req.body.describe}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id删除活动信息
+app.post("/deleteActivityById",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `delete from activities where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id修改活动信息
+app.post("/editActivity",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update activities set activity_name = '${req.body.name}', speaker = '${req.body.speaker}', place = '${req.body.place}', time = '${req.body.time}', activity_describe = '${req.body.describe}', branch = '${req.body.branch}', content = '${req.body.content}' where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+
+/* 支部模块 */
+// 添加支部
+app.post("/addBranch",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `INSERT INTO branch(name, institute, secretary, fu_secretary, propagate) VALUES ('${req.body.branchName}','${req.body.institute}', '${req.body.secretary}','${req.body.deputySecretary}','${req.body.propagate}')`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//查询所有信息
+app.post("/allBranch",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from branch`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据支部名称查询支部信息
+app.post("/getBranchByName",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from branch where name like '%${req.body.name}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据学院查询支部信息
+app.post("/getBranchByInstitute",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from branch where institute like '%${req.body.institute}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据学院查询支部信息
+app.post("/getBranchById",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from branch where id like '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id删除信息
+app.post("/deleteBranchById",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `delete from branch where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id修改支部信息
+app.post("/editBranch",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update branch set name = '${req.body.name}', institute = '${req.body.institute}', secretary = '${req.body.secretary}', fu_secretary = '${req.body.deputySecretary}', propagate = '${req.body.propagate}' where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+
 /*//获取当前登录者的所有信息
 app.post("/getMessAll",function(req,res){
 	//解决跨域问题

@@ -199,6 +199,8 @@ export default {
 		line-height: 26px;
 		overflow: hidden;
 		zoom: 1;
+	}
+	.theory li{
 		width: 295px;
 		white-space: pre;
 		text-overflow: ellipsis;

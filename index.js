@@ -17,6 +17,12 @@ import xsearchColumn from "./components/back/tab/xsearch_column_tab.vue";
 import xeditColumn from "./components/back/tab/edit_column_tab.vue";
 import xeditpassword from "./components/back/container/xedit_password.vue";
 import tab from "./components/back/container/tab.vue";
+import xaddActivity from "./components/back/tab/activities/add_activity_tab.vue";
+import xsearchActivity from "./components/back/tab/activities/search_activity_tab.vue";
+import xeditActivity from "./components/back/tab/activities/edit_activity_tab.vue";
+import xaddBranch from "./components/back/tab/branch/add_branch_tab.vue";
+import xsearchBranch from "./components/back/tab/branch/search_branch_tab.vue";
+import xeditBranch from "./components/back/tab/branch/edit_branch_tab.vue";
 //前端组件
 import foretab from "./components/fore/container/foretab.vue";
 import xindex from "./components/fore/tab/xindex.vue";
@@ -73,6 +79,30 @@ var router = new VueRouter({
             {
               path: "editColumn/:id",
               component: xeditColumn
+            },
+            {
+              path: "addActivity",
+              component: xaddActivity
+            },
+            {
+              path: "searchActivity",
+              component: xsearchActivity
+            },
+            {
+              path: "editActivity/:id",
+              component: xeditActivity
+            },
+            {
+              path: "addBranch",
+              component: xaddBranch
+            },
+            {
+              path: "searchBranch",
+              component: xsearchBranch
+            },
+            {
+              path: "editBranch/:id",
+              component: xeditBranch
             },
             {
               path: "editpassword",

@@ -1,0 +1,1 @@
+check_activity_member.vue

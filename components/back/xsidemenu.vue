@@ -39,10 +39,28 @@
 						id:2,
 						txt:"活动管理",
 						isShow:false,
-						url1:"#/tab/addnews",
-						url2:"#/tab/searchnews",
+						url1:"#/tab/addActivity",
+						url2:"#/tab/searchActivity",
 						menu1: '增加活动',
 						menu2: '查询活动'
+					},
+					{
+						id:3,
+						txt:"活动经费",
+						isShow:false,
+						url1:"#/tab/checkActivityMember",
+						url2:"#/tab/activityMoney",
+						menu1: '参加活动名单审核',
+						menu2: '活动经费名单'
+					},
+					{
+						id:2,
+						txt:"支部管理",
+						isShow:false,
+						url1:"#/tab/addBranch",
+						url2:"#/tab/searchBranch",
+						menu1: '增加支部',
+						menu2: '查询支部'
 					},
 					{
 						id:3,
