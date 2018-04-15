@@ -6,13 +6,33 @@
 				<p class="p200"><span>账号：</span><input  type="text" placeholder="请输入账号"/></p>
 				<p class="p200"><span>密码：</span><input type="password" placeholder="请输入密码"/></p>
 				<p class="padding50"><input type="checkbox"/><span>记住用户名和密码</span></p>
-				<p><button>登录</button></p>
+				<p><button @click="login">登录</button></p>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
+import $ from 'jQuery';
+export default {
+	data() {
+		return {
+
+		}
+	},
+	methods: {
+		login(){
+			$.ajax({
+				url: 'http://localhost:5555/getList',
+				type: 'post',
+				dataType: 'json',
+				success(data){
+					console.log(data);
+				}
+			})
+		}
+	}
+}
 </script>
 
 <style scoped>

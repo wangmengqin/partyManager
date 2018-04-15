@@ -11,6 +11,8 @@ import "./template/base.css";
 //后台组件
 import xaddnews from "./components/back/tab/xadd_news_tab.vue";
 import xsearchnews from "./components/back/tab/xsearch_news_tab.vue";
+import xaddColumn from "./components/back/tab/xadd_column_tab.vue";
+import xsearchColumn from "./components/back/tab/xsearch_column_tab.vue";
 import xeditpassword from "./components/back/container/xedit_password.vue";
 import tab from "./components/back/container/tab.vue";
 //前端组件
@@ -47,17 +49,25 @@ var router = new VueRouter({
             component: tab,
             children: [
             	{
-                    path: "addnews",
-                    component: xaddnews
-               },
-               {
-                    path: "searchnews",
-                    component: xsearchnews
-               },
-               {
-                    path: "editpassword",
-                    component: xeditpassword
-                }
+                path: "addnews",
+                component: xaddnews
+              },
+              {
+                path: "searchnews",
+                component: xsearchnews
+              },
+              {
+                path: "addColumn",
+                component: xaddColumn
+              },
+              {
+                path: "searColumn",
+                component: xsearchColumn
+              },
+              {
+                path: "editpassword",
+                component: xeditpassword
+              }
             ]
        },
        {
@@ -113,12 +123,11 @@ var router = new VueRouter({
     ]
 });
 
+import mutations from './mutation.js'
 // 配置store
 var store = new Vuex.Store({
     state:{
-        count:0,
-        bool:true,
-       
+        offset: 0
     }
 })
 
@@ -126,6 +135,7 @@ new Vue({
 	el: "#app",
 	router,
 	store,
+  mutations,
 	template: `
         <div>
             <router-view></router-view> 

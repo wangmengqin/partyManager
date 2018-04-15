@@ -28,6 +28,15 @@
 					},
 					{
 						id:1,
+						txt:"新闻专题",
+						isShow:false,
+						url1:"#/tab/addColumn",
+						url2:"#/tab/searColumn",
+						menu1: '增加专题',
+						menu2: '查询新闻专题'
+					},
+					{
+						id:2,
 						txt:"活动管理",
 						isShow:false,
 						url1:"#/tab/addnews",
@@ -36,7 +45,7 @@
 						menu2: '查询活动'
 					},
 					{
-						id:2,
+						id:3,
 						txt:"组织管理",
 						isShow:false,
 						url1:"#/tab/addnews",
@@ -45,7 +54,7 @@
 						menu2: '审核组织关系'
 					},
 					{
-						id:3,
+						id:4,
 						txt:"党员管理",
 						isShow:false,
 						url1:"#/tab/addnews",
@@ -54,7 +63,7 @@
 						menu2: '查询党员信息'
 					},
 					{
-						id:4,
+						id:5,
 						txt:"党费管理",
 						isShow:false,
 						url1:"#/tab/addnews",
@@ -63,7 +72,7 @@
 						menu2: '查询党费收缴'
 					},
 					{
-						id:5,
+						id:6,
 						txt:"党校管理",
 						isShow:false,
 						url1:"#/tab/addnews",
@@ -72,7 +81,7 @@
 						menu2: '查询党校信息'
 					},
 					{
-						id:6,
+						id:7,
 						txt:"留言管理",
 						isShow:false,
 						url1:"#/tab/addnews",
@@ -81,7 +90,7 @@
 						menu2: '查看留言'
 					},
 					{
-						id:7,
+						id:8,
 						txt:"党务管理",
 						isShow:false,
 						url1:"#/tab/addnews",
