@@ -6,7 +6,7 @@
 				<p class="p200"><span>账号：</span><input  type="text" placeholder="请输入账号"/></p>
 				<p class="p200"><span>密码：</span><input type="password" placeholder="请输入密码"/></p>
 				<p class="padding50"><input type="checkbox"/><span>记住用户名和密码</span></p>
-				<p><button @click="login">登录</button></p>
+				<p style="width:100%;text-align: center;"><button @click="login">登录</button><button @click="apply">申请入党</button></p>
 			</div>
 		</div>
 	</div>
@@ -30,6 +30,9 @@ export default {
 					console.log(data);
 				}
 			})
+		},
+		apply() {
+			location.href = "#/fore/apply"
 		}
 	}
 }
@@ -85,12 +88,13 @@ export default {
 		float: left;
 	}
 	button{
-		width: 270px;
+		width: 100px;
 		outline: none;
 		border: 0;
 		background: #d93732;
 		height: 30px;
 		line-height: 30px;
 		color: #fff;
+		margin: 0 10px;
 	}
 </style>

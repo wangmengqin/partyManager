@@ -170,7 +170,7 @@ app.post("/addNews",function(req,res){
 // 添加活动
 app.post("/addActivity",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `INSERT INTO activities(activity_name, speaker, place, time, branch, img, activity_describe) VALUES ('${req.body.name}','${req.body.speaker}', '${req.body.place}','${req.body.time}','${req.body.branch}','${req.body.img}', '${req.body.describe}')`;
+	var sql = `INSERT INTO activities(activity_name, speaker, place, time, branch, img, activity_describe, type) VALUES ('${req.body.name}','${req.body.speaker}', '${req.body.place}','${req.body.time}','${req.body.branch}','${req.body.img}', '${req.body.describe}', '${req.body.type}')`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
@@ -180,6 +180,15 @@ app.post("/addActivity",function(req,res){
 app.post("/allActivity",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
 	var sql = `select * from activities`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//查询所有信息（降序）
+app.post("/allActivityDesc",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from activities order by id Desc limit 3`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
@@ -221,6 +230,15 @@ app.post("/getActivityByDescribe",function(req,res){
 		res.send(JSON.stringify(results));
 	});
 })
+// 根据活动类型活动信息
+app.post("/getActivityByType",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from activities where type like '%${req.body.type}%' order by id desc LIMIT 6 `;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
 // 根据id删除活动信息
 app.post("/deleteActivityById",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
@@ -233,7 +251,7 @@ app.post("/deleteActivityById",function(req,res){
 // 根据id修改活动信息
 app.post("/editActivity",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `update activities set activity_name = '${req.body.name}', speaker = '${req.body.speaker}', place = '${req.body.place}', time = '${req.body.time}', activity_describe = '${req.body.describe}', branch = '${req.body.branch}', content = '${req.body.content}' where id = '${req.body.id}'`;
+	var sql = `update activities set activity_name = '${req.body.name}', speaker = '${req.body.speaker}', place = '${req.body.place}', time = '${req.body.time}', activity_describe = '${req.body.describe}', branch = '${req.body.branch}', content = '${req.body.content}', type='${req.body.type}' where id = '${req.body.id}'`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
@@ -299,6 +317,35 @@ app.post("/deleteBranchById",function(req,res){
 app.post("/editBranch",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
 	var sql = `update branch set name = '${req.body.name}', institute = '${req.body.institute}', secretary = '${req.body.secretary}', fu_secretary = '${req.body.deputySecretary}', propagate = '${req.body.propagate}' where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+
+/* 党员模块 */
+// 党员添加
+app.post("/addMember",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `INSERT INTO member(name, sex, age, sno, major, institute, type, native) VALUES ('${req.body.name}', '${req.body.sex}', '${req.body.age}', '${req.body.sno}', '${req.body.major}','${req.body.institute}', '${req.body.type}','${req.body.native}')`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//查询所有信息
+app.post("/allMember",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from member`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id修改党员身份信息
+app.post("/editMemberIdentify",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update member set identify = '${req.body.identify}' where id = '${req.body.id}'`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));

@@ -5,61 +5,29 @@
 			<ul>
 				<h4>理论学习</h4>
 				<li v-for="item in theoryData"><a href="##">{{item.title}}</a></li>
-				<!-- <li><a href="##">坚持党中央权威和集中统一领导</a></li>
-				<li><a href="##">社会主要矛盾转变与社会政策创新发展</a></li>
-				<li><a href="##">周淑真：政党是构建人类命运共同体的重要力量</a></li>
-				<li><a href="##">新知新觉：新时代必将有力推动人的全面发展</a></li>
-				<li><a href="##">热点辨析：加强党的政治建设不能有半点含糊</a></li> -->
 			</ul>
 			<ul style="border-left: 1px solid #ccc;border-right: 1px solid #ccc;">
 				<h4>时政新闻</h4>
 				<li v-for="item in newsData"><a href="##">{{item.title}}</a></li>
-				<!-- <li><a href="##">高举起民族复兴的思想旗帜</a></li>
-				<li><a href="##">坚持党中央权威和集中统一领导</a></li>
-				<li><a href="##">社会主要矛盾转变与社会政策创新发展</a></li>
-				<li><a href="##">周淑真：政党是构建人类命运共同体的重要力量</a></li>
-				<li><a href="##">新知新觉：新时代必将有力推动人的全面发展</a></li>
-				<li><a href="##">热点辨析：加强党的政治建设不能有半点含糊</a></li> -->
 			</ul>
 			<ul>
 				<h4>党史纵览</h4>
 				<li v-for="item in historyData"><a href="##">{{item.title}}</a></li>
-				<!-- <li><a href="##">学习传承老一辈革命家的优良家风</a></li>
-				<li><a href="##">历史名人的过年轶事</a></li>
-				<li><a href="##">邓小平在顺义是怎样调研的</a></li>
-				<li><a href="##">辗转西迁：周恩来在1938</a></li>
-				<li><a href="##">毛泽东在水口主持首次连队建党</a></li>
-				<li><a href="##">胡耀邦三请黄克诚</a></li> -->
 			</ul>
 		</div>
 		<div class="active_box">
 			<h3><img src="/imgs/icon_active.png"/>推荐活动</h3>
 			<ul>
-				<li>
-					<img src="/imgs/icon_active.png" class="active_img"/>
+				<li v-for="item in activityData">
+					<img v-if="item.img==''" src="/imgs/activity.jpg" class="active_img"/>
+					<img v-if="item.img!=''" :src="item.img" class="active_img"/>
 					<div class="fl">
-						<h5>以“弘扬光荣传统、发挥先锋模范作用”为主题的党课</h5>
-						<strong>演讲人：张三（XX学院总书记）</strong><br />
-						<em style="display: block;">地点：逸夫楼i413</em>
-						<b>时间：2018年05月04日 下午2:00 <a href="##"><img src="/imgs/icon_return.png"/>我要参加</a></b>
-					</div>
-				</li>
-				<li>
-					<img src="/imgs/icon_active.png" class="active_img"/>
-					<div class="fl">
-						<h5>“七一”党内关怀送温暖活动</h5>
-						<strong>走访慰问建国前入党老党员和困难党员</strong><br />
-						<em style="display: block;">地点：容二门口集合</em>
-						<b>时间：2018年07月01日 上午10:00 <a href="##"><img src="/imgs/icon_return.png"/>我要参加</a></b>
-					</div>
-				</li>
-				<li>
-					<img src="/imgs/icon_active.png" class="active_img"/>
-					<div class="fl">
-						<h5>党的十八届六中全会专题学习报告会</h5>
-						<strong>深入推进“两学一做”学习教育</strong><br />
-						<em style="display: block;">地点：逸夫楼学术报告厅（i413）</em>
-						<b>时间：2018年11月25日（周五）下午2:30  <a href="##"><img src="/imgs/icon_return.png"/>我要参加</a></b>
+						<h5>{{item.activity_name}}</h5>
+						<strong v-if="item.activity_describe!=''">{{item.activity_describe}}</strong>
+						<strong v-if="item.speaker!=''">演讲人：{{item.speaker}}</strong>
+						<br v-if="item.activity_speaker!=''"/>
+						<em style="display: block;">地点：{{item.place}}</em>
+						<b>时间：{{item.time}} <a @click="joinActivity(item.name,item.id)"><img src="/imgs/icon_return.png"/>我要参加</a></b>
 					</div>
 				</li>
 			</ul>
@@ -124,7 +92,11 @@ export default {
 		return{
 			theoryData: [], // 理论知识数据
 			newsData: [], // 时政新闻数据
-			historyData: [] // 党史数据
+			historyData: [], // 党史数据
+			lecture: {}, // 讲座活动
+			branchActivity: {}, // 支部活动
+			orgActivity: {}, // 组织生活
+			activityData: []
 		}
 	},
 	mounted() {
@@ -135,7 +107,6 @@ export default {
     		dataType: 'json',
     		data: {theme: '理论学习'},
     		success(data){
-    			console.log(data)
     			_this.theoryData = data
     		}
     	})
@@ -145,7 +116,6 @@ export default {
     		dataType: 'json',
     		data: {theme: '时政新闻'},
     		success(data){
-    			console.log(data)
     			_this.newsData = data
     		}
     	})
@@ -155,10 +125,23 @@ export default {
     		dataType: 'json',
     		data: {theme: '党史纵览'},
     		success(data){
-    			console.log(data)
     			_this.historyData = data
     		}
     	})
+    	$.ajax({
+    		url: 'http://localhost:5555/allActivityDesc',
+    		type: 'POST',
+    		dataType: 'json',
+    		success(data){
+    			console.log(data)
+    			_this.activityData = data
+    		}
+    	})
+	},
+	methods: {
+		joinActivity(name, id) {
+			
+		}
 	}
 }
 </script>
@@ -209,6 +192,7 @@ export default {
 	ul li a{
 		color: #333;
 		font-size: 14px;
+		cursor: pointer;
 	}
 	ul li a:hover{
 		color: #D93732;

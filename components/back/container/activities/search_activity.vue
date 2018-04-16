@@ -19,6 +19,7 @@
 					<th>地点</th>
 					<th>描述</th>
 					<th>支部</th>
+					<th>分类</th>
 					<th>图片</th>
 					<th>操作</th>
 				</tr>
@@ -31,6 +32,7 @@
 				<td>{{item.place}}</td>
 				<td>{{item.activity_describe}}</td>
 				<td>{{item.branch}}</td>
+				<td>{{item.type}}</td>
 				<td>{{item.img}}</td>
 				<td><a :href="'#/tab/editActivity/'+item.id" class="edit">编辑</a><b @click="deleteActivityById(item.id)" class="del">删除</b></td>
 			</tr>

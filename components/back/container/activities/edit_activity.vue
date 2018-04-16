@@ -14,6 +14,14 @@
 				</select>
 				<a href="#/tab/addBranch">添加支部</a>
 			</div>
+			<div>
+				<span>所属活动分类：</span>
+				<select v-model="editData.type">
+					<option key="0" value="讲座">讲座</option>
+					<option key="1" value="支部活动">支部活动</option>
+					<option key="2" value="组织生活">组织生活</option>
+				</select>
+			</div>
 			<div><span>活动封面(建议100*100)：</span><input style="border:0" type="file"/></div>
 			<div style="overflow:hidden"><span style="float:left">活动精彩瞬间：</span><vue-editor style="width:650px;float:left" v-model="editData.content"></vue-editor></div>
 			<div style="text-align:center">

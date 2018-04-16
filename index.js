@@ -8,21 +8,30 @@ Vue.use(Vuex);
 
 // 全局样式
 import "./template/base.css";
-//后台组件
+// 后台组件
+// 新闻组件
 import xaddnews from "./components/back/tab/news/xadd_news_tab.vue";
 import xsearchnews from "./components/back/tab/news/xsearch_news_tab.vue";
 import xeditnews from "./components/back/tab/news/edit_news_tab.vue";
+// 新闻专题组件
 import xaddColumn from "./components/back/tab/xadd_column_tab.vue";
 import xsearchColumn from "./components/back/tab/xsearch_column_tab.vue";
 import xeditColumn from "./components/back/tab/edit_column_tab.vue";
+// 用户修改密码组件
 import xeditpassword from "./components/back/container/xedit_password.vue";
+// tab切换组件
 import tab from "./components/back/container/tab.vue";
+// 活动组件
 import xaddActivity from "./components/back/tab/activities/add_activity_tab.vue";
 import xsearchActivity from "./components/back/tab/activities/search_activity_tab.vue";
 import xeditActivity from "./components/back/tab/activities/edit_activity_tab.vue";
+// 支部组件
 import xaddBranch from "./components/back/tab/branch/add_branch_tab.vue";
 import xsearchBranch from "./components/back/tab/branch/search_branch_tab.vue";
 import xeditBranch from "./components/back/tab/branch/edit_branch_tab.vue";
+// 党员组件
+import xsearchMember from "./components/back/tab/member/search_member_tab.vue";
+import xcheckMember from "./components/back/tab/member/check_member_tab.vue";
 //前端组件
 import foretab from "./components/fore/container/foretab.vue";
 import xindex from "./components/fore/tab/xindex.vue";
@@ -103,6 +112,14 @@ var router = new VueRouter({
             {
               path: "editBranch/:id",
               component: xeditBranch
+            },
+            {
+              path: "searchMember",
+              component: xsearchMember
+            },
+            {
+              path: "checkMember",
+              component: xcheckMember
             },
             {
               path: "editpassword",

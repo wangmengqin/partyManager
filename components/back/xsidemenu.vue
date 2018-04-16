@@ -75,8 +75,8 @@
 						id:4,
 						txt:"党员管理",
 						isShow:false,
-						url1:"#/tab/addnews",
-						url2:"#/tab/searchnews",
+						url1:"#/tab/checkMember",
+						url2:"#/tab/searchMember",
 						menu1: '审核新增党员',
 						menu2: '查询党员信息'
 					},

@@ -14,6 +14,14 @@
 				</select>
 				<a href="#/tab/addBranch">添加支部</a>
 			</div>
+			<div>
+				<span>所属活动分类：</span>
+				<select v-model="type">
+					<option key="0" value="讲座">讲座</option>
+					<option key="1" value="支部活动">支部活动</option>
+					<option key="2" value="组织生活">组织生活</option>
+				</select>
+			</div>
 			<div><span>活动封面(建议100*100)：</span><input style="border:0" type="file"/></div>
 			<div style="text-align:center"><button @click="addActivity">确认发布活动</button></div>
 		</div>
@@ -37,6 +45,7 @@ export default {
         	branch: '重庆科技学院党总支',
         	describe: '', // 活动具体描述
         	img: '',
+        	type: '支部活动',
         	branchData: []
         }
     },
