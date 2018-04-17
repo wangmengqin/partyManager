@@ -4,10 +4,10 @@
 		<p>
 			
 			<input type="text" placeholder="请输入关键字,无内容则搜索所有" v-model="inputContent"/>
-			<button @click="getActivityById">通过党员姓名搜索</button>
-			<button @click="getActivityByName">通过学院搜索</button>
-			<button @click="getActivityByBranch">通过专业搜索</button>
-			<button @click="getActivityByDescribe">通过党员学号搜索</button>
+			<button @click="getMemberByName">通过党员姓名搜索</button>
+			<button @click="getMemberByInstitute">通过学院搜索</button>
+			<button @click="getMemberByMajor">通过专业搜索</button>
+			<button @click="getMemberBySno">通过党员学号搜索</button>
 		</p>
 		<table>
 			<thead>
@@ -20,13 +20,13 @@
 					<th>学院</th>
 					<th>身份</th>
 					<th>类型</th>
-					<th>职位</th>
+					<th>支部</th>
 					<th>籍贯</th>
 					<th>操作</th>
 				</tr>
 			</thead>
 			<tr v-if="memberData==''" style="text-align:center;">
-				<td style="line-height:50px;font-size:20px" colspan="10">无要审核数据</td>
+				<td style="line-height:50px;font-size:20px" colspan="10">无数据</td>
 			</tr>
 			<tr v-for="item in memberData">
 				<td>{{item.name}}</td>
@@ -37,9 +37,9 @@
 				<td>{{item.institute}}</td>
 				<td>{{item.identify}}</td>
 				<td>{{item.type}}</td>
-				<td>{{item.position}}</td>
+				<td>{{item.branch}}</td>
 				<td>{{item.native}}</td>
-				<td><a :href="'#/tab/editActivity/'+item.id" class="edit">编辑</a><b @click="deleteActivityById(item.id)" class="del">删除</b></td>
+				<td><a :href="'#/tab/editMember/'+item.id" class="edit">编辑</a><b @click="deleteActivityById(item.id)" class="del">删除</b></td>
 			</tr>
 		</table>
 		<xpagination />
@@ -69,73 +69,93 @@
 	    		dataType: 'json',
 	    		success(data) {
 	    			for (var i in data) {
-	    				if(data[i].identify != '不通过'){
+	    				if(data[i].identify != '' && data[i].identify != '不通过'){
 	    					_this.memberData.push(data[i])
 	    				}
 	    			}
 	    		}
 	    	})
 	  	},
-	  	getActivityById() {
+	  	getMemberByName() {
 	  		var _this = this
+	  		_this.memberData = []
 	    	$.ajax({
-	    		url: 'http://localhost:5555/getActivityById',
-	    		type: 'POST',
-	    		dataType: 'json',
-	    		data: {
-	    			id: _this.inputContent
-	    		},
-	    		success(data) {
-	    			_this.activityData = data
-	    		}
-	    	})
-	  	},
-	  	getActivityByName(){
-	  		var _this = this
-	  		$.ajax({
-	    		url: 'http://localhost:5555/getActivityByName',
+	    		url: 'http://localhost:5555/getMemberByName',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
 	    			name: _this.inputContent
 	    		},
 	    		success(data) {
-	    			_this.activityData = data
+	    			for (var i in data) {
+	    				if(data[i].identify != '' && data[i].identify != '不通过'){
+	    					_this.memberData.push(data[i])
+	    				}
+	    			}
 	    		}
 	    	})
 	  	},
-	  	getActivityByBranch(){
+	  	getMemberByInstitute(){
 	  		var _this = this
+	  		_this.memberData = []
 	  		$.ajax({
-	    		url: 'http://localhost:5555/getActivityByBranch',
+	    		url: 'http://localhost:5555/getMemberByInstitute',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
-	    			branch: _this.inputContent
+	    			institute: _this.inputContent
 	    		},
 	    		success(data) {
-	    			_this.activityData = data
+	    			for (var i in data) {
+	    				if(data[i].identify != '' && data[i].identify != '不通过'){
+	    					_this.memberData.push(data[i])
+	    				}
+	    			}
 	    		}
 	    	})
 	  	},
-	  	getActivityByDescribe(){
+	  	getMemberByMajor(){
 	  		var _this = this
+	  		_this.memberData = []
 	  		$.ajax({
-	    		url: 'http://localhost:5555/getActivityByDescribe',
+	    		url: 'http://localhost:5555/getMemberByMajor',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
-	    			describe: _this.inputContent
+	    			major: _this.inputContent
 	    		},
 	    		success(data) {
-	    			_this.activityData = data
+	    			for (var i in data) {
+	    				if(data[i].identify != '' && data[i].identify != '不通过'){
+	    					_this.memberData.push(data[i])
+	    				}
+	    			}
+	    		}
+	    	})
+	  	},
+	  	getMemberBySno(){
+	  		var _this = this
+	  		_this.memberData = []
+	  		$.ajax({
+	    		url: 'http://localhost:5555/getMemberBySno',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		data: {
+	    			sno: _this.inputContent
+	    		},
+	    		success(data) {
+	    			for (var i in data) {
+	    				if(data[i].identify != '' && data[i].identify != '不通过'){
+	    					_this.memberData.push(data[i])
+	    				}
+	    			}
 	    		}
 	    	})
 	  	},
 	  	deleteActivityById(id){
 	  		var _this = this
 	  		$.ajax({
-	    		url: 'http://localhost:5555/deleteActivityById',
+	    		url: 'http://localhost:5555/deleteMemberById',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
@@ -148,19 +168,7 @@
 	  	}
 	  },
 	  mounted() {
-	  	var _this = this
-    	$.ajax({
-    		url: 'http://localhost:5555/allMember',
-    		type: 'POST',
-    		dataType: 'json',
-    		success(data) {
-    			for (var i in data) {
-    				if(data[i].identify != '不通过'){
-    					_this.memberData.push(data[i])
-    				}
-    			}
-    		}
-    	})
+	  	this.getAll()
 	  }
 	};
 </script>

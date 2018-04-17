@@ -4,7 +4,6 @@
 		<table>
 			<thead>
 				<tr>
-					<th>ID</th>
 					<th>姓名</th>
 					<th>性别</th>
 					<th>年龄</th>
@@ -13,14 +12,14 @@
 					<th>学院</th>
 					<th>籍贯</th>
 					<th>类型</th>
+					<th>选择支部</th>
 					<th>操作</th>
 				</tr>
 			</thead>
 			<tr v-if="memberData==''" style="text-align:center;">
 				<td style="line-height:50px;font-size:20px" colspan="10">无要审核数据</td>
 			</tr>
-			<tr v-for="item in memberData">
-				<td>{{item.id}}</td>
+			<tr v-for="(item,index) in memberData" :key="item.id">
 				<td>{{item.name}}</td>
 				<td>{{item.sex}}</td>
 				<td>{{item.age}}</td>
@@ -29,7 +28,12 @@
 				<td>{{item.institute}}</td>
 				<td>{{item.native}}</td>
 				<td>{{item.type}}</td>
-				<td><b @click="passMember(item.id)" class="edit">通过</b><b @click="unPassMember(item.id)" class="del">不通过</b></td>
+				<td>
+					<select v-model="item.branch" style="width: 70px;">
+						<option v-for="i in branchData" :key="i.id" :value="i.name">{{i.name}}</option>
+					</select>
+				</td>
+				<td><b @click="passMember(item.id,index)" class="edit">通过</b><b @click="unPassMember(item.id)" class="del">不通过</b></td>
 			</tr>
 		</table>
 		<xpagination />
@@ -45,7 +49,8 @@
 	  },
 	  data() {
 	  	return {
-	  		memberData: [] // 党员信息数据
+	  		memberData: [], // 党员信息数据
+	  		branchData: [] // 支部数据
 	  	}
 	  },
 	  methods: {
@@ -65,15 +70,18 @@
 	    		}
 	    	})
 	  	},
-	  	passMember(id){
+	  	passMember(id,index){
 	  		var _this = this
+	  		console.log(index, _this.memberData[index].branch)
 	  		$.ajax({
 	    		url: 'http://localhost:5555/editMemberIdentify',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
 	    			id: id,
-	    			identify: '入党积极分子'
+	    			identify: '入党积极分子',
+	    			branch: _this.memberData[index].branch,
+	    			password: '123456'
 	    		},
 	    		success(data) {
 	    			alert('审核成功')
@@ -100,16 +108,13 @@
 	  },
 	  mounted() {
 	  	var _this = this
+    	_this.getAll()
     	$.ajax({
-    		url: 'http://localhost:5555/allMember',
+    		url: 'http://localhost:5555/allBranch',
     		type: 'POST',
     		dataType: 'json',
     		success(data) {
-    			for (var i in data) {
-    				if(data[i].identify == ''){
-    					_this.memberData.push(data[i])
-    				}
-    			}
+    			_this.branchData = data
     		}
     	})
 	  }

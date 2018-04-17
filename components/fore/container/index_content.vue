@@ -27,7 +27,7 @@
 						<strong v-if="item.speaker!=''">演讲人：{{item.speaker}}</strong>
 						<br v-if="item.activity_speaker!=''"/>
 						<em style="display: block;">地点：{{item.place}}</em>
-						<b>时间：{{item.time}} <a @click="joinActivity(item.name,item.id)"><img src="/imgs/icon_return.png"/>我要参加</a></b>
+						<b>时间：{{item.time}} <a @click="joinActivity(item.activity_name,item.id)"><img src="/imgs/icon_return.png"/>我要参加</a></b>
 					</div>
 				</li>
 			</ul>
@@ -96,11 +96,15 @@ export default {
 			lecture: {}, // 讲座活动
 			branchActivity: {}, // 支部活动
 			orgActivity: {}, // 组织生活
-			activityData: []
+			activityData: [],
+			sno: null, // 登陆的用户工号、学号
+			memberName: null
 		}
 	},
 	mounted() {
 		var _this = this;
+		_this.sno = sessionStorage.getItem("sno");
+		console.log(_this.sno)
 		$.ajax({
     		url: 'http://localhost:5555/getNewsByTheme',
     		type: 'POST',
@@ -133,14 +137,64 @@ export default {
     		type: 'POST',
     		dataType: 'json',
     		success(data){
-    			console.log(data)
     			_this.activityData = data
     		}
     	})
 	},
 	methods: {
-		joinActivity(name, id) {
-			
+		joinActivity(activityName, id) {
+			var _this = this
+			if(this.sno != null){
+				$.ajax({
+		    		url: 'http://localhost:5555/getMemberBySno',
+		    		type: 'POST',
+		    		dataType: 'json',
+		    		data: {
+		    			sno: _this.sno
+		    		},
+		    		success(data) {
+		    			_this.memberName = data[0].name
+		    		}
+		    	})
+		    	.done(() => {
+		    		$.ajax({
+			    		url: 'http://localhost:5555/getMemberActivityBySnoName',
+			    		type: 'POST',
+			    		dataType: 'json',
+			    		data: {
+			    			sno: _this.sno,
+			    			activity_name: activityName,
+				    		member: _this.memberName
+			    		},
+			    		success(data) {
+			    			if(data == ''){
+			    				console.log("join the activity success");
+					    		$.ajax({
+						    		url: 'http://localhost:5555/addMemberActivity',
+						    		type: 'POST',
+						    		dataType: 'json',
+						    		data: {
+						    			activity_name: activityName,
+						    			member_sno: _this.sno,
+						    			member: _this.memberName,
+						    			status: '未缴费'
+						    		},
+						    		success(data) {
+						    			alert('报名成功')
+						    		}
+						    	})
+			    			}else{
+			    				alert('你已参加此次活动')
+			    			}
+			    		}
+			    	})
+		    		
+		    	})
+			}
+			else{
+				alert('获取信息失败，请重新登录')
+				location.href = '#/login'
+			}
 		}
 	}
 }

@@ -342,26 +342,109 @@ app.post("/allMember",function(req,res){
 		res.send(JSON.stringify(results));
 	});
 })
+//根据id查询信息
+app.post("/getMemberById",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from member where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//根据学生姓名查询信息
+app.post("/getMemberByName",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from member where name like '%${req.body.name}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//根据学院查询信息
+app.post("/getMemberByInstitute",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from member where institute like '%${req.body.institute}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//根据专业查询信息
+app.post("/getMemberByMajor",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from member where major like '%${req.body.major}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//根据学号查询信息
+app.post("/getMemberBySno",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from member where sno like '%${req.body.sno}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id删除信息
+app.post("/deleteMemberById",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `delete from member where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id修改党员信息
+app.post("/editMember",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update member set name = '${req.body.name}', sex = '${req.body.sex}', age = '${req.body.age}', sno = '${req.body.sno}', major = '${req.body.major}', institute = '${req.body.institute}', identify = '${req.body.identify}', type = '${req.body.type}', branch = '${req.body.branch}', native = '${req.body.native}' where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
 // 根据id修改党员身份信息
 app.post("/editMemberIdentify",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `update member set identify = '${req.body.identify}' where id = '${req.body.id}'`;
+	var sql = `update member set identify = '${req.body.identify}', branch = '${req.body.branch}', password = '${req.body.password}' where id = '${req.body.id}'`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
 	});
 })
 
-/*//获取当前登录者的所有信息
-app.post("/getMessAll",function(req,res){
+//获取当前登录者的所有信息（普通党员）
+app.post("/getLoginInfo",function(req,res){
 	//解决跨域问题
 	res.append("Access-Control-Allow-Origin","*");
 	//连接后执行相应功能
-	connect.query(`SELECT * FROM person_info where id = ${req.body.id}`, function(error, results, fields) {
+	connect.query(`SELECT password FROM member where sno = ${req.body.username}`, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
 	});
-})*/
+})
+
+/* 活动列表模块 */
+// 添加党员参加活动
+app.post("/addMemberActivity",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `INSERT INTO activities_member(activity_name, member_sno, member, money_status) VALUES ('${req.body.activity_name}', '${req.body.member_sno}', '${req.body.member}', '${req.body.status}')`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//根据学号、姓名、活动名称查询信息
+app.post("/getMemberActivityBySnoName",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from activities_member WHERE activity_name = '${req.body.activity_name}' AND member = '${req.body.member}' AND member_sno = '${req.body.sno}' `;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
 //监听端口
 app.listen(5555);
 console.log("开启服务器")

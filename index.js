@@ -32,6 +32,7 @@ import xeditBranch from "./components/back/tab/branch/edit_branch_tab.vue";
 // 党员组件
 import xsearchMember from "./components/back/tab/member/search_member_tab.vue";
 import xcheckMember from "./components/back/tab/member/check_member_tab.vue";
+import xeditMember from "./components/back/tab/member/edit_member_tab.vue";
 //前端组件
 import foretab from "./components/fore/container/foretab.vue";
 import xindex from "./components/fore/tab/xindex.vue";
@@ -120,6 +121,10 @@ var router = new VueRouter({
             {
               path: "checkMember",
               component: xcheckMember
+            },
+            {
+              path: "editMember/:id",
+              component: xeditMember
             },
             {
               path: "editpassword",

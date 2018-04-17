@@ -3,9 +3,16 @@
 		<div class="content">
 			<div class="login_box">
 				<h3>用户登录</h3>
-				<p class="p200"><span>账号：</span><input  type="text" placeholder="请输入账号"/></p>
-				<p class="p200"><span>密码：</span><input type="password" placeholder="请输入密码"/></p>
-				<p class="padding50"><input type="checkbox"/><span>记住用户名和密码</span></p>
+				<p class="p200"><span>账号：</span><input v-model="username" type="text" placeholder="请输入账号"/></p>
+				<p class="p200"><span>密码：</span><input v-model="password" type="password" placeholder="请输入密码"/></p>
+				<p  class="p200">
+					<span>身份：</span>
+					<select v-model="type">
+					<option key="0" value="管理员">管理员</option>
+					<option key="1" value="普通党员">普通党员</option>
+				</select>
+				</p>
+				<p class="padding50"><input type="checkbox" v-model="checkbox"/><span>记住用户名和密码</span></p>
 				<p style="width:100%;text-align: center;"><button @click="login">登录</button><button @click="apply">申请入党</button></p>
 			</div>
 		</div>
@@ -17,22 +24,56 @@ import $ from 'jQuery';
 export default {
 	data() {
 		return {
-
+			username: '',
+			password: '',
+			type: '普通党员',
+			checkbox: null
 		}
 	},
 	methods: {
 		login(){
-			$.ajax({
-				url: 'http://localhost:5555/getList',
-				type: 'post',
-				dataType: 'json',
-				success(data){
-					console.log(data);
-				}
-			})
+			console.log(this.username, this.password, this.type, this.checkbox)
+			var _this = this
+			if(_this.type == '普通党员' && this.username!='' && this.password !=''){
+				$.ajax({
+					url: 'http://localhost:5555/getLoginInfo',
+					type: 'post',
+					dataType: 'json',
+					data: {
+						username: _this.username
+					},
+					success(data){
+						if(data != ''){
+							if(_this.password === data[0].password){
+								sessionStorage.setItem("sno", _this.username);
+								if(_this.checkbox){
+									sessionStorage.setItem("password", _this.password);
+								}
+								location.href = "#/fore/index"
+							}else{
+								alert('密码错误')
+							}
+						}else{
+							alert('用户不存在')
+						}
+					}
+				})
+			}else if(_this.type == '管理员' && this.username!='' && this.password !=''){
+
+			}else{
+				alert('用户名密码不能为空')
+			}
+			
 		},
 		apply() {
 			location.href = "#/fore/apply"
+		}
+	},
+	mounted() {
+		this.username = sessionStorage.getItem("sno");
+		this.password = sessionStorage.getItem("password");
+		if(this.username != '' && this.password != ''){
+			this.checkbox = true
 		}
 	}
 }
@@ -78,6 +119,7 @@ export default {
 	}
 	.p200 span{
 		float: left;
+    	width: 55px;
 	}
 	.padding50{
 		padding-left: 60px;
