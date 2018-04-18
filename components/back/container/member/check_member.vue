@@ -10,6 +10,7 @@
 					<th>学号</th>
 					<th>专业</th>
 					<th>学院</th>
+					<th>年级</th>
 					<th>籍贯</th>
 					<th>类型</th>
 					<th>选择支部</th>
@@ -26,6 +27,7 @@
 				<td>{{item.sno}}</td>
 				<td>{{item.major}}</td>
 				<td>{{item.institute}}</td>
+				<td>{{item.grade}}</td>
 				<td>{{item.native}}</td>
 				<td>{{item.type}}</td>
 				<td>
@@ -81,6 +83,7 @@
 	    			id: id,
 	    			identify: '入党积极分子',
 	    			branch: _this.memberData[index].branch,
+	    			head: '/imgs/gray_wode.png',
 	    			password: '123456'
 	    		},
 	    		success(data) {

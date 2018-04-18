@@ -63,6 +63,7 @@ export default {
     methods: {
     	addActivity() {
     		var _this = this;
+    		console.log(this.branch)
     		$.ajax({
 	    		url: 'http://localhost:5555/addActivity',
 	    		type: 'POST',
@@ -74,7 +75,8 @@ export default {
 	    			time: _this.time,
 	    			branch: _this.branch,
 	    			describe: _this.describe,
-	    			img: _this.img
+	    			img: _this.img,
+	    			type: _this.type
 	    		},
 	    		success(data) {
 	    			alert('添加成功')
@@ -84,7 +86,8 @@ export default {
 	    			_this.branch = '重庆科技学院党总支';
 	    			_this.time = '';
 	    			_this.describe = '';
-	    			_this.img = ''
+	    			_this.img = '',
+	    			_this.type = '支部活动'
 	    		}
 	    	})
     	}

@@ -327,7 +327,7 @@ app.post("/editBranch",function(req,res){
 // 党员添加
 app.post("/addMember",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `INSERT INTO member(name, sex, age, sno, major, institute, type, native) VALUES ('${req.body.name}', '${req.body.sex}', '${req.body.age}', '${req.body.sno}', '${req.body.major}','${req.body.institute}', '${req.body.type}','${req.body.native}')`;
+	var sql = `INSERT INTO member(name, sex, age, sno, major, institute, grade, type, native) VALUES ('${req.body.name}', '${req.body.sex}', '${req.body.age}', '${req.body.sno}', '${req.body.major}', '${req.body.institute}', '${req.body.grade}', '${req.body.type}','${req.body.native}')`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
@@ -408,7 +408,7 @@ app.post("/editMember",function(req,res){
 // 根据id修改党员身份信息
 app.post("/editMemberIdentify",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `update member set identify = '${req.body.identify}', branch = '${req.body.branch}', password = '${req.body.password}' where id = '${req.body.id}'`;
+	var sql = `update member set identify = '${req.body.identify}', branch = '${req.body.branch}', password = '${req.body.password}', head = '${req.body.head}' where id = '${req.body.id}'`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
@@ -427,10 +427,19 @@ app.post("/getLoginInfo",function(req,res){
 })
 
 /* 活动列表模块 */
-// 添加党员参加活动
+// 党员参加活动
 app.post("/addMemberActivity",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `INSERT INTO activities_member(activity_name, member_sno, member, money_status) VALUES ('${req.body.activity_name}', '${req.body.member_sno}', '${req.body.member}', '${req.body.status}')`;
+	var sql = `INSERT INTO activities_member(activity_name, member_sno, member, money_status, status) VALUES ('${req.body.activity_name}', '${req.body.member_sno}', '${req.body.member}', '${req.body.money_status}', '${req.body.status}')`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 获取所有参加活动信息
+app.post("/allMemberActivity",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from activities_member`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
@@ -445,6 +454,54 @@ app.post("/getMemberActivityBySnoName",function(req,res){
 		res.send(JSON.stringify(results));
 	});
 })
+// 根据id修改参加活动状态信息
+app.post("/editMemberActivityStatus",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update activities_member set status = '${req.body.status}' where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id删除信息
+app.post("/deleteMemberActivityById",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `delete from activities_member where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+
+/* 留言模块 */
+// 获取所有信息
+app.post("/allMessage",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from message order by time Desc`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据学号查找留言
+app.post("/getMessageBySno",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from message where sno = '${req.body.sno}' order by time Desc`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 增加留言
+app.post("/addMessage",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `INSERT INTO message(sno, name, content, time, head, status) VALUES ('${req.body.sno}', '${req.body.name}', '${req.body.content}', '${req.body.time}', '${req.body.head}', '${req.body.status}')`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+
 //监听端口
 app.listen(5555);
 console.log("开启服务器")

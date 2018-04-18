@@ -104,7 +104,6 @@ export default {
 	mounted() {
 		var _this = this;
 		_this.sno = sessionStorage.getItem("sno");
-		console.log(_this.sno)
 		$.ajax({
     		url: 'http://localhost:5555/getNewsByTheme',
     		type: 'POST',

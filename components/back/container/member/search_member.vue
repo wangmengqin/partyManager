@@ -18,6 +18,7 @@
 					<th>学号</th>
 					<th>专业</th>
 					<th>学院</th>
+					<th>年级</th>
 					<th>身份</th>
 					<th>类型</th>
 					<th>支部</th>
@@ -35,6 +36,7 @@
 				<td>{{item.sno}}</td>
 				<td>{{item.major}}</td>
 				<td>{{item.institute}}</td>
+				<td>{{item.grade}}</td>
 				<td>{{item.identify}}</td>
 				<td>{{item.type}}</td>
 				<td>{{item.branch}}</td>

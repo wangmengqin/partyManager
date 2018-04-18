@@ -3,7 +3,19 @@
 		<div class="active-detail">
 			<h3>支部活动</h3>
 			<ul>
-				<li>
+				<li v-for="item in lectureData">
+					<img v-if="item.img==''" src="/imgs/icon_active.png" class="active_img"/>
+					<img v-if="item.img!=''" :src="item.img" class="active_img"/>
+					<div class="fl">
+						<h5>{{item.activity_name}}</h5>
+						<strong v-if="item.activity_describe!=''">{{item.activity_describe}}</strong>
+						<strong v-if="item.speaker!=''">演讲人：{{item.speaker}}</strong>
+						<br v-if="item.activity_speaker!=''"/>
+						<em style="display: block;">地点：{{item.place}}</em>
+						<b>时间：{{item.time}} <a @click="joinActivity(item.activity_name,item.id)"><img src="/imgs/icon_return.png"/>我要参加</a></b>
+					</div>
+				</li>
+				<!-- <li>
 					<img src="/imgs/icon_active.png" class="active_img"/>
 					<div class="fl">
 						<h5>以“弘扬光荣传统、发挥先锋模范作用”为主题的党课</h5>
@@ -38,13 +50,25 @@
 						<em style="display: block;">地点：逸夫楼学术报告厅（i413）</em>
 						<b>时间：2018年11月25日（周五）下午2:30  <a href="##"><img src="/imgs/icon_return.png"/>我要参加</a></b>
 					</div>
-				</li>
+				</li> -->
 			</ul>
 		</div>
 		<div class="active-detail">
 			<h3>讲座</h3>
 			<ul>
-				<li>
+				<li v-for="item in branchActivityData">
+					<img v-if="item.img==''" src="/imgs/icon_active.png" class="active_img"/>
+					<img v-if="item.img!=''" :src="item.img" class="active_img"/>
+					<div class="fl">
+						<h5>{{item.activity_name}}</h5>
+						<strong v-if="item.activity_describe!=''">{{item.activity_describe}}</strong>
+						<strong v-if="item.speaker!=''">演讲人：{{item.speaker}}</strong>
+						<br v-if="item.activity_speaker!=''"/>
+						<em style="display: block;">地点：{{item.place}}</em>
+						<b>时间：{{item.time}} <a @click="joinActivity(item.activity_name,item.id)"><img src="/imgs/icon_return.png"/>我要参加</a></b>
+					</div>
+				</li>
+				<!-- <li>
 					<img src="/imgs/icon_active.png" class="active_img"/>
 					<div class="fl">
 						<h5>以“弘扬光荣传统、发挥先锋模范作用”为主题的党课</h5>
@@ -79,13 +103,25 @@
 						<em style="display: block;">地点：逸夫楼学术报告厅（i413）</em>
 						<b>时间：2018年11月25日（周五）下午2:30  <a href="##"><img src="/imgs/icon_return.png"/>我要参加</a></b>
 					</div>
-				</li>
+				</li> -->
 			</ul>
 		</div>
 		<div class="active-detail">
 			<h3>组织生活</h3>
 			<ul>
-				<li>
+				<li v-for="item in orgActivityData">
+					<img v-if="item.img==''" src="/imgs/icon_active.png" class="active_img"/>
+					<img v-if="item.img!=''" :src="item.img" class="active_img"/>
+					<div class="fl">
+						<h5>{{item.activity_name}}</h5>
+						<strong v-if="item.activity_describe!=''">{{item.activity_describe}}</strong>
+						<strong v-if="item.speaker!=''">演讲人：{{item.speaker}}</strong>
+						<br v-if="item.activity_speaker!=''"/>
+						<em style="display: block;">地点：{{item.place}}</em>
+						<b>时间：{{item.time}} <a @click="joinActivity(item.activity_name,item.id)"><img src="/imgs/icon_return.png"/>我要参加</a></b>
+					</div>
+				</li>
+				<!-- <li>
 					<img src="/imgs/icon_active.png" class="active_img"/>
 					<div class="fl">
 						<h5>以“弘扬光荣传统、发挥先锋模范作用”为主题的党课</h5>
@@ -120,17 +156,110 @@
 						<em style="display: block;">地点：逸夫楼学术报告厅（i413）</em>
 						<b>时间：2018年11月25日（周五）下午2:30  <a href="##"><img src="/imgs/icon_return.png"/>我要参加</a></b>
 					</div>
-				</li>
+				</li> -->
 			</ul>
 		</div>
 	</div>
 </template>
 
 <script>
+	import $ from 'jQuery'
 	export default {
 		data(){
 			return {
-				
+				lectureData: [], // 讲座数据
+				branchActivityData: [], // 支部活动
+				orgActivityData: [], // 组织生活
+				sno: null, // 登陆的用户工号、学号
+				memberName: null
+			}
+		},
+		mounted() {
+			var _this = this
+			$.ajax({
+				url: 'http://localhost:5555/getActivityByType',
+				type: 'POST',
+				dataType: 'json',
+				data: {type: '讲座'},
+				success(data) {
+					_this.lectureData = data
+				}
+			})
+			$.ajax({
+				url: 'http://localhost:5555/getActivityByType',
+				type: 'POST',
+				dataType: 'json',
+				data: {type: '支部活动'},
+				success(data) {
+					_this.branchActivityData = data
+				}
+			})
+			$.ajax({
+				url: 'http://localhost:5555/getActivityByType',
+				type: 'POST',
+				dataType: 'json',
+				data: {type: '组织生活'},
+				success(data) {
+					_this.orgActivityData = data
+				}
+			})
+		},
+		methods: {
+			joinActivity(activityName, id) {
+				var _this = this
+				_this.sno = sessionStorage.getItem("sno");
+				if(this.sno != null){
+					$.ajax({
+			    		url: 'http://localhost:5555/getMemberBySno',
+			    		type: 'POST',
+			    		dataType: 'json',
+			    		data: {
+			    			sno: _this.sno
+			    		},
+			    		success(data) {
+			    			_this.memberName = data[0].name
+			    		}
+			    	})
+			    	.done(() => {
+			    		$.ajax({
+				    		url: 'http://localhost:5555/getMemberActivityBySnoName',
+				    		type: 'POST',
+				    		dataType: 'json',
+				    		data: {
+				    			sno: _this.sno,
+				    			activity_name: activityName,
+					    		member: _this.memberName
+				    		},
+				    		success(data) {
+				    			if(data == ''){
+				    				console.log("join the activity success");
+						    		$.ajax({
+							    		url: 'http://localhost:5555/addMemberActivity',
+							    		type: 'POST',
+							    		dataType: 'json',
+							    		data: {
+							    			activity_name: activityName,
+							    			member_sno: _this.sno,
+							    			member: _this.memberName,
+							    			money_status: '未缴费',
+							    			status: '待审核'
+							    		},
+							    		success(data) {
+							    			alert('报名成功')
+							    		}
+							    	})
+				    			}else{
+				    				alert('你已参加此次活动')
+				    			}
+				    		}
+				    	})
+			    		
+			    	})
+				}
+				else{
+					alert('获取信息失败，请重新登录')
+					location.href = '#/login'
+				}
 			}
 		}
 	}
@@ -146,6 +275,11 @@
 		font-weight: 500;
 		color: #8C8C8C;
 		line-height: 26px;
+		width: 100%;
+	    display: inline-block;
+	    white-space: pre;
+	    text-overflow: ellipsis;
+	    overflow: hidden;
 	}
 	h3{
 		color: #D93732;
@@ -190,6 +324,7 @@
 	.fl{
 		float: left;
 		margin-left: 20px;
+		width: 384px;
 	}
 	.fl b{
 		display: block;

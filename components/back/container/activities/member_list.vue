@@ -12,27 +12,24 @@
 		<table>
 			<thead>
 				<tr>
-					<th>ID</th>
 					<th>活动名称</th>
-					<th>演讲人</th>
-					<th>时间</th>
-					<th>地点</th>
-					<th>描述</th>
-					<th>支部</th>
-					<th>图片</th>
+					<th>学号</th>
+					<th>姓名</th>
+					<th>应缴费用</th>
+					<th>缴费状态</th>
 					<th>操作</th>
 				</tr>
 			</thead>
-			<tr v-for="item in activityData">
-				<td>{{item.id}}</td>
+			<tr v-if="activityMemberData==''" style="text-align:center;">
+				<td style="line-height:50px;font-size:20px" colspan="6">无要审核数据</td>
+			</tr>
+			<tr v-for="item in activityMemberData" :key="item.id">
 				<td>{{item.activity_name}}</td>
-				<td>{{item.speaker}}</td>
-				<td>{{item.time}}</td>
-				<td>{{item.place}}</td>
-				<td>{{item.activity_describe}}</td>
-				<td>{{item.branch}}</td>
-				<td>{{item.img}}</td>
-				<td><a :href="'#/tab/editActivity/'+item.id" class="edit">编辑</a><b @click="deleteActivityById(item.id)" class="del">删除</b></td>
+				<td>{{item.member_sno}}</td>
+				<td>{{item.member}}</td>
+				<td>{{item.money}}</td>
+				<td>{{item.money_status}}</td>
+				<td><a :href="'#/tab/editActivity/'+item.id" class="edit">输入应缴费用</a></td>
 			</tr>
 		</table>
 		<xpagination />
@@ -49,18 +46,18 @@
 	  data() {
 	  	return {
 	  		inputContent: '',
-	  		activityData: [] // 活动数据
+	  		activityMemberData: [] // 活动数据
 	  	}
 	  },
 	  methods: {
 	  	getAll() {
 	  		var _this = this
 	    	$.ajax({
-	    		url: 'http://localhost:5555/allActivity',
+	    		url: 'http://localhost:5555/allMemberActivity',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		success(data) {
-	    			_this.activityData = data
+	    			_this.activityMemberData = data
 	    		}
 	    	})
 	  	},
@@ -136,15 +133,7 @@
 	  	}
 	  },
 	  mounted() {
-	  	var _this = this
-    	$.ajax({
-    		url: 'http://localhost:5555/allActivity',
-    		type: 'POST',
-    		dataType: 'json',
-    		success(data) {
-    			_this.activityData = data
-    		}
-    	})
+	  	this.getAll()
 	  }
 	};
 </script>
@@ -233,7 +222,7 @@
 	}
 	.edit{
 		display: inline-block;
-	    width: 35px;
+	    padding: 0 10px;
 	    height: 30px;
 	    background: #ed5564;
 	    line-height: 30px;

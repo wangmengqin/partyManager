@@ -25,6 +25,9 @@ import tab from "./components/back/container/tab.vue";
 import xaddActivity from "./components/back/tab/activities/add_activity_tab.vue";
 import xsearchActivity from "./components/back/tab/activities/search_activity_tab.vue";
 import xeditActivity from "./components/back/tab/activities/edit_activity_tab.vue";
+// 党员参加活动
+import xcheckActivity from "./components/back/tab/activities/check_member_tab.vue";
+import xsearchActivityMember from "./components/back/tab/activities/member_list_tab.vue";
 // 支部组件
 import xaddBranch from "./components/back/tab/branch/add_branch_tab.vue";
 import xsearchBranch from "./components/back/tab/branch/search_branch_tab.vue";
@@ -101,6 +104,14 @@ var router = new VueRouter({
             {
               path: "editActivity/:id",
               component: xeditActivity
+            },
+            {
+              path: "checkActivityMember",
+              component: xcheckActivity
+            },
+            {
+              path: "activityMoney",
+              component: xsearchActivityMember
             },
             {
               path: "addBranch",

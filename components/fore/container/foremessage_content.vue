@@ -1,19 +1,28 @@
 <template>
 	<div style="overflow: hidden;margin: 0 auto; width: 1200px;padding: 20px 0;background: #FDFDFD;">
 		<div class="publish-box">
-			<p><img src="/imgs/gray_wode.png"/></p>
+			<p><img :src="head"/></p>
 			<div class="txt-box">
 				<span class="trangle"></span>
-				<textarea name="" rows="5" cols="80" placeholder="你在做什么？你在想什么？"></textarea><br />
-				<button>发表</button>
+				<textarea v-model="content" name="" rows="5" cols="80" placeholder="你在做什么？你在想什么？"></textarea><br />
+				<button @click="addMessage">发表</button>
 			</div>
 		</div>
 		<div class="other-message">
 			<p class="message-menu">
 				<span>交流</span>
-				<a href="##">刷新</a>
+				<a @click="getAll()">刷新</a>
+				<b style="float: right;margin-right:20px;" @click="lookMyMessage">查看我发表的</b>
 			</p>
-			<div class="message-box">
+			<div class="message-box" v-for="item in messageData" :key="item.id">
+				<p class="img-p fl"><img :src="item.head"/></p>
+				<div class="message-detail fl">
+					<span class="trangle"></span>
+					<h4><b>{{item.name}}</b>发表于<span>{{item.time | formatDate}}</span><a href="##" v-if="item.name==memberName && item.sno == sno">删除</a></h4>
+					<p>{{item.content}}</p>
+				</div>
+			</div>
+			<!-- <div class="message-box">
 				<p class="img-p fl"><img src="/imgs/icon_mine.png"/></p>
 				<div class="message-detail fl">
 					<span class="trangle"></span>
@@ -36,20 +45,125 @@
 					<h4><b>XXX</b>发表于<span>2018-02-07 11:23</span><a href="##">删除</a></h4>
 					<p>呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵</p>
 				</div>
-			</div>
-			<div class="message-box">
-				<p class="img-p fl"><img src="/imgs/icon_mine.png"/></p>
-				<div class="message-detail fl">
-					<span class="trangle"></span>
-					<h4><b>XXX</b>发表于<span>2018-02-07 11:23</span><a href="##">删除</a></h4>
-					<p>呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵</p>
-				</div>
-			</div> 
+			</div>  -->
+			<xpagination />
 		</div>
 	</div>
 </template>
 
 <script>
+import xpagination from "../../back/xpagination.vue";
+import $ from 'jQuery'
+import {formatDate} from '../../../template/date.js';
+export default {
+	components: {
+	    xpagination
+	},
+	data() {
+		return {
+			messageData: [],
+			content: '', // 发表的内容
+			sno: null, // 登录的学号
+			memberName: null,
+			head: null
+		}
+	},
+	filters: {
+	    formatDate(time) {
+	        var date = new Date(Number(time));
+	        return formatDate(date, 'yyyy-MM-dd hh:mm');
+	    }
+	},
+	methods: {
+		getAll() {
+			var _this = this
+			this.sno = sessionStorage.getItem('sno')
+			$.ajax({
+	    		url: 'http://localhost:5555/getMemberBySno',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		data: {
+	    			sno: _this.sno
+	    		},
+	    		success(data) {
+	    			_this.memberName = data[0].name
+	    			_this.head = data[0].head
+	    		}
+	    	})
+			$.ajax({
+				url: 'http://localhost:5555/allMessage',
+				type: 'POST',
+				dataType: 'json',
+				success(data){
+					_this.messageData = data
+				}
+			})
+		},
+		addMessage() {
+			var _this = this
+			this.sno = sessionStorage.getItem('sno')
+			if (this.sno != null) {
+				$.ajax({
+		    		url: 'http://localhost:5555/getMemberBySno',
+		    		type: 'POST',
+		    		dataType: 'json',
+		    		data: {
+		    			sno: _this.sno
+		    		},
+		    		success(data) {
+		    			_this.memberName = data[0].name
+		    			_this.head = data[0].head
+		    		}
+		    	})
+		    	.done(() => {
+		    		if(_this.content != '') {
+		    			$.ajax({
+				    		url: 'http://localhost:5555/addMessage',
+				    		type: 'POST',
+				    		dataType: 'json',
+				    		data: {
+				    			sno: _this.sno,
+					    		name: _this.memberName,
+					    		head: _this.head,
+					    		content: _this.content,
+					    		time: new Date().getTime(),
+					    		status: '已发布'
+				    		},
+				    		success(data) {
+				    			alert('发表成功')
+				    			_this.getAll()
+				    			_this.content = ''
+				    		}
+				    	})
+		    		} else {
+		    			alert('内容不能为空，请输入内容')
+		    		}
+		    	})
+			}
+			else{
+				alert('获取信息失败，请重新登录')
+				location.href = '#/login'
+			}
+		},
+		lookMyMessage() {
+			var _this = this
+			$.ajax({
+	    		url: 'http://localhost:5555/getMessageBySno',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		data: {
+	    			sno: _this.sno
+	    		},
+	    		success(data) {
+	    			_this.messageData = data
+	    		}
+	    	})
+		}
+	},
+	mounted() {
+		this.getAll()
+	}
+}
 </script>
 
 <style scoped>
@@ -136,9 +250,11 @@
 		background: #FDFDFD;
 		color: #666;
 	}
-	.message-menu a{
+	.message-menu a, .message-menu  b{
 		color: #D93732;
 		padding-right: 10px;
+		cursor: pointer;
+		font-weight: 500;
 	}
 	.fl{
 		float: left;
