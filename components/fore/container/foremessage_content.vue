@@ -13,12 +13,13 @@
 				<span>交流</span>
 				<a @click="getAll()">刷新</a>
 				<b style="float: right;margin-right:20px;" @click="lookMyMessage">查看我发表的</b>
+				<b style="float: right;margin-right:20px;" @click="lookRecommandMessage">查看精选</b>
 			</p>
 			<div class="message-box" v-for="item in messageData" :key="item.id">
 				<p class="img-p fl"><img :src="item.head"/></p>
 				<div class="message-detail fl">
 					<span class="trangle"></span>
-					<h4><b>{{item.name}}</b>发表于<span>{{item.time | formatDate}}</span><a href="##" v-if="item.name==memberName && item.sno == sno">删除</a></h4>
+					<h4><b>{{item.name}}</b>发表于<span>{{item.time | formatDate}}</span><a @click="deleteMyMessage(item.id)" v-if="item.name==memberName && item.sno == sno">删除</a></h4>
 					<p>{{item.content}}</p>
 				</div>
 			</div>
@@ -91,7 +92,7 @@ export default {
 	    		}
 	    	})
 			$.ajax({
-				url: 'http://localhost:5555/allMessage',
+				url: 'http://localhost:5555/allShowMessage',
 				type: 'POST',
 				dataType: 'json',
 				success(data){
@@ -127,7 +128,7 @@ export default {
 					    		head: _this.head,
 					    		content: _this.content,
 					    		time: new Date().getTime(),
-					    		status: '已发布'
+					    		status: '显示'
 				    		},
 				    		success(data) {
 				    			alert('发表成功')
@@ -156,6 +157,32 @@ export default {
 	    		},
 	    		success(data) {
 	    			_this.messageData = data
+	    		}
+	    	})
+		},
+		lookRecommandMessage() {
+			var _this = this
+			$.ajax({
+	    		url: 'http://localhost:5555/allRecommandMessage',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		success(data) {
+	    			_this.messageData = data
+	    		}
+	    	})
+		},
+		deleteMyMessage(id) {
+			var _this = this
+			$.ajax({
+	    		url: 'http://localhost:5555/deleteMessage',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		data: {
+	    			id: id
+	    		},
+	    		success(data) {
+	    			alert('删除成功')
+	    			_this.getAll()
 	    		}
 	    	})
 		}

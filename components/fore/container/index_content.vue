@@ -63,7 +63,11 @@
 		<div class="card_box">
 			<h3><img src="/imgs/icon_xiaoxi.png"/>精选帖子</h3>
 			<ul>
-				<li>
+				<li v-for="item in messageData">
+					<h5 :style="{backgroundImage: 'url('+item.head+')'}">{{item.name}}</h5>
+					<p><a>{{item.content}}</a><span>{{item.time | formatDate}}</span></p>
+				</li>
+				<!-- <li>
 					<h5>XXX</h5>
 					<p><a href="##">这是论坛帖子这是论坛帖子这是论坛帖子这是论坛帖子这是论坛帖子是论坛帖子</a><span>2018-02-23 11:00:00</span></p>
 				</li>
@@ -74,19 +78,16 @@
 				<li>
 					<h5>XXX</h5>
 					<p><a href="##">这是论坛帖子这是论坛帖子这是论坛帖子这是论坛帖子这是论坛帖子是论坛帖子</a><span>2018-02-23 11:00:00</span></p>
-				</li>
-				<li>
-					<h5>XXX</h5>
-					<p><a href="##">这是论坛帖子这是论坛帖子这是论坛帖子这是论坛帖子这是论坛帖子是论坛帖子</a><span>2018-02-23 11:00:00</span></p>
-				</li>
+				</li> -->
 			</ul>
-			<a class="look-more" href="##" title="查看更多">查看更多<img src="/imgs/more1.png"/></a>
+			<a class="look-more" href="#/fore/message" title="查看更多">查看更多<img src="/imgs/more1.png"/></a>
 		</div>
 	</div>
 </template>
 
 <script>
 import $ from 'jQuery'
+import {formatDate} from '../../../template/date.js';
 export default {
 	data(){
 		return{
@@ -98,8 +99,18 @@ export default {
 			orgActivity: {}, // 组织生活
 			activityData: [],
 			sno: null, // 登陆的用户工号、学号
-			memberName: null
+			memberName: null,
+			messageData: [] // 精选留言
 		}
+	},
+	filters: {
+	    formatDate(time) {
+	        var date = new Date(Number(time));
+	        return formatDate(date, 'yyyy-MM-dd hh:mm');
+	    }
+	},
+	methods: {
+		
 	},
 	mounted() {
 		var _this = this;
@@ -137,6 +148,23 @@ export default {
     		dataType: 'json',
     		success(data){
     			_this.activityData = data
+    		}
+    	})
+    	_this.messageData = []
+		$.ajax({
+    		url: 'http://localhost:5555/allRecommandMessage',
+    		type: 'POST',
+    		dataType: 'json',
+    		success(data) {
+    			if(data.length >= 4){
+    				for(var i=data.length-4; i<data.length; i++){
+	    				_this.messageData.push(data[i])
+	    			}
+	    			// 每次取最新的4条展示
+    			} else {
+    				_this.messageData = data
+    			}
+    			console.log(_this.messageData)
     		}
     	})
 	},
@@ -281,6 +309,7 @@ export default {
 	.fl{
 		float: left;
 		margin-left: 20px;
+		width: 620px;
 	}
 	
 	.inform{
@@ -324,7 +353,10 @@ export default {
 	.card_box h5{
 		float: left;
 		text-align: center;
-		background: url(/imgs/gray_wode.png) no-repeat center top;
+		/* background: url(/imgs/gray_wode.png) no-repeat center top; */
+		background-repeat: no-repeat;
+		background-position: center top;
+		/* background-image: url(/imgs/gray_wode.png); */
 		padding-top: 40px;
 		font-weight: 500;
 	}

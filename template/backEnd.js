@@ -414,6 +414,15 @@ app.post("/editMemberIdentify",function(req,res){
 		res.send(JSON.stringify(results));
 	});
 })
+// 根据id修改党员密码信息
+app.post("/editMemberPassword",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update member set password = '${req.body.password}' where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
 
 //获取当前登录者的所有信息（普通党员）
 app.post("/getLoginInfo",function(req,res){
@@ -483,6 +492,24 @@ app.post("/allMessage",function(req,res){
 		res.send(JSON.stringify(results));
 	});
 })
+// 前端显示留言
+app.post("/allShowMessage",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * FROM message WHERE status = '显示' or status = '精选' ORDER BY time Desc`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 获取精选留言
+app.post("/allRecommandMessage",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from message where status = '精选' order by time Desc`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
 // 根据学号查找留言
 app.post("/getMessageBySno",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
@@ -492,10 +519,37 @@ app.post("/getMessageBySno",function(req,res){
 		res.send(JSON.stringify(results));
 	});
 })
+// 根据内容查找留言
+app.post("/getMessageByContent",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from message where content like '%${req.body.content}%' order by time Desc`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id删除信息
+app.post("/deleteMessage",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `delete from message where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
 // 增加留言
 app.post("/addMessage",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
 	var sql = `INSERT INTO message(sno, name, content, time, head, status) VALUES ('${req.body.sno}', '${req.body.name}', '${req.body.content}', '${req.body.time}', '${req.body.head}', '${req.body.status}')`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id修改留言状态信息
+app.post("/editMessageStatus",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update message set status = '${req.body.status}' where id = '${req.body.id}'`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));

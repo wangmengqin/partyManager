@@ -102,8 +102,8 @@
 						id:7,
 						txt:"留言管理",
 						isShow:false,
-						url1:"#/tab/addnews",
-						url2:"#/tab/searchnews",
+						url1:"#/tab/checkMessage",
+						url2:"#/tab/searchMessage",
 						menu1: '留言审核',
 						menu2: '查看留言'
 					},
