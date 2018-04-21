@@ -33,12 +33,15 @@
 			</ul>
 			<div class="inform">
 				<h4>公告栏</h4>
+				<p v-for="item in informData">
+					<span style="float: left;width:50px;text-align:right;"><img src="/imgs/icon_inform.png"/></span>
+					<a :href="'#/fore/detail/inform/'+item.id">{{item.title}}</a>
+				</p>
+				<!-- <p><img src="/imgs/icon_inform.png"/><a href="##">关于李四同志任职的公示</a></p>
 				<p><img src="/imgs/icon_inform.png"/><a href="##">关于李四同志任职的公示</a></p>
 				<p><img src="/imgs/icon_inform.png"/><a href="##">关于李四同志任职的公示</a></p>
 				<p><img src="/imgs/icon_inform.png"/><a href="##">关于李四同志任职的公示</a></p>
-				<p><img src="/imgs/icon_inform.png"/><a href="##">关于李四同志任职的公示</a></p>
-				<p><img src="/imgs/icon_inform.png"/><a href="##">关于李四同志任职的公示</a></p>
-				<p><img src="/imgs/icon_inform.png"/><a href="##">关于李四同志任职的公示</a></p>
+				<p><img src="/imgs/icon_inform.png"/><a href="##">关于李四同志任职的公示</a></p> -->
 			</div>
 		</div>
 		<div class="zheng_box">
@@ -100,7 +103,8 @@ export default {
 			activityData: [],
 			sno: null, // 登陆的用户工号、学号
 			memberName: null,
-			messageData: [] // 精选留言
+			messageData: [], // 精选留言
+			informData: [] // 公告栏数据
 		}
 	},
 	filters: {
@@ -163,6 +167,21 @@ export default {
 	    			// 每次取最新的4条展示
     			} else {
     				_this.messageData = data
+    			}
+    		}
+    	})
+    	$.ajax({
+    		url: 'http://localhost:5555/allInform',
+    		type: 'POST',
+    		dataType: 'json',
+    		success(data){
+    			if(data.length >= 6){
+    				for(var i=data.length-6; i<data.length; i++){
+	    				_this.informData.push(data[i])
+	    			}
+	    			// 每次取最新的4条展示
+    			} else {
+    				_this.informData = data
     			}
     		}
     	})
@@ -314,7 +333,6 @@ export default {
 	.inform{
 		width: 300px;
 		float: left;
-		text-align: center;
 		background: #F9F9F9;
 		margin-top: 30px;
 		padding-bottom: 20px;
@@ -329,10 +347,16 @@ export default {
 	}
 	.inform p{
 		line-height: 36px;
-			font-size: 12px;
+		font-size: 12px;
+		overflow: hidden;
 	}
 	.inform a{
 		color: #333;
+		float: left;
+	    width: 230px;
+	    white-space: pre;
+	    text-overflow: ellipsis;
+	    overflow: hidden;
 	}
 	.inform a:hover{
 		color: #D93732;

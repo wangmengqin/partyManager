@@ -21,6 +21,17 @@
 				</ul>
 			</div>
 		</div>
+		<div class="width900">
+			<h3>争先创优动态</h3>
+			<div style="overflow:hidden;margin:30px;">
+				<ul class="fl">
+					<li v-for="item in lifeExperience"><a href="##">{{item.title}}</a></li>
+				</ul>
+				<ul class="fr">
+					<li v-for="item in otherLife"><a href="##">{{item.title}}</a></li>
+				</ul>
+			</div>
+		</div>
 	</div>
 </template>
 <script>

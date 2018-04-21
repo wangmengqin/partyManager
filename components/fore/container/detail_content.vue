@@ -30,8 +30,16 @@ export default {
 	    		}
 	    	})
 		}
-		else if(sort == 'activities') {
-
+		else if(sort == 'inform') {
+			$.ajax({
+	    		url: 'http://localhost:5555/getInformById',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		data: { id: id },
+	    		success(data){
+	    			_this.detailData = data[0]
+	    		}
+	    	})
 		}
 	}
 }

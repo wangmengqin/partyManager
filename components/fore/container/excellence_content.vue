@@ -1,12 +1,6 @@
 <template>
 	<div  style="overflow: hidden;margin: 0 auto; width: 1200px;padding: 20px 0;background: #FDFDFD;">
 		<div class="width900">
-			<h3>图解争先创优</h3>
-			<div style="overflow:hidden;margin:30px;">
-				<img class="fl" src="/imgs/life-pic1.jpg"><img class="fr" src="/imgs/life-pic2.jpg">
-			</div>
-		</div>
-		<div class="width900">
 			<h3>争先创优动态</h3>
 			<div style="overflow:hidden;margin:30px;">
 				<ul class="fl">
