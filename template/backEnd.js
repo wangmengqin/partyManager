@@ -513,7 +513,7 @@ app.post("/allRecommandMessage",function(req,res){
 // 根据学号查找留言
 app.post("/getMessageBySno",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `SELECT * from message where sno = '${req.body.sno}' order by time Desc`;
+	var sql = `SELECT * from message where sno like '%${req.body.sno}%' order by time Desc`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
@@ -550,6 +550,53 @@ app.post("/addMessage",function(req,res){
 app.post("/editMessageStatus",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
 	var sql = `update message set status = '${req.body.status}' where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+
+/* 组织关系模块 */
+// 获取所有信息
+app.post("/allCheckOrg",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from org order by applyTime Desc`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id 修改状态（审核）
+app.post("/editOrgStatus",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update org set status = '${req.body.status}', checkTime = '${req.body.checkTime}' where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据学生姓名搜索记录
+app.post("/getOrgByName",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from org where name like '%${req.body.name}%' order by id Desc`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据支部搜索记录
+app.post("/getOrgByBranch",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from org where branch like '%${req.body.branch}%' order by id Desc`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 申请迁出（增加组织关系）
+app.post("/addOrg",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `INSERT INTO org(name, sno, branch, city, address, applyTime, status) VALUES ('${req.body.name}', '${req.body.sno}', '${req.body.branch}', '${req.body.city}', '${req.body.address}', '${req.body.applyTime}', '${req.body.status}')`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));

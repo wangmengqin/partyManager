@@ -39,6 +39,8 @@ import xeditMember from "./components/back/tab/member/edit_member_tab.vue";
 // 留言组件
 import xsearchMessage from "./components/back/tab/message/search_message_tab.vue";
 import xcheckMessage from "./components/back/tab/message/check_message_tab.vue";
+// 组织关系组件
+import xcheckOrg from "./components/back/tab/org/check_org_tab.vue";
 //前端组件
 import foretab from "./components/fore/container/foretab.vue";
 import xindex from "./components/fore/tab/xindex.vue";
@@ -147,6 +149,10 @@ var router = new VueRouter({
             {
               path: "checkMessage",
               component: xcheckMessage
+            },
+            {
+              path: "checkOrg",
+              component: xcheckOrg
             },
             {
               path: "editpassword",

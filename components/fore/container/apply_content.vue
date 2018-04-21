@@ -57,17 +57,40 @@
 			</form>
 		</div>
 		<div v-else>
-			<h3>我的信息</h3>
-			<div class="my-info" style="overflow: hidden;width: 600px;margin: 0 auto;">
-				<div class="info-div">
-					<p>姓名：张三</p>
-					<p>编号：3425617283</p>
-					<p>学院：电气与信息工程学院</p>
-					<p>所属支部：一支部</p>
-					<p>职位：预备党员</p>
-					<p>入党时间：2016-11-30</p>
-					<p>成为正式党员时间：2017-11-30</p>
-					<p><a href="##">修改密码</a></p>
+			<h3>您已申请入党，信息如下</h3>
+			<div class="input_box">
+				<div>
+					<span>姓名：</span>
+					<input type="text" placeholder="请输入姓名" disabled v-model="myInfo.name"/>
+				</div>
+				<div>
+					<span>编号：</span>
+					<input type="text" placeholder="请输入编号" disabled v-model="myInfo.sno"/>
+				</div>
+				<div>
+					<span>学院：</span>
+					<input type="text" placeholder="请输入学院" disabled v-model="myInfo.institute"/>
+				</div>
+				<div>
+					<span>专业：</span>
+					<input type="text" placeholder="请输入专业" disabled v-model="myInfo.major"/>
+				</div>
+				<div>
+					<span>所属支部：</span>
+					<input type="text" placeholder="所属支部" disabled v-model="myInfo.branch"/>
+				</div>
+				<div>
+					<span>职位：</span>
+					<input v-show="myInfo.identify != '不通过'" type="text" placeholder="职位" disabled v-model="myInfo.identify"/>
+					<b style="color: red" v-show="myInfo.identify=='不通过'">{{myInfo.identify}}</b>
+				</div>
+				<div>
+					<span>入党时间：</span>
+					<b>{{myInfo.becomeMemberTime | formatDate}}</b>
+				</div>
+				<div v-show="myInfo.memberTime != ''">
+					<span>成为正式党员时间：</span>
+					<b>{{myInfo.memberTime | formatDate}}</b>
 				</div>
 			</div>
 		</div>
@@ -75,6 +98,7 @@
 </template>
 <script>
 import province from '../../../template/cityData.js';
+import {formatDate} from '../../../template/date.js';
 import $ from 'jQuery'
 export default{
 	data(){
@@ -93,16 +117,35 @@ export default{
 			selectCity: '', // 城市
 			loginSno: null, // 登录的账号
 			isShowApply: true, // 是否显示申请组件
-			userphoto:"/imgs/gray_wode.png"
+			userphoto:"/imgs/gray_wode.png",
+			myInfo: {} // 我的信息
 		}
+	},
+	filters: {
+	    formatDate(time) {
+	        var date = new Date(Number(time));
+	        return formatDate(date, 'yyyy-MM-dd');
+	    }
 	},
 	mounted(){
 		this.cityArr = this.province[0].list;
 		this.selectProvince = this.province[0].id
 		this.selectCity = this.cityArr[0].id
 		this.loginSno = sessionStorage.getItem('sno')
+		var _this = this
 		if (this.loginSno != null) {
 			this.isShowApply = false
+			$.ajax({
+	    		url: 'http://localhost:5555/getMemberBySno',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		data: {
+	    			sno: _this.sno
+	    		},
+	    		success(data) {
+	    			_this.myInfo = data[0]
+	    		}
+	    	})
 		}
 	},
 	methods:{
@@ -199,8 +242,25 @@ export default{
 		color: #fff;
 		padding-left: 0;
 	}
-	.info-div{
-		line-height: 36px;
-		padding: 10px;
+	.input_box{
+		width: 900px;
+		margin: 0 auto;
+	}
+	.input_box span{
+		display: inline-block;
+		width: 150px;
+		text-align: right;
+		margin-right: 30px;
+	}
+	.input_box div{
+		line-height: 50px;
+	}
+	.input_box input {
+		width: 600px;
+		height: 36px;
+		outline: none;
+		border: 0;
+		border: 1px solid #eee;
+		padding-left: 10px;
 	}
 </style>

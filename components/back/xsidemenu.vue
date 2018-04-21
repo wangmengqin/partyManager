@@ -66,8 +66,8 @@
 						id:3,
 						txt:"组织管理",
 						isShow:false,
-						url1:"#/tab/addnews",
-						url2:"#/tab/searchnews",
+						url1:"#/tab/searchBranch",
+						url2:"#/tab/checkOrg",
 						menu1: '查看组织',
 						menu2: '审核组织关系'
 					},
