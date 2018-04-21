@@ -12,3 +12,16 @@ li{
 button{
 	cursor: pointer;
 }
+.text-c{
+	text-align: center;
+}
+.cancel {
+	height: 30px;
+	text-align: center;
+	line-height: 30px;
+	border: 0;
+	background: #ddd;
+	outline: none;
+	color: #fff;
+	padding:0 10px;
+}

@@ -64,6 +64,15 @@
 					},
 					{
 						id:3,
+						txt:"公告管理",
+						isShow:false,
+						url1:"#/tab/addInform",
+						url2:"#/tab/searchInform",
+						menu1: '发布公告',
+						menu2: '查看公告'
+					},
+					{
+						id:3,
 						txt:"组织管理",
 						isShow:false,
 						url1:"#/tab/searchBranch",

@@ -4,15 +4,15 @@
 			<h3><img src="/imgs/icon_stydy.png"/>我要学习</h3>
 			<ul>
 				<h4>理论学习</h4>
-				<li v-for="item in theoryData"><a href="##">{{item.title}}</a></li>
-			</ul>
+				<li v-for="item in theoryData"><a :href="'#/fore/detail/news/'+item.id">{{item.title}}</a></li>
+			</ul>	
 			<ul style="border-left: 1px solid #ccc;border-right: 1px solid #ccc;">
 				<h4>时政新闻</h4>
-				<li v-for="item in newsData"><a href="##">{{item.title}}</a></li>
+				<li v-for="item in newsData"><a :href="'#/fore/detail/news/'+item.id">{{item.title}}</a></li>
 			</ul>
 			<ul>
 				<h4>党史纵览</h4>
-				<li v-for="item in historyData"><a href="##">{{item.title}}</a></li>
+				<li v-for="item in historyData"><a :href="'#/fore/detail/news/'+item.id">{{item.title}}</a></li>
 			</ul>
 		</div>
 		<div class="active_box">
@@ -164,7 +164,6 @@ export default {
     			} else {
     				_this.messageData = data
     			}
-    			console.log(_this.messageData)
     		}
     	})
 	},

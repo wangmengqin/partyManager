@@ -1,39 +1,33 @@
 <template>
 	<div class="content_box">
-		<h4><img src="/imgs/icon_search.png"/>审核组织关系的迁入迁出</h4>
+		<h4><img src="/imgs/icon_search.png"/>查看公告</h4>
 		<p>
 			
-			<input type="text" placeholder="请输入关键字,无内容则搜索所有" v-model="inputContent"/>
-			<button @click="getOrgByName">通过党员姓名搜索</button>
-			<button @click="getOrgByBranch">通过支部搜索</button>
+			<input type="text" placeholder="请输入关键字" v-model="inputContent"/>
+			<button @click="getInformById">通过公告id搜索</button>
+			<button @click="getInformByTitle">通过标题搜索</button>
+			<button @click="getInformByName">通过发布者搜索</button>
+			<button @click="getInformByContent">通过详细内容搜索</button>
 		</p>
 		<table>
 			<thead>
 				<tr>
 					<th>姓名</th>
-					<th>学号</th>
-					<th>支部</th>
-					<th>迁出城市</th>
-					<th>详细地址</th>
-					<th>申请时间</th>
-					<th>审核时间</th>
-					<th>状态</th>
-					<th style="width: 200px;">操作</th>
+					<th>编号</th>
+					<th>标题</th>
+					<th>发布时间</th>
+					<th>操作</th>
 				</tr>
 			</thead>
-			<tr v-if="orgData==''" style="text-align:center;">
-				<td style="line-height:50px;font-size:20px" colspan="8">无要审核数据</td>
+			<tr v-if="informData==''" style="text-align:center;">
+				<td style="line-height:50px;font-size:20px" colspan="5">无数据</td>
 			</tr>
-			<tr v-for="(item,index) in orgData" :key="item.id">
+			<tr v-for="item in informData">
 				<td>{{item.name}}</td>
 				<td>{{item.sno}}</td>
-				<td>{{item.branch}}</td>
-				<td>{{item.city}}</td>
-				<td>{{item.address}}</td>
-				<td>{{item.applyTime | formatDate}}</td>
-				<td>{{item.checkTime | formatDate}}</td>
-				<td>{{item.status}}</td>
-				<td v-if="item.status=='待审核'"><b @click="checkOrg(item.id,'已通过')" class="edit">确认收到回执</b><b @click="checkOrg(item.id,'不通过')" class="del">不通过</b></td>
+				<td>{{item.title}}</td>
+				<td>{{item.time | formatDate}}</td>
+				<td><a :href="'#/tab/editInform/'+item.id" class="edit">详情</a><b @click="deleteInformById(item.id)" class="del">删除</b></td>
 			</tr>
 		</table>
 		<xpagination />
@@ -50,80 +44,102 @@
 	  },
 	  data() {
 	  	return {
-	  		orgData: [], // 组织关系迁入迁出数据
-	  		inputContent: '' // 搜索的内容
+	  		inputContent: '',
+	  		informData: [] // 新闻数据
 	  	}
-	  },
-	  filters: {
-	    formatDate(time) {
-	        var date = new Date(Number(time));
-	        return formatDate(date, 'yyyy-MM-dd');
-	    }
 	  },
 	  methods: {
 	  	getAll() {
 	  		var _this = this
-	  		_this.memberData = []
 	    	$.ajax({
-	    		url: 'http://localhost:5555/allCheckOrg',
+	    		url: 'http://localhost:5555/allInform',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		success(data) {
-	    			_this.orgData = data
+	    			console.log(data)
+	    			_this.informData = data
 	    		}
 	    	})
 	  	},
-	  	checkOrg(id,status){
+	  	getInformById() {
 	  		var _this = this
-	  		$.ajax({
-	    		url: 'http://localhost:5555/editOrgStatus',
+	    	$.ajax({
+	    		url: 'http://localhost:5555/getInformById',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
-	    			id: id,
-	    			checkTime: new Date().getTime(),
-	    			status: status
+	    			id: _this.inputContent
 	    		},
 	    		success(data) {
-	    			alert('审核成功')
-	    			_this.getAll();
+	    			_this.informData = data
 	    		}
 	    	})
 	  	},
-	  	getOrgByName() {
+	  	getInformByTitle(){
 	  		var _this = this
 	  		$.ajax({
-	    		url: 'http://localhost:5555/getOrgByName',
+	    		url: 'http://localhost:5555/getInformByTitle',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
-	    			id: id,
+	    			title: _this.inputContent
+	    		},
+	    		success(data) {
+	    			_this.informData = data
+	    		}
+	    	})
+	  	},
+	  	getInformByName(){
+	  		var _this = this
+	  		$.ajax({
+	    		url: 'http://localhost:5555/getInformByName',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		data: {
 	    			name: _this.inputContent
 	    		},
 	    		success(data) {
-	    			_this.orgData = data
+	    			_this.informData = data
 	    		}
 	    	})
 	  	},
-	  	getOrgByBranch() {
+	  	getInformByContent(){
 	  		var _this = this
 	  		$.ajax({
-	    		url: 'http://localhost:5555/getOrgByBranch',
+	    		url: 'http://localhost:5555/getInformByContent',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
-	    			id: id,
-	    			branch: _this.inputContent
+	    			content: _this.inputContent
 	    		},
 	    		success(data) {
-	    			_this.orgData = data
+	    			_this.informData = data
+	    		}
+	    	})
+	  	},
+	  	deleteInformById(id){
+	  		var _this = this
+	  		$.ajax({
+	    		url: 'http://localhost:5555/deleteInform',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		data: {
+	    			id: id
+	    		},
+	    		success(data) {
+	    			_this.getAll();
 	    		}
 	    	})
 	  	}
 	  },
+	  filters: {
+        formatDate(time) {
+            var date = new Date(Number(time));
+            return formatDate(date, 'yyyy-MM-dd hh:mm');
+        }
+	  },
 	  mounted() {
-	  	var _this = this
-    	_this.getAll()
+	  	this.getAll()
 	  }
 	};
 </script>
@@ -199,7 +215,7 @@
 	}
 	.del{
 		display: inline-block;
-	    padding: 0 5px;
+	    width: 35px;
 	    height: 30px;
 	    background: #ed5564;
 	    line-height: 30px;
@@ -212,13 +228,12 @@
 	}
 	.edit{
 		display: inline-block;
-	    padding: 0 5px;
+	    width: 35px;
 	    height: 30px;
-	    background: deepskyblue;
+	    background: #ed5564;
 	    line-height: 30px;
 	    color: #fff;
 	    border-radius: 4px;
 	    text-align: center;
-	    cursor: pointer;
 	}
 </style>

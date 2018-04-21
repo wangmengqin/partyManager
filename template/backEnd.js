@@ -603,6 +603,80 @@ app.post("/addOrg",function(req,res){
 	});
 })
 
+/* 公告模块 */
+// 发布公告
+app.post("/addInform",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `INSERT INTO inform(sno, name, title, content, time) VALUES ('${req.body.sno}', '${req.body.name}', '${req.body.title}', '${req.body.content}', '${req.body.time}')`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 查询所有
+app.post("/allInform",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from inform order by time Desc`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id查询
+app.post("/getInformById",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from inform where id = '${req.body.id}' order by time Desc`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据标题查询
+app.post("/getInformByTitle",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from inform where title like '%${req.body.title}%' order by time Desc`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据发布者查询
+app.post("/getInformByName",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from inform where name like '%${req.body.name}%' order by time Desc`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据内容查询
+app.post("/getInformByContent",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from inform where content like '%${req.body.content}%' order by time Desc`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id 修改内容
+app.post("/editInform",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update inform set name = '${req.body.name}', sno = '${req.body.sno}', title = '${req.body.title}', content = '${req.body.content}', time = '${req.body.time}' where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id删除信息
+app.post("/deleteInform",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `delete from inform where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+
 //监听端口
 app.listen(5555);
 console.log("开启服务器")

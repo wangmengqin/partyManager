@@ -39,6 +39,10 @@ import xeditMember from "./components/back/tab/member/edit_member_tab.vue";
 // 留言组件
 import xsearchMessage from "./components/back/tab/message/search_message_tab.vue";
 import xcheckMessage from "./components/back/tab/message/check_message_tab.vue";
+// 公告组件
+import xsearchInform from "./components/back/tab/inform/search_inform_tab.vue";
+import xaddInform from "./components/back/tab/inform/add_inform_tab.vue";
+import xeditInform from "./components/back/tab/inform/edit_inform_tab.vue";
 // 组织关系组件
 import xcheckOrg from "./components/back/tab/org/check_org_tab.vue";
 //前端组件
@@ -54,6 +58,7 @@ import excellence from "./components/fore/tab/fore_excellence.vue";
 import apply from "./components/fore/tab/fore_apply.vue";
 import partyFree from "./components/fore/tab/fore_partyFree.vue";
 import activeFree from "./components/fore/tab/fore_activeFree.vue";
+import contentDetail from "./components/fore/tab/fore_detail.vue";
 //登录组件
 import login from "./components/login.vue";
 
@@ -155,6 +160,18 @@ var router = new VueRouter({
               component: xcheckOrg
             },
             {
+              path: "addInform",
+              component: xaddInform
+            },
+            {
+              path: "searchInform",
+              component: xsearchInform
+            },
+            {
+              path: "editInform/:id",
+              component: xeditInform
+            },
+            {
               path: "editpassword",
               component: xeditpassword
             }
@@ -165,8 +182,8 @@ var router = new VueRouter({
           component: foretab,
           children: [
           	{
-                  path: "index",
-                  component: xindex
+                path: "index",
+                component: xindex
             },
             {
               	path:"studyKnow",
@@ -207,6 +224,10 @@ var router = new VueRouter({
             {
               path:"activeFree",
               component:activeFree
+            },
+            {
+              path: 'detail/:sort/:id',
+              component: contentDetail
             }
           ]
        }

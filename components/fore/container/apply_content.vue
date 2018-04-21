@@ -1,5 +1,5 @@
 <template>
-	<div  style="overflow: hidden;margin: 0 auto; width: 1200px;padding: 20px 0;background: #FDFDFD;">
+	<div style="overflow: hidden;margin: 0 auto; width: 1200px;padding: 20px 0;background: #FDFDFD;">
 		<div v-if='isShowApply'>
 			<h3>请填写个人信息</h3>
 			<form style="width:500px;margin:0 auto">
