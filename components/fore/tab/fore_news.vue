@@ -1,17 +1,17 @@
 <template>
 	<div >
 		<xmenu />
-		<excellenceContent />
+		<newsContent />
 	</div>
 </template>
 
 <script>
 	import xmenu from "../xmenu.vue";
-	import excellenceContent from "../container/excellence_content.vue";
+	import newsContent from "../container/news_content.vue";
 	export default {
 	  components:{
 	      xmenu,
-	      excellenceContent
+	      newsContent
 	  }
 	}
 </script>

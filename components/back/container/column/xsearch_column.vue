@@ -29,7 +29,7 @@
 
 <script>
 	import $ from 'jQuery'
-	import xpagination from "../xpagination.vue";
+	import xpagination from "../../xpagination.vue";
 	export default {
 	  components: {
 	    xpagination

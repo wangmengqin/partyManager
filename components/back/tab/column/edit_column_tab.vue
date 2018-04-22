@@ -1,14 +1,14 @@
 <template>
 	<div>
-		<xsearchColumn />
+		<editColumn />
 	</div>
 </template>
 
 <script>
-import xsearchColumn from "../container/xsearch_column.vue";
+import editColumn from "../../container/column/edit_column.vue";
 export default {
   components: {
-    xsearchColumn
+    editColumn
   }
 };
 </script>

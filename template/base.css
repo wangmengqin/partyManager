@@ -20,7 +20,7 @@ button{
 	text-align: center;
 	line-height: 30px;
 	border: 0;
-	background: #ddd;
+	background: #ddd !important;
 	outline: none;
 	color: #fff;
 	padding:0 10px;

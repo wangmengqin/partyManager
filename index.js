@@ -14,9 +14,9 @@ import xaddnews from "./components/back/tab/news/xadd_news_tab.vue";
 import xsearchnews from "./components/back/tab/news/xsearch_news_tab.vue";
 import xeditnews from "./components/back/tab/news/edit_news_tab.vue";
 // 新闻专题组件
-import xaddColumn from "./components/back/tab/xadd_column_tab.vue";
-import xsearchColumn from "./components/back/tab/xsearch_column_tab.vue";
-import xeditColumn from "./components/back/tab/edit_column_tab.vue";
+import xaddColumn from "./components/back/tab/column/xadd_column_tab.vue";
+import xsearchColumn from "./components/back/tab/column/xsearch_column_tab.vue";
+import xeditColumn from "./components/back/tab/column/edit_column_tab.vue";
 // 用户修改密码组件
 import xeditpassword from "./components/back/container/xedit_password.vue";
 // tab切换组件
@@ -45,6 +45,10 @@ import xaddInform from "./components/back/tab/inform/add_inform_tab.vue";
 import xeditInform from "./components/back/tab/inform/edit_inform_tab.vue";
 // 组织关系组件
 import xcheckOrg from "./components/back/tab/org/check_org_tab.vue";
+// 民主生活组件
+import xsearchLife from "./components/back/tab/life/search_life_tab.vue";
+import xaddLife from "./components/back/tab/life/add_life_tab.vue";
+import xeditLife from "./components/back/tab/life/edit_life_tab.vue";
 //前端组件
 import foretab from "./components/fore/container/foretab.vue";
 import xindex from "./components/fore/tab/xindex.vue";
@@ -54,7 +58,7 @@ import message from "./components/fore/tab/foremessage.vue";
 import mine from "./components/fore/tab/foremine.vue";
 import organize from "./components/fore/tab/foreorganization.vue";
 import life from "./components/fore/tab/democratic_life.vue";
-import excellence from "./components/fore/tab/fore_excellence.vue";
+import news from "./components/fore/tab/fore_news.vue";
 import apply from "./components/fore/tab/fore_apply.vue";
 import partyFree from "./components/fore/tab/fore_partyFree.vue";
 import activeFree from "./components/fore/tab/fore_activeFree.vue";
@@ -172,6 +176,18 @@ var router = new VueRouter({
               component: xeditInform
             },
             {
+              path: "addLife",
+              component: xaddLife
+            },
+            {
+              path: "searchLife",
+              component: xsearchLife
+            },
+            {
+              path: "editLife/:id",
+              component: xeditLife
+            },
+            {
               path: "editpassword",
               component: xeditpassword
             }
@@ -210,8 +226,8 @@ var router = new VueRouter({
                 component:life
             },
             {
-              path:"excellence",
-              component:excellence
+              path:"news",
+              component:news
             },
             {
               path:"apply",

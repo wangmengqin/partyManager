@@ -14,6 +14,7 @@
 				</p>
 				<p class="padding50"><input type="checkbox" v-model="checkbox"/><span>记住用户名和密码</span></p>
 				<p style="width:100%;text-align: center;"><button @click="login">登录</button><button @click="apply">申请入党</button></p>
+				<p><a href="#/fore/index">暂不登录</a></p>
 			</div>
 		</div>
 	</div>
@@ -80,7 +81,12 @@ export default {
 </script>
 
 <style scoped>
-	
+	a {
+		color: #333;
+	}
+	a:hover {
+		color: #d93732;
+	}
 	.login_box{
 		width: 300px;
 		overflow: hidden;

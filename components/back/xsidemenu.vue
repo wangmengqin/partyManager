@@ -120,9 +120,9 @@
 						id:8,
 						txt:"党务管理",
 						isShow:false,
-						url1:"#/tab/addnews",
-						url2:"#/tab/searchnews",
-						menu1: '增加',
+						url1:"#/tab/addLife",
+						url2:"#/tab/searchLife",
+						menu1: '增加党务',
 						menu2: '查询党务信息'
 					}
 				],

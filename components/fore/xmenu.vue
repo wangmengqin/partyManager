@@ -19,7 +19,7 @@
 				</ul>
 			</li>
 			<li><a href="#/fore/life">民主生活</a></li>
-			<li><a href="#/fore/excellence">争先创优</a></li>
+			<li><a href="#/fore/news">新闻资讯</a></li>
 			<li><a href="#/fore/organize">组织结构</a></li>
 			<li><a href="#/fore/message">论坛</a></li>
 			<li><a href="#/fore/apply">申请入党</a></li>

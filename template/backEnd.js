@@ -677,6 +677,89 @@ app.post("/deleteInform",function(req,res){
 	});
 })
 
+/* 党务管理模块 即民主生活，争先创优模块 */
+// 增加公告
+app.post("/addLife",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `INSERT INTO life(title, branch, content, type, time) VALUES ('${req.body.title}', '${req.body.branch}', '${req.body.content}', '${req.body.type}', '${req.body.time}')`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 查询所有
+app.post("/allLife",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from life order by time Desc`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id查询
+app.post("/getLifeById",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from life where id = '${req.body.id}' order by time Desc`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据标题查询
+app.post("/getLifeByTitle",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from life where title like '%${req.body.title}%' order by time Desc`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据支部查询
+app.post("/getLifeByBranch",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from life where branch like '%${req.body.branch}%' order by time Desc`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据内容查询
+app.post("/getLifeByContent",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from life where content like '%${req.body.content}%' order by time Desc`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据类型查询
+app.post("/getLifeByType",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from life where type like '%${req.body.type}%' order by time Desc`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id 修改内容
+app.post("/editLife",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update life set title = '${req.body.title}', branch = '${req.body.branch}', content = '${req.body.content}', type = '${req.body.type}', time = '${req.body.time}' where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id删除信息
+app.post("/deleteLife",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `delete from life where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+
 //监听端口
 app.listen(5555);
 console.log("开启服务器")

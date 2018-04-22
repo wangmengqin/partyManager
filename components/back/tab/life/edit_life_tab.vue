@@ -1,14 +1,14 @@
 <template>
 	<div>
-		<xaddColumn />
+		<editLife />
 	</div>
 </template>
 
 <script>
-import xaddColumn from "../container/xadd_column.vue";
+import editLife from "../../container/life/edit_life.vue";
 export default {
   components: {
-    xaddColumn
+    editLife
   }
 };
 </script>

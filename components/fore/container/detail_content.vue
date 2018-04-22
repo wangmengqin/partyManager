@@ -40,6 +40,16 @@ export default {
 	    			_this.detailData = data[0]
 	    		}
 	    	})
+		} else if (sort == 'life') {
+			$.ajax({
+	    		url: 'http://localhost:5555/getLifeById',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		data: { id: id },
+	    		success(data){
+	    			_this.detailData = data[0]
+	    		}
+	    	})
 		}
 	}
 }

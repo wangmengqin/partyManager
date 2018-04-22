@@ -1,14 +1,14 @@
 <template>
 	<div>
-		<editColumn />
+		<searchLife />
 	</div>
 </template>
 
 <script>
-import editColumn from "../container/edit_column.vue";
+import searchLife from "../../container/life/search_life.vue";
 export default {
   components: {
-    editColumn
+    searchLife
   }
 };
 </script>
