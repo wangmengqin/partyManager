@@ -222,7 +222,8 @@ export default {
 						    			activity_name: activityName,
 						    			member_sno: _this.sno,
 						    			member: _this.memberName,
-						    			status: '未缴费'
+						    			status: '待审核',
+						    			money_status: '未缴费'
 						    		},
 						    		success(data) {
 						    			alert('报名成功')

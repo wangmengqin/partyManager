@@ -408,7 +408,7 @@ app.post("/editMember",function(req,res){
 // 根据id修改党员身份信息
 app.post("/editMemberIdentify",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `update member set identify = '${req.body.identify}', branch = '${req.body.branch}', password = '${req.body.password}', head = '${req.body.head}' where id = '${req.body.id}'`;
+	var sql = `update member set identify = '${req.body.identify}', branch = '${req.body.branch}', password = '${req.body.password}', head = '${req.body.head}', becomeMemberTime = '${req.body.time}' where id = '${req.body.id}'`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));

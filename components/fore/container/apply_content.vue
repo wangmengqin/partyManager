@@ -140,10 +140,11 @@ export default{
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
-	    			sno: _this.sno
+	    			sno: _this.loginSno
 	    		},
 	    		success(data) {
 	    			_this.myInfo = data[0]
+	    			console.log(data)
 	    		}
 	    	})
 		}

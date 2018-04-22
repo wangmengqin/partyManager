@@ -52,13 +52,13 @@
 				<div style="text-align:center"><button @click="editPassword">确认</button></div>
 			</div>
 		</div>
-		<div class="my-info" style="overflow: hidden;width: 600px;margin: 0 auto;">
+		<!-- <div class="my-info" style="overflow: hidden;width: 600px;margin: 0 auto;">
 			<div class="fr editImg">
 				<p id=""><img :src="userphoto" id="upuserpic"/>	</p>
 				<input type="file" name="" id="uploaderInput" value="" @click="showuserimg"/>
 				<button>修改</button>
 			</div>
-		</div>
+		</div> -->
 	</div>
 </template>
 

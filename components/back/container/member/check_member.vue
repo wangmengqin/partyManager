@@ -84,7 +84,8 @@
 	    			identify: '入党积极分子',
 	    			branch: _this.memberData[index].branch,
 	    			head: '/imgs/gray_wode.png',
-	    			password: '123456'
+	    			password: '123456',
+	    			time: new Date().getTime()
 	    		},
 	    		success(data) {
 	    			alert('审核成功')

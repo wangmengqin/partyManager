@@ -1,7 +1,7 @@
 <template>
 	<header  style="width: 1200px;margin: 0 auto;">
 		<p class="fl logo-p"><img src="/imgs/logo.png"/><a href="##" title="首页">高校党务管理工作平台</a></p>
-		<p class="fr headermenu"><a @click="linkToMy" style="margin: 0;"><img src="/imgs/icon_mine.png" title="我的"/></a><a href="#/login">[退出]</a>|<a @click="linkToMy">修改密码</a></p>
+		<p class="fr headermenu"><a @click="linkToMy" style="margin: 0;"><img src="/imgs/icon_mine.png" title="我的"/></a><a @click="linkToLogin">[退出]</a>|<a @click="linkToMy">修改密码</a></p>
 		<!--<img src="/imgs/ss.jpg" alt="" />-->
 	</header>
 </template>
@@ -22,6 +22,10 @@ export default {
 			} else {
 				this.$router.push({ path: `/login` })
 			}
+		},
+		linkToLogin() {
+			sessionStorage.removeItem('sno')
+			this.$router.push({ path: `/login` })
 		}
 	}
 }
