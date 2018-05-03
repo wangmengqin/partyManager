@@ -1,11 +1,26 @@
 <template>
 	<header>
 		<h3><img src="/imgs/logo1.png"	/>党务管理工作平台</h3>
-		<p>当前用户：XXX <a href="##">[退出]</a>|<a href="#/tab/editpassword">修改密码</a></p>
+		<p>当前用户：{{loginNum}} <a href="javascript:" @click="linkToLogin">[退出]</a>|<a href="#/tab/editpassword">修改密码</a></p>
 	</header>
 </template>
 
 <script>
+export default {
+	data() {
+		return {
+			loginNum: 'XXX'
+		}
+	},
+	methods: {
+		linkToLogin() {
+			this.$router.push({ path: `/login` })
+		}
+	},
+	mounted() {
+		this.loginNum = sessionStorage.getItem('superLoginNum')
+	}
+}
 </script>
 
 <style scoped>

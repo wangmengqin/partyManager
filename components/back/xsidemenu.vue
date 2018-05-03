@@ -1,6 +1,17 @@
 <template>
 	<div style="float: left;">
-		<ul>
+		<ul v-if="isSuperManager">
+			<!-- 超级管理员菜单 -->
+			<li v-for="(obj,index) in menuArr1"	>
+				<p @click="changeIsShow1(index)"><img :src="obj.isShow?selectImg:img"/><span v-text="obj.txt"></span></p>
+				<ul v-show="obj.isShow">
+					<li><a :href="obj.url1">{{obj.menu1}}</a></li>
+					<li><a :href="obj.url2">{{obj.menu2}}</a></li>
+				</ul>
+			</li>
+		</ul>
+		<ul v-else>
+			<!-- 普通管理员菜单 -->
 			<li v-for="(obj,index) in menuArr">
 				<p @click="changeIsShow(index)"><img :src="obj.isShow?selectImg:img"/><span v-text="obj.txt"></span></p>
 				<ul v-show="obj.isShow">
@@ -124,15 +135,47 @@
 						url2:"#/tab/searchLife",
 						menu1: '增加党务',
 						menu2: '查询党务信息'
+					},
+					{
+						id:8,
+						txt:"我的信息",
+						isShow:false,
+						url1:"#/tab/addLife",
+						url2:"#/tab/searchLife",
+						menu1: '查看信息',
+						menu2: '修改密码'
 					}
 				],
 				img:"/imgs/jia.png",
 				selectImg:"/imgs/jian.png",
+				isSuperManager: false,
+				menuArr1: [
+					{
+						id:0,
+						txt:"管理员管理",
+						isShow:false,
+						url1:"#/tab/addnews",
+						url2:"#/tab/searchnews",
+						menu1: '查看管理员',
+						menu2: '设置管理员'
+					}
+				]
 			}
 		},
 		methods:{
 			changeIsShow(id){
 				this.menuArr[id].isShow = !this.menuArr[id].isShow;
+			},
+			changeIsShow1(id){
+				this.menuArr1[id].isShow = !this.menuArr1[id].isShow;
+			}
+		},
+		mounted() {
+			let type = this.$route.query.type
+			if(type == 0){
+				this.isSuperManager = true
+			} else {
+				this.isSuperManager = false
 			}
 		}
 	}

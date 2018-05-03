@@ -760,6 +760,16 @@ app.post("/deleteLife",function(req,res){
 	});
 })
 
+//获取超级管理员登录信息
+app.post('/getSuperLoginInfo', function(req, res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from user where username = '${req.body.username}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+
 //监听端口
 app.listen(5555);
 console.log("开启服务器")

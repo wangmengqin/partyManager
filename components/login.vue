@@ -10,6 +10,7 @@
 					<select v-model="type">
 					<option key="0" value="管理员">管理员</option>
 					<option key="1" value="普通党员">普通党员</option>
+					<option key="2" value="超级管理员">超级管理员</option>
 				</select>
 				</p>
 				<p class="padding50"><input type="checkbox" v-model="checkbox"/><span>记住用户名和密码</span></p>
@@ -61,6 +62,30 @@ export default {
 				})
 			}else if(_this.type == '管理员' && this.username!='' && this.password !=''){
 
+			}else if(_this.type == '超级管理员' && this.username!='' && this.password !=''){
+				$.ajax({
+					url: 'http://localhost:5555/getSuperLoginInfo',
+					type: 'post',
+					dataType: 'json',
+					data: {
+						username: _this.username
+					},
+					success(data){
+						if(data != ''){
+							if(_this.password === data[0].password){
+								sessionStorage.setItem("superLoginNum", _this.username);
+								if(_this.checkbox){
+									sessionStorage.setItem("superLoginPassword", _this.password);
+								}
+								_this.$router.push({ path: '/tab', query:{type: 0} })
+							}else{
+								alert('密码错误')
+							}
+						}else{
+							alert('用户不存在')
+						}
+					}
+				})
 			}else{
 				alert('用户名密码不能为空')
 			}
@@ -71,8 +96,15 @@ export default {
 		}
 	},
 	mounted() {
-		this.username = sessionStorage.getItem("sno");
-		this.password = sessionStorage.getItem("password");
+		if(sessionStorage.getItem("sno")!=null) {
+			this.username = sessionStorage.getItem("sno");
+			this.password = sessionStorage.getItem("password");
+		} else if(sessionStorage.getItem("superLoginNum")!=null){
+			this.username = sessionStorage.getItem("superLoginNum");
+			this.password = sessionStorage.getItem("superLoginPassword");
+			this.type = '超级管理员'
+		}
+		
 		if(this.username != '' && this.password != ''){
 			this.checkbox = true
 		}
