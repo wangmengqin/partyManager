@@ -61,7 +61,29 @@ export default {
 					}
 				})
 			}else if(_this.type == '管理员' && this.username!='' && this.password !=''){
-
+				$.ajax({
+					url: 'http://localhost:5555/getManagerLoginInfo',
+					type: 'post',
+					dataType: 'json',
+					data: {
+						username: _this.username
+					},
+					success(data){
+						if(data != ''){
+							if(_this.password === data[0].password){
+								sessionStorage.setItem("managerLoginNum", _this.username);
+								if(_this.checkbox){
+									sessionStorage.setItem("managerLoginPassword", _this.password);
+								}
+								_this.$router.push({ path: '/tab', query:{type: 1} })
+							}else{
+								alert('密码错误')
+							}
+						}else{
+							alert('用户不存在')
+						}
+					}
+				})
 			}else if(_this.type == '超级管理员' && this.username!='' && this.password !=''){
 				$.ajax({
 					url: 'http://localhost:5555/getSuperLoginInfo',
@@ -89,7 +111,6 @@ export default {
 			}else{
 				alert('用户名密码不能为空')
 			}
-			
 		},
 		apply() {
 			location.href = "#/fore/apply"

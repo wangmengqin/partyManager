@@ -18,7 +18,12 @@ export default {
 		}
 	},
 	mounted() {
-		this.loginNum = sessionStorage.getItem('superLoginNum')
+		if(this.$route.query.type == 0) {
+			this.loginNum = sessionStorage.getItem('superLoginNum')
+		} else {
+			this.loginNum = sessionStorage.getItem('managerLoginNum')
+		}
+		
 	}
 }
 </script>

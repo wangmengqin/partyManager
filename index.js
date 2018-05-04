@@ -49,6 +49,9 @@ import xcheckOrg from "./components/back/tab/org/check_org_tab.vue";
 import xsearchLife from "./components/back/tab/life/search_life_tab.vue";
 import xaddLife from "./components/back/tab/life/add_life_tab.vue";
 import xeditLife from "./components/back/tab/life/edit_life_tab.vue";
+//超级管理员组件
+import xsearchManager from "./components/back/tab/manager/search_manager_tab.vue";
+import xsetManager from "./components/back/tab/manager/set_manager_tab.vue";
 //前端组件
 import foretab from "./components/fore/container/foretab.vue";
 import xindex from "./components/fore/tab/xindex.vue";
@@ -82,6 +85,7 @@ var router = new VueRouter({
        {
           path: "/tab",
           component: tab,
+          redirect: '/tab/editpassword',
           children: [
           	{
               path: "addnews",
@@ -186,6 +190,14 @@ var router = new VueRouter({
             {
               path: "editLife/:id",
               component: xeditLife
+            },
+            {
+              path: "searchManager",
+              component: xsearchManager
+            },
+            {
+              path: "setManager",
+              component: xsetManager
             },
             {
               path: "editpassword",

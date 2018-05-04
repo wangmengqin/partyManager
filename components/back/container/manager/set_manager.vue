@@ -6,8 +6,7 @@
 			<input type="text" placeholder="请输入关键字,无内容则搜索所有" v-model="inputContent"/>
 			<button @click="getMemberByName">通过党员姓名搜索</button>
 			<button @click="getMemberByInstitute">通过学院搜索</button>
-			<button @click="getMemberByMajor">通过专业搜索</button>
-			<button @click="getMemberBySno">通过党员学号搜索</button>
+			<button @click="getMemberBySno">通过党员编号搜索</button>
 		</p>
 		<table>
 			<thead>
@@ -15,33 +14,27 @@
 					<th>姓名</th>
 					<th>性别</th>
 					<th>年龄</th>
-					<th>学号</th>
-					<th>专业</th>
+					<th>编号</th>
 					<th>学院</th>
-					<th>年级</th>
 					<th>身份</th>
-					<th>类型</th>
 					<th>支部</th>
 					<th>籍贯</th>
 					<th>操作</th>
 				</tr>
 			</thead>
 			<tr v-if="memberData==''" style="text-align:center;">
-				<td style="line-height:50px;font-size:20px" colspan="10">无数据</td>
+				<td style="line-height:50px;font-size:20px" colspan="9">无数据</td>
 			</tr>
 			<tr v-for="item in memberData">
 				<td>{{item.name}}</td>
 				<td>{{item.sex}}</td>
 				<td>{{item.age}}</td>
 				<td>{{item.sno}}</td>
-				<td>{{item.major}}</td>
 				<td>{{item.institute}}</td>
-				<td>{{item.grade}}</td>
 				<td>{{item.identify}}</td>
-				<td>{{item.type}}</td>
 				<td>{{item.branch}}</td>
 				<td>{{item.native}}</td>
-				<td><a :href="'#/tab/editMember/'+item.id" class="edit">编辑</a><b @click="deleteActivityById(item.id)" class="del">删除</b></td>
+				<td><b @click="addManager(item)" class="del">设置管理员</b></td>
 			</tr>
 		</table>
 		<xpagination />
@@ -71,7 +64,7 @@
 	    		dataType: 'json',
 	    		success(data) {
 	    			for (var i in data) {
-	    				if(data[i].identify != '' && data[i].identify != '不通过'){
+	    				if(data[i].identify == '书记' && data[i].identify != '不通过'){
 	    					_this.memberData.push(data[i])
 	    				}
 	    			}
@@ -90,7 +83,7 @@
 	    		},
 	    		success(data) {
 	    			for (var i in data) {
-	    				if(data[i].identify != '' && data[i].identify != '不通过'){
+	    				if(data[i].identify == '书记' && data[i].identify != '不通过'){
 	    					_this.memberData.push(data[i])
 	    				}
 	    			}
@@ -109,7 +102,7 @@
 	    		},
 	    		success(data) {
 	    			for (var i in data) {
-	    				if(data[i].identify != '' && data[i].identify != '不通过'){
+	    				if(data[i].identify == '书记' && data[i].identify != '不通过'){
 	    					_this.memberData.push(data[i])
 	    				}
 	    			}
@@ -128,7 +121,7 @@
 	    		},
 	    		success(data) {
 	    			for (var i in data) {
-	    				if(data[i].identify != '' && data[i].identify != '不通过'){
+	    				if(data[i].identify == '书记' && data[i].identify != '不通过'){
 	    					_this.memberData.push(data[i])
 	    				}
 	    			}
@@ -147,23 +140,34 @@
 	    		},
 	    		success(data) {
 	    			for (var i in data) {
-	    				if(data[i].identify != '' && data[i].identify != '不通过'){
+	    				if(data[i].identify == '书记' && data[i].identify != '不通过'){
 	    					_this.memberData.push(data[i])
 	    				}
 	    			}
 	    		}
 	    	})
 	  	},
-	  	deleteActivityById(id){
+	  	addManager(memberInfo){
 	  		var _this = this
 	  		$.ajax({
-	    		url: 'http://localhost:5555/deleteMemberById',
+	    		url: 'http://localhost:5555/addManager',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
-	    			id: id
+	    			name: memberInfo.name,
+	    			sex: memberInfo.sex,
+	    			age: memberInfo.age,
+	    			sno: memberInfo.sno,
+	    			institute: memberInfo.institute,
+	    			becomeMemberTime: memberInfo.becomeMemberTime,
+	    			memberTime: memberInfo.memberTime,
+	    			branch: memberInfo.branch,
+	    			native: memberInfo.native,
+	    			head: memberInfo.head,
+	    			password: memberInfo.password
 	    		},
 	    		success(data) {
+	    			alert('设置成功')
 	    			_this.getAll();
 	    		}
 	    	})
@@ -246,7 +250,7 @@
 	}
 	.del{
 		display: inline-block;
-	    width: 35px;
+	    padding: 0 10px;
 	    height: 30px;
 	    background: #ed5564;
 	    line-height: 30px;
@@ -259,9 +263,9 @@
 	}
 	.edit{
 		display: inline-block;
-	    width: 35px;
+	    padding: 0 10px;
 	    height: 30px;
-	    background: #ed5564;
+	    background: #deepskyblue;
 	    line-height: 30px;
 	    color: #fff;
 	    border-radius: 4px;

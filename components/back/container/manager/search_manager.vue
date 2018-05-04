@@ -4,9 +4,9 @@
 		<p>
 			
 			<input type="text" placeholder="请输入关键字,无内容则搜索所有" v-model="inputContent"/>
-			<button @click="getMemberByName">通过管理员姓名搜索</button>
-			<button @click="getMemberByInstitute">通过学院搜索</button>
-			<button @click="getMemberBySno">通过支部搜索</button>
+			<button @click="getManagerByName">通过管理员姓名搜索</button>
+			<button @click="getManagerByInstitute">通过学院搜索</button>
+			<button @click="getManagerByBranch">通过支部搜索</button>
 		</p>
 		<table>
 			<thead>
@@ -21,10 +21,10 @@
 					<th>操作</th>
 				</tr>
 			</thead>
-			<tr v-if="memberData==''" style="text-align:center;">
-				<td style="line-height:50px;font-size:20px" colspan="10">无数据</td>
+			<tr v-if="managerData==''" style="text-align:center;">
+				<td style="line-height:50px;font-size:20px" colspan="8">无数据</td>
 			</tr>
-			<tr v-for="item in memberData">
+			<tr v-for="item in managerData">
 				<td>{{item.name}}</td>
 				<td>{{item.sex}}</td>
 				<td>{{item.age}}</td>
@@ -32,7 +32,7 @@
 				<td>{{item.institute}}</td>
 				<td>{{item.branch}}</td>
 				<td>{{item.native}}</td>
-				<td><a :href="'#/tab/editMember/'+item.id" class="edit">编辑</a><b @click="deleteActivityById(item.id)" class="del">删除</b></td>
+				<td><b @click="deleteManager(item.id)" class="del">取消管理员</b></td>
 			</tr>
 		</table>
 		<xpagination />
@@ -49,106 +49,67 @@
 	  data() {
 	  	return {
 	  		inputContent: '',
-	  		memberData: [] // 党员信息数据
+	  		managerData: [] // 党员信息数据
 	  	}
 	  },
 	  methods: {
 	  	getAll() {
 	  		var _this = this
-	  		_this.memberData = []
 	    	$.ajax({
-	    		url: 'http://localhost:5555/allMember',
+	    		url: 'http://localhost:5555/getAllManager',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		success(data) {
-	    			for (var i in data) {
-	    				if(data[i].identify != '' && data[i].identify != '不通过'){
-	    					_this.memberData.push(data[i])
-	    				}
-	    			}
+	    			_this.managerData = data
 	    		}
 	    	})
 	  	},
-	  	getMemberByName() {
+	  	getManagerByName() {
 	  		var _this = this
-	  		_this.memberData = []
 	    	$.ajax({
-	    		url: 'http://localhost:5555/getMemberByName',
+	    		url: 'http://localhost:5555/getManagerByName',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
 	    			name: _this.inputContent
 	    		},
 	    		success(data) {
-	    			for (var i in data) {
-	    				if(data[i].identify != '' && data[i].identify != '不通过'){
-	    					_this.memberData.push(data[i])
-	    				}
-	    			}
+	    			_this.managerData = data
 	    		}
 	    	})
 	  	},
-	  	getMemberByInstitute(){
+	  	getManagerByInstitute(){
 	  		var _this = this
-	  		_this.memberData = []
 	  		$.ajax({
-	    		url: 'http://localhost:5555/getMemberByInstitute',
+	    		url: 'http://localhost:5555/getManagerByInstitute',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
 	    			institute: _this.inputContent
 	    		},
 	    		success(data) {
-	    			for (var i in data) {
-	    				if(data[i].identify != '' && data[i].identify != '不通过'){
-	    					_this.memberData.push(data[i])
-	    				}
-	    			}
+	    			_this.managerData = data
 	    		}
 	    	})
 	  	},
-	  	getMemberByMajor(){
+	  	getManagerByBranch(){
 	  		var _this = this
-	  		_this.memberData = []
 	  		$.ajax({
-	    		url: 'http://localhost:5555/getMemberByMajor',
+	    		url: 'http://localhost:5555/getManagerByBranch',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
 	    			major: _this.inputContent
 	    		},
 	    		success(data) {
-	    			for (var i in data) {
-	    				if(data[i].identify != '' && data[i].identify != '不通过'){
-	    					_this.memberData.push(data[i])
-	    				}
-	    			}
+	    			_this.managerData = data
 	    		}
 	    	})
 	  	},
-	  	getMemberBySno(){
-	  		var _this = this
-	  		_this.memberData = []
-	  		$.ajax({
-	    		url: 'http://localhost:5555/getMemberBySno',
-	    		type: 'POST',
-	    		dataType: 'json',
-	    		data: {
-	    			sno: _this.inputContent
-	    		},
-	    		success(data) {
-	    			for (var i in data) {
-	    				if(data[i].identify != '' && data[i].identify != '不通过'){
-	    					_this.memberData.push(data[i])
-	    				}
-	    			}
-	    		}
-	    	})
-	  	},
-	  	deleteActivityById(id){
+	  	deleteManager(id){
 	  		var _this = this
 	  		$.ajax({
-	    		url: 'http://localhost:5555/deleteMemberById',
+	    		url: 'http://localhost:5555/deleteManager',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
@@ -237,7 +198,7 @@
 	}
 	.del{
 		display: inline-block;
-	    width: 35px;
+	    padding: 0 10px;
 	    height: 30px;
 	    background: #ed5564;
 	    line-height: 30px;

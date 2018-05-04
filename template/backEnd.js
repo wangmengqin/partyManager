@@ -769,6 +769,96 @@ app.post('/getSuperLoginInfo', function(req, res){
 		res.send(JSON.stringify(results));
 	});
 })
+//获取管理员登录信息
+app.post('/getManagerLoginInfo', function(req, res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from manager where name = '${req.body.username}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id修改管理员密码信息
+app.post("/editManagerPassword",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update manager set password = '${req.body.password}' where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//获取所有管理员信息
+app.post('/getAllManager', function(req, res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from manager`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id获取管理员信息
+app.post('/getManagerById', function(req, res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from manager where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//根据姓名获取管理员信息
+app.post('/getManagerByName', function(req, res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from manager where name like '%${req.body.name}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据sno获取管理员信息
+app.post('/getManagerBySno', function(req, res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from manager where sno = '${req.body.sno}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据学院获取管理员信息
+app.post('/getManagerByInstitute', function(req, res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from manager where institute like '%${req.body.institute}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据学院获取管理员信息
+app.post('/getManagerByBranch', function(req, res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from manager where branch like '%${req.body.branch}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id删除信息
+app.post("/deleteManager",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `delete from manager where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 增加管理员
+app.post("/addManager",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `INSERT INTO manager(name, sex, age, sno, institute, becomeMemberTime, memberTime, branch, native, head, password) VALUES ('${req.body.name}', '${req.body.sex}', '${req.body.age}', '${req.body.sno}', '${req.body.institute}', '${req.body.becomeMemberTime}', '${req.body.memberTime}', '${req.body.branch}', '${req.body.native}', '${req.body.head}', '${req.body.password}')`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
 
 //监听端口
 app.listen(5555);

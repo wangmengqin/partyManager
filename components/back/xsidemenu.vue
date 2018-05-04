@@ -140,8 +140,8 @@
 						id:8,
 						txt:"我的信息",
 						isShow:false,
-						url1:"#/tab/addLife",
-						url2:"#/tab/searchLife",
+						url1:"#/tab/editpassword",
+						url2:"#/tab/editpassword",
 						menu1: '查看信息',
 						menu2: '修改密码'
 					}
@@ -154,10 +154,19 @@
 						id:0,
 						txt:"管理员管理",
 						isShow:false,
-						url1:"#/tab/addnews",
-						url2:"#/tab/searchnews",
+						url1:"#/tab/searchManager",
+						url2:"#/tab/setManager",
 						menu1: '查看管理员',
 						menu2: '设置管理员'
+					},
+					{
+						id:1,
+						txt:"我的信息",
+						isShow:false,
+						url1:"#/tab/editpassword",
+						url2:"#/tab/editpassword",
+						menu1: '查看信息',
+						menu2: '修改密码'
 					}
 				]
 			}
