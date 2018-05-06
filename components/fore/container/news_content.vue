@@ -32,7 +32,7 @@ export default{
 	mounted() {
 		var _this = this
 		$.ajax({
-			url: 'http://localhost:5555/allNews',
+			url: 'http://localhost:5555/News',
 			type: 'POST',
 			dataType: 'json',
 			success(data) {

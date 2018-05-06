@@ -262,11 +262,9 @@ var router = new VueRouter({
     ]
 });
 
-import mutations from './mutation.js'
 // 配置store
 var store = new Vuex.Store({
     state:{
-        offset: 0
     }
 })
 
@@ -274,7 +272,6 @@ new Vue({
 	el: "#app",
 	router,
 	store,
-  mutations,
 	template: `
         <div>
             <router-view></router-view> 

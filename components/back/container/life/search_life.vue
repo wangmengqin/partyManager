@@ -33,12 +33,12 @@
 				</td>
 			</tr>
 		</table>
-		<xpagination />
+		<xpagination v-show="isShowPagination" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
 	</div>
 </template>
 
 <script>
-	import xpagination from "../../xpagination.vue";
+	import xpagination from "../../../pagination.vue";
 	import {formatDate} from '../../../../template/date.js';
 	import $ from 'jQuery';
 	export default {
@@ -47,17 +47,37 @@
 	  },
 	  data() {
 	  	return {
+	  		model:{
+	            total: 1,//总页数
+	            size:5,//每页显示条目个数不传默认10
+	            page:1,//当前页码
+	        },
+	        isShowPagination: true,
 	  		inputContent: '',
 	  		lifeData: [] // 新闻数据
 	  	}
 	  },
 	  methods: {
-	  	getAll() {
+	  	getAll(val) {
 	  		var _this = this
+	  		this.model.page=val;
+	  		this.isShowPagination = true
+	  		$.ajax({
+	    		url: 'http://localhost:5555/allLifeCount',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		success(data) {
+	    			_this.model.total = data[0].count
+	    		}
+	    	})
 	    	$.ajax({
 	    		url: 'http://localhost:5555/allLife',
 	    		type: 'POST',
 	    		dataType: 'json',
+	    		data: {
+	    			size: _this.model.size,
+	    			page: _this.model.page
+	    		},
 	    		success(data) {
 	    			_this.lifeData = data
 	    		}
@@ -65,6 +85,7 @@
 	  	},
 	  	getLifeByType() {
 	  		var _this = this
+	  		this.isShowPagination = false
 	    	$.ajax({
 	    		url: 'http://localhost:5555/getLifeByType',
 	    		type: 'POST',
@@ -79,6 +100,7 @@
 	  	},
 	  	getLifeByTitle(){
 	  		var _this = this
+	  		this.isShowPagination = false
 	  		$.ajax({
 	    		url: 'http://localhost:5555/getLifeByTitle',
 	    		type: 'POST',
@@ -93,6 +115,7 @@
 	  	},
 	  	getLifeByContent(){
 	  		var _this = this
+	  		this.isShowPagination = false
 	  		$.ajax({
 	    		url: 'http://localhost:5555/getLifeByContent',
 	    		type: 'POST',
@@ -107,6 +130,7 @@
 	  	},
 	  	getLifeByBranch(){
 	  		var _this = this
+	  		this.isShowPagination = false
 	  		$.ajax({
 	    		url: 'http://localhost:5555/getLifeByBranch',
 	    		type: 'POST',
@@ -129,7 +153,18 @@
 	    			id: id
 	    		},
 	    		success(data) {
-	    			_this.getAll();
+	    			$.ajax({
+			    		url: 'http://localhost:5555/allLife',
+			    		type: 'POST',
+			    		dataType: 'json',
+			    		data: {
+			    			size: _this.model.size,
+			    			page: _this.model.page
+			    		},
+			    		success(data) {
+			    			_this.lifeData = data
+			    		}
+			    	})
 	    		}
 	    	})
 	  	}
@@ -141,7 +176,6 @@
         }
 	  },
 	  mounted() {
-	  	this.getAll()
 	  }
 	};
 </script>

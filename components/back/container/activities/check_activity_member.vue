@@ -28,12 +28,12 @@
 				<td><b @click="pass(item.id,index)" class="edit">通过</b><b @click="unPass(item.id)" class="del">不通过</b></td>
 			</tr>
 		</table>
-		<xpagination />
+		<xpagination :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
 	</div>
 </template>
 
 <script>
-	import xpagination from "../../xpagination.vue";
+	import xpagination from "../../../pagination.vue";
 	import $ from 'jQuery';
 	export default {
 	  components: {
@@ -41,26 +41,40 @@
 	  },
 	  data() {
 	  	return {
+	  		model:{
+	            total: 1,//总页数
+	            size:5,//每页显示条目个数不传默认10
+	            page:1,//当前页码
+	        },
 	  		activityMemberData: [], // 要审核的参加活动名单数据
 	  		inputContent: ''
 	  	}
 	  },
 	  methods: {
-	  	getAll() {
+	  	getAll(val) {
 	  		var _this = this
-	  		_this.activityMemberData = []
-	    	$.ajax({
-	    		url: 'http://localhost:5555/allMemberActivity',
+	  		this.model.page=val;
+	  		$.ajax({
+	    		url: 'http://localhost:5555/allCheckMemberActivityCount',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		success(data) {
-	    			console.log(data)
-	    			for (var i in data) {
-	    				if(data[i].status == '待审核'){
-	    					_this.activityMemberData.push(data[i])
-	    				}
-	    			}
+	    			_this.model.total = data[0].count
 	    		}
+	    	})
+	    	.done(function() {
+	    		$.ajax({
+		    		url: 'http://localhost:5555/allCheckMemberActivity',
+		    		type: 'POST',
+		    		dataType: 'json',
+		    		data: {
+		    			size: _this.model.size,
+		    			page: _this.model.page
+		    		},
+		    		success(data) {
+		    			_this.activityMemberData = data
+		    		}
+		    	})
 	    	})
 	  	},
 	  	pass(id,index){
@@ -75,7 +89,19 @@
 	    		},
 	    		success(data) {
 	    			alert('审核成功')
-	    			_this.getAll();
+	    			$.ajax({
+			    		url: 'http://localhost:5555/allCheckMemberActivity',
+			    		type: 'POST',
+			    		dataType: 'json',
+			    		data: {
+			    			size: _this.model.size,
+			    			page: _this.model.page
+			    		},
+			    		success(data) {
+			    			console.log(data)
+			    			_this.activityMemberData = data
+			    		}
+			    	})
 	    		}
 	    	})
 	  	},
@@ -90,7 +116,19 @@
 	    		},
 	    		success(data) {
 	    			alert('审核成功')
-	    			_this.getAll();
+	    			$.ajax({
+			    		url: 'http://localhost:5555/allCheckMemberActivity',
+			    		type: 'POST',
+			    		dataType: 'json',
+			    		data: {
+			    			size: _this.model.size,
+			    			page: _this.model.page
+			    		},
+			    		success(data) {
+			    			console.log(data)
+			    			_this.activityMemberData = data
+			    		}
+			    	})
 	    		}
 	    	})
 	  	},
@@ -99,7 +137,6 @@
 	  },
 	  mounted() {
 	  	var _this = this
-    	_this.getAll()
 	  }
 	};
 </script>

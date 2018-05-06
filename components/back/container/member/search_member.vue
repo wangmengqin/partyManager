@@ -41,15 +41,15 @@
 				<td>{{item.type}}</td>
 				<td>{{item.branch}}</td>
 				<td>{{item.native}}</td>
-				<td><a :href="'#/tab/editMember/'+item.id" class="edit">编辑</a><b @click="deleteActivityById(item.id)" class="del">删除</b></td>
+				<td><a :href="'#/tab/editMember/'+item.id" class="edit">编辑</a><b @click="deleteMemberById(item.id)" class="del">删除</b></td>
 			</tr>
 		</table>
-		<xpagination />
+		<xpagination v-show="isShowPagination" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
 	</div>
 </template>
 
 <script>
-	import xpagination from "../../xpagination.vue";
+	import xpagination from "../../../pagination.vue";
 	import $ from 'jQuery';
 	export default {
 	  components: {
@@ -57,18 +57,38 @@
 	  },
 	  data() {
 	  	return {
+	  		model:{
+	            total: 1,//总页数
+	            size:5,//每页显示条目个数不传默认10
+	            page:1,//当前页码
+	        },
+	        isShowPagination: true,
 	  		inputContent: '',
 	  		memberData: [] // 党员信息数据
 	  	}
 	  },
 	  methods: {
-	  	getAll() {
+	  	getAll(val) {
 	  		var _this = this
-	  		_this.memberData = []
+	  		this.model.page=val;
+	  		this.isShowPagination = true
+	  		$.ajax({
+	    		url: 'http://localhost:5555/allMemberCount',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		success(data) {
+	    			_this.model.total = data[0].count
+	    		}
+	    	})
+	    	_this.memberData = []
 	    	$.ajax({
 	    		url: 'http://localhost:5555/allMember',
 	    		type: 'POST',
 	    		dataType: 'json',
+	    		data: {
+	    			size: _this.model.size,
+	    			page: _this.model.page
+	    		},
 	    		success(data) {
 	    			for (var i in data) {
 	    				if(data[i].identify != '' && data[i].identify != '不通过'){
@@ -80,6 +100,7 @@
 	  	},
 	  	getMemberByName() {
 	  		var _this = this
+	  		this.isShowPagination = false
 	  		_this.memberData = []
 	    	$.ajax({
 	    		url: 'http://localhost:5555/getMemberByName',
@@ -99,6 +120,7 @@
 	  	},
 	  	getMemberByInstitute(){
 	  		var _this = this
+	  		this.isShowPagination = false
 	  		_this.memberData = []
 	  		$.ajax({
 	    		url: 'http://localhost:5555/getMemberByInstitute',
@@ -118,6 +140,7 @@
 	  	},
 	  	getMemberByMajor(){
 	  		var _this = this
+	  		this.isShowPagination = false
 	  		_this.memberData = []
 	  		$.ajax({
 	    		url: 'http://localhost:5555/getMemberByMajor',
@@ -137,6 +160,7 @@
 	  	},
 	  	getMemberBySno(){
 	  		var _this = this
+	  		this.isShowPagination = false
 	  		_this.memberData = []
 	  		$.ajax({
 	    		url: 'http://localhost:5555/getMemberBySno',
@@ -154,7 +178,7 @@
 	    		}
 	    	})
 	  	},
-	  	deleteActivityById(id){
+	  	deleteMemberById(id){
 	  		var _this = this
 	  		$.ajax({
 	    		url: 'http://localhost:5555/deleteMemberById',
@@ -164,13 +188,29 @@
 	    			id: id
 	    		},
 	    		success(data) {
-	    			_this.getAll();
+	    			alert('删除成功')
+	    			_this.memberData = []
+			    	$.ajax({
+			    		url: 'http://localhost:5555/allMember',
+			    		type: 'POST',
+			    		dataType: 'json',
+			    		data: {
+			    			size: _this.model.size,
+			    			page: _this.model.page
+			    		},
+			    		success(data) {
+			    			for (var i in data) {
+			    				if(data[i].identify != '' && data[i].identify != '不通过'){
+			    					_this.memberData.push(data[i])
+			    				}
+			    			}
+			    		}
+			    	})
 	    		}
 	    	})
 	  	}
 	  },
 	  mounted() {
-	  	this.getAll()
 	  }
 	};
 </script>

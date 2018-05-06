@@ -37,12 +37,11 @@
 				<td><b @click="addManager(item)" class="del">设置管理员</b></td>
 			</tr>
 		</table>
-		<xpagination />
 	</div>
 </template>
 
 <script>
-	import xpagination from "../../xpagination.vue";
+	import xpagination from "../../../pagination.vue";
 	import $ from 'jQuery';
 	export default {
 	  components: {

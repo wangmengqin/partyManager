@@ -30,12 +30,12 @@
 				<td><a :href="'#/tab/editInform/'+item.id" class="edit">详情</a><b @click="deleteInformById(item.id)" class="del">删除</b></td>
 			</tr>
 		</table>
-		<xpagination />
+		<xpagination v-show="isShowPagination" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
 	</div>
 </template>
 
 <script>
-	import xpagination from "../../xpagination.vue";
+	import xpagination from "../../../pagination.vue";
 	import {formatDate} from '../../../../template/date.js';
 	import $ from 'jQuery';
 	export default {
@@ -44,17 +44,37 @@
 	  },
 	  data() {
 	  	return {
+	  		model:{
+	            total: 1,//总页数
+	            size:5,//每页显示条目个数不传默认10
+	            page:1,//当前页码
+	        },
+	        isShowPagination: true,
 	  		inputContent: '',
 	  		informData: [] // 新闻数据
 	  	}
 	  },
 	  methods: {
-	  	getAll() {
+	  	getAll(val) {
 	  		var _this = this
+	  		this.model.page=val;
+	  		this.isShowPagination = true
+	  		$.ajax({
+	    		url: 'http://localhost:5555/allInformCount',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		success(data) {
+	    			_this.model.total = data[0].count
+	    		}
+	    	})
 	    	$.ajax({
 	    		url: 'http://localhost:5555/allInform',
 	    		type: 'POST',
 	    		dataType: 'json',
+	    		data: {
+	    			size: _this.model.size,
+	    			page: _this.model.page
+	    		},
 	    		success(data) {
 	    			console.log(data)
 	    			_this.informData = data
@@ -63,6 +83,7 @@
 	  	},
 	  	getInformById() {
 	  		var _this = this
+	  		this.isShowPagination = false
 	    	$.ajax({
 	    		url: 'http://localhost:5555/getInformById',
 	    		type: 'POST',
@@ -77,6 +98,7 @@
 	  	},
 	  	getInformByTitle(){
 	  		var _this = this
+	  		this.isShowPagination = false
 	  		$.ajax({
 	    		url: 'http://localhost:5555/getInformByTitle',
 	    		type: 'POST',
@@ -91,6 +113,7 @@
 	  	},
 	  	getInformByName(){
 	  		var _this = this
+	  		this.isShowPagination = false
 	  		$.ajax({
 	    		url: 'http://localhost:5555/getInformByName',
 	    		type: 'POST',
@@ -105,6 +128,7 @@
 	  	},
 	  	getInformByContent(){
 	  		var _this = this
+	  		this.isShowPagination = false
 	  		$.ajax({
 	    		url: 'http://localhost:5555/getInformByContent',
 	    		type: 'POST',
@@ -127,7 +151,19 @@
 	    			id: id
 	    		},
 	    		success(data) {
-	    			_this.getAll();
+	    			$.ajax({
+			    		url: 'http://localhost:5555/allInform',
+			    		type: 'POST',
+			    		dataType: 'json',
+			    		data: {
+			    			size: _this.model.size,
+			    			page: _this.model.page
+			    		},
+			    		success(data) {
+			    			console.log(data)
+			    			_this.informData = data
+			    		}
+			    	})
 	    		}
 	    	})
 	  	}
@@ -139,7 +175,6 @@
         }
 	  },
 	  mounted() {
-	  	this.getAll()
 	  }
 	};
 </script>

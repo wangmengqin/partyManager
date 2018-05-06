@@ -12,7 +12,6 @@
 		<table>
 			<thead>
 				<tr>
-					<th>ID</th>
 					<th>标题</th>
 					<th>作者</th>
 					<th>摘要</th>
@@ -21,8 +20,10 @@
 					<th>操作</th>
 				</tr>
 			</thead>
+			<tr v-if="newsData==''" style="text-align:center;">
+				<td style="line-height:50px;font-size:20px" colspan="6">无数据</td>
+			</tr>
 			<tr v-for="item in newsData">
-				<td>{{item.id}}</td>
 				<td>{{item.title}}</td>
 				<td>{{item.author}}</td>
 				<td>{{item.remark}}</td>
@@ -31,12 +32,12 @@
 				<td><a :href="'#/tab/editnews/'+item.id" class="edit">编辑</a><b @click="deleteNewsById(item.id)" class="del">删除</b></td>
 			</tr>
 		</table>
-		<xpagination />
+		<xpagination v-show="isShowPagination" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
 	</div>
 </template>
 
 <script>
-	import xpagination from "../../xpagination.vue";
+	import xpagination from "../../../pagination.vue";
 	import {formatDate} from '../../../../template/date.js';
 	import $ from 'jQuery';
 	export default {
@@ -45,17 +46,37 @@
 	  },
 	  data() {
 	  	return {
+	  		model:{
+	            total: 1,//总页数
+	            size:5,//每页显示条目个数不传默认10
+	            page:1,//当前页码
+	        },
 	  		inputContent: '',
+	  		isShowPagination: true,
 	  		newsData: [] // 新闻数据
 	  	}
 	  },
 	  methods: {
-	  	getAll() {
+	  	getAll(val) {
 	  		var _this = this
+	  		this.model.page=val;
+	  		this.isShowPagination = true
+	  		$.ajax({
+	    		url: 'http://localhost:5555/allNewsCount',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		success(data) {
+	    			_this.model.total = data[0].count
+	    		}
+	    	})
 	    	$.ajax({
 	    		url: 'http://localhost:5555/allNews',
 	    		type: 'POST',
 	    		dataType: 'json',
+	    		data: {
+	    			size: _this.model.size,
+	    			page: _this.model.page
+	    		},
 	    		success(data) {
 	    			_this.newsData = data
 	    		}
@@ -63,6 +84,11 @@
 	  	},
 	  	getNewsById() {
 	  		var _this = this
+	  		if(_this.inputContent == null) {
+	  			this.isShowPagination = true
+	  		} else {
+	  			this.isShowPagination = false
+	  		}
 	    	$.ajax({
 	    		url: 'http://localhost:5555/getNewsById',
 	    		type: 'POST',
@@ -77,6 +103,11 @@
 	  	},
 	  	getNewsByTitle(){
 	  		var _this = this
+	  		if(_this.inputContent == null) {
+	  			this.isShowPagination = true
+	  		} else {
+	  			this.isShowPagination = false
+	  		}
 	  		$.ajax({
 	    		url: 'http://localhost:5555/getNewsByTitle',
 	    		type: 'POST',
@@ -91,6 +122,11 @@
 	  	},
 	  	getNewsByRemark(){
 	  		var _this = this
+	  		if(_this.inputContent == null) {
+	  			this.isShowPagination = true
+	  		} else {
+	  			this.isShowPagination = false
+	  		}
 	  		$.ajax({
 	    		url: 'http://localhost:5555/getNewsByRemark',
 	    		type: 'POST',
@@ -105,6 +141,11 @@
 	  	},
 	  	getNewsByAuthor(){
 	  		var _this = this
+	  		if(_this.inputContent == null) {
+	  			this.isShowPagination = true
+	  		} else {
+	  			this.isShowPagination = false
+	  		}
 	  		$.ajax({
 	    		url: 'http://localhost:5555/getNewsByAuthor',
 	    		type: 'POST',
@@ -127,7 +168,19 @@
 	    			id: id
 	    		},
 	    		success(data) {
-	    			_this.getAll();
+	    			alert('删除成功')
+	    			$.ajax({
+			    		url: 'http://localhost:5555/allNews',
+			    		type: 'POST',
+			    		dataType: 'json',
+			    		data: {
+			    			size: _this.model.size,
+			    			page: _this.model.page
+			    		},
+			    		success(data) {
+			    			_this.newsData = data
+			    		}
+			    	})
 	    		}
 	    	})
 	  	}
@@ -140,14 +193,7 @@
 	  },
 	  mounted() {
 	  	var _this = this
-    	$.ajax({
-    		url: 'http://localhost:5555/allNews',
-    		type: 'POST',
-    		dataType: 'json',
-    		success(data) {
-    			_this.newsData = data
-    		}
-    	})
+	  	
 	  }
 	};
 </script>

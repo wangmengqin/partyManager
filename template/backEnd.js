@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 //开始连接
 connect.connect();
-
+/*
 // 测试写的
 app.post("/getList",function(req,res){
 	//解决跨域问题
@@ -27,14 +27,34 @@ app.post("/getList",function(req,res){
 		if(error) throw error;
 		res.send(JSON.stringify(results));
 	});
-})
+})*/
 //查询所有专栏信息
-app.post("/allcolumns",function(req,res){
+app.post("/columns",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
 	var sql = `select * from newscolumn`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
+	});
+})
+//查询所有专栏信息 fenye
+app.post("/allcolumns",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `select * from newscolumn limit ${size} OFFSET ${offset}`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//获取总条数
+app.post("/allColumnsCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from newscolumn`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
 	});
 })
 // 根据id查询专栏信息
@@ -85,12 +105,32 @@ app.post("/addcolumns",function(req,res){
 
 /* 新闻模块 */
 //查询所有信息
-app.post("/allNews",function(req,res){
+app.post("/News",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
 	var sql = `select * from news`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
+	});
+})
+//查询所有信息 分页
+app.post("/allNews",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `select * from news limit ${size} OFFSET ${offset}`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//获取总条数
+app.post("/allNewsCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from news`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
 	});
 })
 // 根据id查询新闻信息
@@ -179,10 +219,21 @@ app.post("/addActivity",function(req,res){
 //查询所有信息
 app.post("/allActivity",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `select * from activities`;
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `select * from activities limit ${size} OFFSET ${offset}`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
+	});
+})
+//获取总条数
+app.post("/allActivityCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from activities`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
 	});
 })
 //查询所有信息（降序）
@@ -269,12 +320,32 @@ app.post("/addBranch",function(req,res){
 	});
 })
 //查询所有信息
-app.post("/allBranch",function(req,res){
+app.post("/Branchs",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
 	var sql = `select * from branch`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
+	});
+})
+//查询所有信息
+app.post("/allBranch",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `select * from branch limit ${size} OFFSET ${offset}`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//获取总条数
+app.post("/allBranchCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from branch`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
 	});
 })
 // 根据支部名称查询支部信息
@@ -336,10 +407,21 @@ app.post("/addMember",function(req,res){
 //查询所有信息
 app.post("/allMember",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `select * from member`;
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `select * from member limit ${size} OFFSET ${offset}`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
+	});
+})
+//获取总条数
+app.post("/allMemberCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from member`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
 	});
 })
 //根据id查询信息
@@ -446,12 +528,54 @@ app.post("/addMemberActivity",function(req,res){
 	});
 })
 // 获取所有参加活动信息
-app.post("/allMemberActivity",function(req,res){
+app.post("/memberActivity",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
 	var sql = `SELECT * from activities_member`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
+	});
+})
+// 获取所有参加活动信息
+app.post("/allMemberActivity",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	console.log(Number(req.body.page), Number(req.body.size))
+	var size = Number(req.body.size)
+	var sql = `SELECT * from activities_member limit ${size} OFFSET ${offset}`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 获取需要审核的参加活动信息
+app.post("/allCheckMemberActivity",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	console.log(Number(req.body.page), Number(req.body.size))
+	var size = Number(req.body.size)
+	var sql = `SELECT * from activities_member where status='待审核' limit ${size} OFFSET ${offset}`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//获取总条数
+app.post("/allMemberActivityCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from activities_member`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
+	});
+})
+//获取需要审核总条数
+app.post("/allCheckMemberActivityCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from activities_member where status='待审核'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
 	});
 })
 //根据学号、姓名、活动名称查询信息
@@ -472,6 +596,15 @@ app.post("/editMemberActivityStatus",function(req,res){
 		res.send(JSON.stringify(results));
 	});
 })
+// 根据id修改费用，缴费情况
+app.post("/editMemberMoney",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update activities_member set money = '${req.body.money}', money_status = '${req.body.money_status}' where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
 // 根据id删除信息
 app.post("/deleteMemberActivityById",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
@@ -486,19 +619,41 @@ app.post("/deleteMemberActivityById",function(req,res){
 // 获取所有信息
 app.post("/allMessage",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `SELECT * from message order by time Desc`;
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `SELECT * from message order by time Desc limit ${size} OFFSET ${offset}`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
 	});
 })
+//获取总条数
+app.post("/allMessageCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from message`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
+	});
+})
 // 前端显示留言
 app.post("/allShowMessage",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `SELECT * FROM message WHERE status = '显示' or status = '精选' ORDER BY time Desc`;
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `SELECT * FROM message WHERE status = '显示' or status = '精选' ORDER BY time Desc limit ${size} OFFSET ${offset}`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
+	});
+})
+//获取前端显示留言总条数
+app.post("/allShowMessageCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from message WHERE status = '显示' or status = '精选'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
 	});
 })
 // 获取精选留言
@@ -560,10 +715,21 @@ app.post("/editMessageStatus",function(req,res){
 // 获取所有信息
 app.post("/allCheckOrg",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `SELECT * from org order by applyTime Desc`;
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `SELECT * from org order by applyTime Desc limit ${size} OFFSET ${offset}`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
+	});
+})
+//获取总条数
+app.post("/allCheckOrgCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from org`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
 	});
 })
 // 根据id 修改状态（审核）
@@ -616,10 +782,30 @@ app.post("/addInform",function(req,res){
 // 查询所有
 app.post("/allInform",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `SELECT * from inform order by time Desc limit ${size} OFFSET ${offset}`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 查询所有 不分页
+app.post("/Informs",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
 	var sql = `SELECT * from inform order by time Desc`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
+	});
+})
+//获取总条数
+app.post("/allInformCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from inform`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
 	});
 })
 // 根据id查询
@@ -687,13 +873,33 @@ app.post("/addLife",function(req,res){
 		res.send(JSON.stringify(results));
 	});
 })
-// 查询所有
-app.post("/allLife",function(req,res){
+// 不分页
+app.post("/Lifes",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
 	var sql = `SELECT * from life order by time Desc`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
+	});
+})
+// 查询所有 分页
+app.post("/allLife",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `SELECT * from life order by time Desc limit ${size} OFFSET ${offset}`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//获取总条数
+app.post("/allLifeCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from life`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
 	});
 })
 // 根据id查询
@@ -790,10 +996,21 @@ app.post("/editManagerPassword",function(req,res){
 //获取所有管理员信息
 app.post('/getAllManager', function(req, res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `select * from manager`;
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `select * from manager limit ${size} OFFSET ${offset}`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
+	});
+})
+//获取总条数
+app.post("/allManagerCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from manager`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
 	});
 })
 // 根据id获取管理员信息

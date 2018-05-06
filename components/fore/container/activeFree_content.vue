@@ -4,57 +4,119 @@
 		<table>
 			<thead>
 				<tr>
-					<th>年份</th>
-					<th>时间</th>
-					<th>情况</th>
+					<th>活动</th>
+					<th>编号</th>
+					<th>姓名</th>
+					<th>活动报名情况</th>
+					<th>金额</th>
+					<th>缴费情况</th>
 					<th>操作</th>
 				</tr>
 			</thead>
+			<tr v-if="freeData==''" style="text-align:center;">
+				<td style="line-height:50px;font-size:20px" colspan="7">无数据</td>
+			</tr>
 			<tr v-for="item in freeData">
-				<td>{{item.year}}</td>
-				<td>{{item.monthTime}}</td>
-				<td>{{item.situation}}</td>
-				<td><a href="##" class="edit" v-if="item.situation=='未缴费'">缴费</a></td>
+				<td>{{item.activity_name}}</td>
+				<td>{{item.member_sno}}</td>
+				<td>{{item.member}}</td>
+				<td :style="{'color': item.status=='已通过'?'green':(item.status=='不通过'?'red':'#666'), 'font-weight': '600'}">{{item.status}}</td>
+				<td v-if="item.money != ''">￥{{item.money}}</td>
+				<td v-else>管理员未录入</td>
+				<td>{{item.money_status}}</td>
+				<td><a href="javascript:" class="edit" v-if="item.money_status=='未缴费' && item.status=='已通过'" @click="payMoney(item.id, item.money)">缴费</a></td>
 			</tr>
 		</table>
 	</div>
 </template>
 <script>
+import $ from 'jQuery'
 export default {
 	data(){
 		return {
-			freeData: [
-				{
-					id: 0,
-					year: '2018年',
-					monthTime: '04-06月',
-					situation: '未缴费'
-				},
-				{
-					id: 1,
-					year: '2018年',
-					monthTime: '01-03月',
-					situation: '已缴费'
-				},
-				{
-					id: 2,
-					year: '2017年',
-					monthTime: '10-12月',
-					situation: '已缴费'
-				},
-				{
-					id: 3,
-					year: '2017年',
-					monthTime: '07-09月',
-					situation: '已缴费'
-				},
-				{
-					id: 4,
-					year: '2017年',
-					monthTime: '04-06月',
-					situation: '已缴费'
-				}
-			]
+			freeData: [],
+			sno: null, // 登录账号
+			memberInfo: [] // 获取的登陆者信息
+		}
+	},
+	methods: {
+		payMoney(id, money) {
+			var _this = this
+			if(money != '') {
+				$.ajax({
+					url: 'http://localhost:5555/editMemberMoney',
+					type: 'POST',
+					dataType: 'json',
+					data: { id: id, money: money, money_status: '待审核' },
+					success() {
+						alert('成功')
+						$.ajax({
+				    		url: 'http://localhost:5555/getMemberBySno',
+				    		type: 'POST',
+				    		dataType: 'json',
+				    		data: {
+				    			sno: _this.sno
+				    		},
+				    		success(data) {
+				    			_this.memberInfo = data
+				    			
+				    		}
+				    	})
+				    	.done(function() {
+							$.ajax({
+					    		url: 'http://localhost:5555/memberActivity',
+					    		type: 'POST',
+					    		dataType: 'json',
+					    		success(data) {
+					    			for(var i in data) {
+					    				if(_this.sno = data[i].member_sno && _this.memberInfo[0].name == data[i].member){
+					    					_this.freeData.push(data[i])
+					    				}
+					    			}
+					    		}
+					    	})
+						})
+					}
+				})
+			} else {
+				alert('无活动经费可缴！！')
+			}
+		}
+	},
+	mounted() {
+		var _this = this
+		this.sno = sessionStorage.getItem('sno')
+		this.freeData = []
+		if (this.sno != null) {
+			$.ajax({
+	    		url: 'http://localhost:5555/getMemberBySno',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		data: {
+	    			sno: _this.sno
+	    		},
+	    		success(data) {
+	    			_this.memberInfo = data
+	    			
+	    		}
+	    	})
+	    	.done(function() {
+				$.ajax({
+		    		url: 'http://localhost:5555/memberActivity',
+		    		type: 'POST',
+		    		dataType: 'json',
+		    		success(data) {
+		    			for(var i in data) {
+		    				if(_this.sno = data[i].member_sno && _this.memberInfo[0].name == data[i].member){
+		    					_this.freeData.push(data[i])
+		    				}
+		    			}
+		    		}
+		    	})
+			})
+		}else{
+			alert('您还未登录或者获取信息失败')
+			this.$router.push({ path: '/login' })
 		}
 	}
 }
@@ -108,7 +170,8 @@ export default {
 		border-radius: 5px;
 	}
 	a:hover {
-		color: #d93732;
+		color: #fff;
+		background: deepskyblue;
 	}
 	img{
 		cursor: pointer;

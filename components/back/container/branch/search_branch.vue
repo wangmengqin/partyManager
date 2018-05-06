@@ -29,12 +29,12 @@
 				<td><a :href="'#/tab/editBranch/'+item.id" class="edit">编辑</a><b @click="deleteBranchById(item.id)" class="del">删除</b></td>
 			</tr>
 		</table>
-		<xpagination />
+		<xpagination v-show="isShowPagination" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
 	</div>
 </template>
 
 <script>
-	import xpagination from "../../xpagination.vue";
+	import xpagination from "../../../pagination.vue";
 	import {formatDate} from '../../../../template/date.js';
 	import $ from 'jQuery';
 	export default {
@@ -43,17 +43,37 @@
 	  },
 	  data() {
 	  	return {
+	  		model:{
+	            total: 1,//总页数
+	            size:5,//每页显示条目个数不传默认10
+	            page:1,//当前页码
+	        },
+	        isShowPagination: true,
 	  		inputContent: '',
 	  		branchData: [] // 支部数据
 	  	}
 	  },
 	  methods: {
-	  	getAll() {
+	  	getAll(val) {
 	  		var _this = this
+	  		this.model.page=val;
+	  		this.isShowPagination = true
+	  		$.ajax({
+	    		url: 'http://localhost:5555/allBranchCount',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		success(data) {
+	    			_this.model.total = data[0].count
+	    		}
+	    	})
 	    	$.ajax({
 	    		url: 'http://localhost:5555/allBranch',
 	    		type: 'POST',
 	    		dataType: 'json',
+	    		data: {
+	    			size: _this.model.size,
+	    			page: _this.model.page
+	    		},
 	    		success(data) {
 	    			_this.branchData = data
 	    		}
@@ -61,6 +81,7 @@
 	  	},
 	  	getBranchByName() {
 	  		var _this = this
+	  		this.isShowPagination = false
 	    	$.ajax({
 	    		url: 'http://localhost:5555/getBranchByName',
 	    		type: 'POST',
@@ -75,6 +96,7 @@
 	  	},
 	  	getBranchByInstitute(){
 	  		var _this = this
+	  		this.isShowPagination = false
 	  		$.ajax({
 	    		url: 'http://localhost:5555/getBranchByInstitute',
 	    		type: 'POST',
@@ -125,21 +147,23 @@
 	    			id: id
 	    		},
 	    		success(data) {
-	    			_this.getAll();
+	    			$.ajax({
+			    		url: 'http://localhost:5555/allBranch',
+			    		type: 'POST',
+			    		dataType: 'json',
+			    		data: {
+			    			size: _this.model.size,
+			    			page: _this.model.page
+			    		},
+			    		success(data) {
+			    			_this.branchData = data
+			    		}
+			    	})
 	    		}
 	    	})
 	  	}
 	  },
 	  mounted() {
-	  	var _this = this
-    	$.ajax({
-    		url: 'http://localhost:5555/allBranch',
-    		type: 'POST',
-    		dataType: 'json',
-    		success(data) {
-    			_this.branchData = data
-    		}
-    	})
 	  }
 	};
 </script>

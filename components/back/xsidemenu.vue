@@ -31,7 +31,7 @@
 					{
 						id:0,
 						txt:"新闻管理",
-						isShow:false,
+						isShow:true,
 						url1:"#/tab/addnews",
 						url2:"#/tab/searchnews",
 						menu1: '增加新闻',
@@ -40,7 +40,7 @@
 					{
 						id:1,
 						txt:"新闻专题",
-						isShow:false,
+						isShow:true,
 						url1:"#/tab/addColumn",
 						url2:"#/tab/searchColumn",
 						menu1: '增加专题',
@@ -139,7 +139,7 @@
 					{
 						id:8,
 						txt:"我的信息",
-						isShow:false,
+						isShow:true,
 						url1:"#/tab/editpassword",
 						url2:"#/tab/editpassword",
 						menu1: '查看信息',

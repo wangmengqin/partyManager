@@ -37,12 +37,12 @@
 				<td><a :href="'#/tab/editActivity/'+item.id" class="edit">编辑</a><b @click="deleteActivityById(item.id)" class="del">删除</b></td>
 			</tr>
 		</table>
-		<xpagination />
+		<xpagination v-show="isShowPagination" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
 	</div>
 </template>
 
 <script>
-	import xpagination from "../../xpagination.vue";
+	import xpagination from "../../../pagination.vue";
 	import $ from 'jQuery';
 	export default {
 	  components: {
@@ -50,17 +50,37 @@
 	  },
 	  data() {
 	  	return {
+	  		model:{
+	            total: 1,//总页数
+	            size:5,//每页显示条目个数不传默认10
+	            page:1,//当前页码
+	        },
+	        isShowPagination: true,
 	  		inputContent: '',
 	  		activityData: [] // 活动数据
 	  	}
 	  },
 	  methods: {
-	  	getAll() {
+	  	getAll(val) {
 	  		var _this = this
+	  		this.model.page=val;
+	  		this.isShowPagination = true
+	  		$.ajax({
+	    		url: 'http://localhost:5555/allActivityCount',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		success(data) {
+	    			_this.model.total = data[0].count
+	    		}
+	    	})
 	    	$.ajax({
 	    		url: 'http://localhost:5555/allActivity',
 	    		type: 'POST',
 	    		dataType: 'json',
+	    		data: {
+	    			size: _this.model.size,
+	    			page: _this.model.page
+	    		},
 	    		success(data) {
 	    			_this.activityData = data
 	    		}
@@ -68,6 +88,7 @@
 	  	},
 	  	getActivityById() {
 	  		var _this = this
+	  		this.isShowPagination = false
 	    	$.ajax({
 	    		url: 'http://localhost:5555/getActivityById',
 	    		type: 'POST',
@@ -82,6 +103,7 @@
 	  	},
 	  	getActivityByName(){
 	  		var _this = this
+	  		this.isShowPagination = false
 	  		$.ajax({
 	    		url: 'http://localhost:5555/getActivityByName',
 	    		type: 'POST',
@@ -96,6 +118,7 @@
 	  	},
 	  	getActivityByBranch(){
 	  		var _this = this
+	  		this.isShowPagination = false
 	  		$.ajax({
 	    		url: 'http://localhost:5555/getActivityByBranch',
 	    		type: 'POST',
@@ -110,6 +133,7 @@
 	  	},
 	  	getActivityByDescribe(){
 	  		var _this = this
+	  		this.isShowPagination = false
 	  		$.ajax({
 	    		url: 'http://localhost:5555/getActivityByDescribe',
 	    		type: 'POST',
@@ -132,21 +156,23 @@
 	    			id: id
 	    		},
 	    		success(data) {
-	    			_this.getAll();
+	    			$.ajax({
+			    		url: 'http://localhost:5555/allActivity',
+			    		type: 'POST',
+			    		dataType: 'json',
+			    		data: {
+			    			size: _this.model.size,
+			    			page: _this.model.page
+			    		},
+			    		success(data) {
+			    			_this.activityData = data
+			    		}
+			    	})
 	    		}
 	    	})
 	  	}
 	  },
 	  mounted() {
-	  	var _this = this
-    	$.ajax({
-    		url: 'http://localhost:5555/allActivity',
-    		type: 'POST',
-    		dataType: 'json',
-    		success(data) {
-    			_this.activityData = data
-    		}
-    	})
 	  }
 	};
 </script>

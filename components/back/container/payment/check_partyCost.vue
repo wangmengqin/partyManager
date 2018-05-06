@@ -22,7 +22,7 @@
 				</tr>
 			</thead>
 			<tr v-if="orgData==''" style="text-align:center;">
-				<td style="line-height:50px;font-size:20px" colspan="8">无要审核数据</td>
+				<td style="line-height:50px;font-size:20px" colspan="9">无要审核数据</td>
 			</tr>
 			<tr v-for="(item,index) in orgData" :key="item.id">
 				<td>{{item.name}}</td>
@@ -36,12 +36,12 @@
 				<td v-if="item.status=='待审核'"><b @click="checkOrg(item.id,'已通过')" class="edit">确认收到回执</b><b @click="checkOrg(item.id,'不通过')" class="del">不通过</b></td>
 			</tr>
 		</table>
-		<xpagination />
+		<xpagination v-show="isShowPagination" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
 	</div>
 </template>
 
 <script>
-	import xpagination from "../../xpagination.vue";
+	import xpagination from "../../../pagination.vue";
 	import {formatDate} from '../../../../template/date.js';
 	import $ from 'jQuery';
 	export default {
@@ -50,6 +50,12 @@
 	  },
 	  data() {
 	  	return {
+	  		model:{
+	            total: 1,//总页数
+	            size:5,//每页显示条目个数不传默认10
+	            page:1,//当前页码
+	        },
+	        isShowPagination: true,
 	  		orgData: [], // 组织关系迁入迁出数据
 	  		inputContent: '' // 搜索的内容
 	  	}
@@ -61,13 +67,27 @@
 	    }
 	  },
 	  methods: {
-	  	getAll() {
+	  	getAll(val) {
 	  		var _this = this
+	  		this.model.page=val;
+	  		this.isShowPagination = true
+            $.ajax({
+	    		url: 'http://localhost:5555/allCheckOrgCount',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		success(data) {
+	    			_this.model.total = data[0].count
+	    		}
+	    	})
 	  		_this.memberData = []
 	    	$.ajax({
 	    		url: 'http://localhost:5555/allCheckOrg',
 	    		type: 'POST',
 	    		dataType: 'json',
+	    		data: {
+	    			size: _this.model.size,
+	    			page: _this.model.page
+	    		},
 	    		success(data) {
 	    			_this.orgData = data
 	    		}
@@ -86,12 +106,24 @@
 	    		},
 	    		success(data) {
 	    			alert('审核成功')
-	    			_this.getAll();
+	    			$.ajax({
+			    		url: 'http://localhost:5555/allCheckOrg',
+			    		type: 'POST',
+			    		dataType: 'json',
+			    		data: {
+			    			size: _this.model.size,
+			    			page: _this.model.page
+			    		},
+			    		success(data) {
+			    			_this.orgData = data
+			    		}
+			    	})
 	    		}
 	    	})
 	  	},
 	  	getOrgByName() {
 	  		var _this = this
+	  		this.isShowPagination = false
 	  		$.ajax({
 	    		url: 'http://localhost:5555/getOrgByName',
 	    		type: 'POST',
@@ -107,6 +139,7 @@
 	  	},
 	  	getOrgByBranch() {
 	  		var _this = this
+	  		this.isShowPagination = false
 	  		$.ajax({
 	    		url: 'http://localhost:5555/getOrgByBranch',
 	    		type: 'POST',
@@ -122,8 +155,6 @@
 	  	}
 	  },
 	  mounted() {
-	  	var _this = this
-    	_this.getAll()
 	  }
 	};
 </script>

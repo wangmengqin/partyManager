@@ -52,7 +52,7 @@ export default {
 		getAll() {
 			var _this = this
 			$.ajax({
-	    		url: 'http://localhost:5555/allLife',
+	    		url: 'http://localhost:5555/Lifes',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		success(data) {

@@ -83,7 +83,7 @@ export default{
 		this.selectCity = this.cityArr[0].id
 		var _this = this
     	$.ajax({
-    		url: 'http://localhost:5555/allBranch',
+    		url: 'http://localhost:5555/Branchs',
     		type: 'POST',
     		dataType: 'json',
     		success(data) {

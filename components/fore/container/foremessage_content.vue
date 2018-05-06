@@ -11,7 +11,7 @@
 		<div class="other-message">
 			<p class="message-menu">
 				<span>交流</span>
-				<a @click="getAll()">刷新</a>
+				<a @click="fresh">刷新</a>
 				<b style="float: right;margin-right:20px;" @click="lookMyMessage">查看我发表的</b>
 				<b style="float: right;margin-right:20px;" @click="lookRecommandMessage">查看精选</b>
 			</p>
@@ -47,13 +47,13 @@
 					<p>呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵</p>
 				</div>
 			</div>  -->
-			<xpagination />
+			<xpagination v-show="isShowPagination" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
 		</div>
 	</div>
 </template>
 
 <script>
-import xpagination from "../../back/xpagination.vue";
+import xpagination from "../../pagination.vue";
 import $ from 'jQuery'
 import {formatDate} from '../../../template/date.js';
 export default {
@@ -62,6 +62,12 @@ export default {
 	},
 	data() {
 		return {
+			model:{
+	            total: 1,//总页数
+	            size:5,//每页显示条目个数不传默认10
+	            page:1,//当前页码
+	        },
+	        isShowPagination: true,
 			messageData: [],
 			content: '', // 发表的内容
 			sno: null, // 登录的学号
@@ -76,8 +82,18 @@ export default {
 	    }
 	},
 	methods: {
-		getAll() {
+		getAll(val) {
 			var _this = this
+	  		this.model.page=val;
+	  		this.isShowPagination = true
+            $.ajax({
+	    		url: 'http://localhost:5555/allShowMessageCount',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		success(data) {
+	    			_this.model.total = data[0].count
+	    		}
+	    	})
 			this.sno = sessionStorage.getItem('sno')
 			$.ajax({
 	    		url: 'http://localhost:5555/getMemberBySno',
@@ -95,6 +111,26 @@ export default {
 				url: 'http://localhost:5555/allShowMessage',
 				type: 'POST',
 				dataType: 'json',
+				data: {
+	    			size: _this.model.size,
+	    			page: _this.model.page
+	    		},
+				success(data){
+					_this.messageData = data
+				}
+			})
+		},
+		// 刷新
+		fresh() {
+			var _this = this
+			$.ajax({
+				url: 'http://localhost:5555/allShowMessage',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+	    			size: _this.model.size,
+	    			page: _this.model.page
+	    		},
 				success(data){
 					_this.messageData = data
 				}
@@ -182,13 +218,23 @@ export default {
 	    		},
 	    		success(data) {
 	    			alert('删除成功')
-	    			_this.getAll()
+	    			$.ajax({
+						url: 'http://localhost:5555/allShowMessage',
+						type: 'POST',
+						dataType: 'json',
+						data: {
+			    			size: _this.model.size,
+			    			page: _this.model.page
+			    		},
+						success(data){
+							_this.messageData = data
+						}
+					})
 	    		}
 	    	})
 		}
 	},
 	mounted() {
-		this.getAll()
 	}
 }
 </script>

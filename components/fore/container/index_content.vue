@@ -171,7 +171,7 @@ export default {
     		}
     	})
     	$.ajax({
-    		url: 'http://localhost:5555/allInform',
+    		url: 'http://localhost:5555/Informs',
     		type: 'POST',
     		dataType: 'json',
     		success(data){

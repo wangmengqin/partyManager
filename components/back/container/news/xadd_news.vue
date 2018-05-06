@@ -39,7 +39,7 @@ export default {
     mounted() {
     	var _this = this
     	$.ajax({
-    		url: 'http://localhost:5555/allcolumns',
+    		url: 'http://localhost:5555/columns',
     		type: 'POST',
     		dataType: 'json',
     		success(data) {

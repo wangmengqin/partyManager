@@ -28,12 +28,12 @@
 				</td>
 			</tr>
 		</table>
-		<xpagination />
+		<xpagination v-show="isShowPagination" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
 	</div>
 </template>
 
 <script>
-	import xpagination from "../../xpagination.vue";
+	import xpagination from "../../../pagination.vue";
 	import {formatDate} from '../../../../template/date.js';
 	import $ from 'jQuery';
 	export default {
@@ -42,6 +42,12 @@
 	  },
 	  data() {
 	  	return {
+	  		model:{
+	            total: 1,//总页数
+	            size:5,//每页显示条目个数不传默认10
+	            page:1,//当前页码
+	        },
+	        isShowPagination: true,
 	  		messageData: []
 	  	}
 	  },
@@ -52,12 +58,26 @@
 		    }
 		},
 	  methods: {
-	  	getAll() {
+	  	getAll(val) {
 	  		var _this = this
+	  		this.model.page=val;
+	  		this.isShowPagination = true
+            $.ajax({
+	    		url: 'http://localhost:5555/allMessageCount',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		success(data) {
+	    			_this.model.total = data[0].count
+	    		}
+	    	})
 	    	$.ajax({
 	    		url: 'http://localhost:5555/allMessage',
 	    		type: 'POST',
 	    		dataType: 'json',
+	    		data: {
+	    			size: _this.model.size,
+	    			page: _this.model.page
+	    		},
 	    		success(data) {
 	    			_this.messageData = data
 	    		}
@@ -74,13 +94,23 @@
 	    		},
 	    		success(data) {
 	    			alert('删除成功')
-	    			_this.getAll()
+	    			$.ajax({
+			    		url: 'http://localhost:5555/allMessage',
+			    		type: 'POST',
+			    		dataType: 'json',
+			    		data: {
+			    			size: _this.model.size,
+			    			page: _this.model.page
+			    		},
+			    		success(data) {
+			    			_this.messageData = data
+			    		}
+			    	})
 	    		}
 	    	})
 		}
 	  },
 	  mounted() {
-	  	this.getAll()
 	  }
 	};
 </script>

@@ -35,12 +35,12 @@
 				<td><b @click="deleteManager(item.id)" class="del">取消管理员</b></td>
 			</tr>
 		</table>
-		<xpagination />
+		<xpagination v-show="isShowPagination" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
 	</div>
 </template>
 
 <script>
-	import xpagination from "../../xpagination.vue";
+	import xpagination from "../../../pagination.vue";
 	import $ from 'jQuery';
 	export default {
 	  components: {
@@ -48,17 +48,37 @@
 	  },
 	  data() {
 	  	return {
+	  		model:{
+	            total: 1,//总页数
+	            size:5,//每页显示条目个数不传默认10
+	            page:1,//当前页码
+	        },
+	        isShowPagination: true,
 	  		inputContent: '',
 	  		managerData: [] // 党员信息数据
 	  	}
 	  },
 	  methods: {
-	  	getAll() {
+	  	getAll(val) {
 	  		var _this = this
+	  		this.model.page=val;
+	  		this.isShowPagination = true
+	  		$.ajax({
+	    		url: 'http://localhost:5555/allManagerCount',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		success(data) {
+	    			_this.model.total = data[0].count
+	    		}
+	    	})
 	    	$.ajax({
 	    		url: 'http://localhost:5555/getAllManager',
 	    		type: 'POST',
 	    		dataType: 'json',
+	    		data: {
+	    			size: _this.model.size,
+	    			page: _this.model.page
+	    		},
 	    		success(data) {
 	    			_this.managerData = data
 	    		}
@@ -66,6 +86,7 @@
 	  	},
 	  	getManagerByName() {
 	  		var _this = this
+	  		this.isShowPagination = false
 	    	$.ajax({
 	    		url: 'http://localhost:5555/getManagerByName',
 	    		type: 'POST',
@@ -80,6 +101,7 @@
 	  	},
 	  	getManagerByInstitute(){
 	  		var _this = this
+	  		this.isShowPagination = false
 	  		$.ajax({
 	    		url: 'http://localhost:5555/getManagerByInstitute',
 	    		type: 'POST',
@@ -94,6 +116,7 @@
 	  	},
 	  	getManagerByBranch(){
 	  		var _this = this
+	  		this.isShowPagination = false
 	  		$.ajax({
 	    		url: 'http://localhost:5555/getManagerByBranch',
 	    		type: 'POST',
@@ -116,13 +139,23 @@
 	    			id: id
 	    		},
 	    		success(data) {
-	    			_this.getAll();
+	    			$.ajax({
+			    		url: 'http://localhost:5555/getAllManager',
+			    		type: 'POST',
+			    		dataType: 'json',
+			    		data: {
+			    			size: _this.model.size,
+			    			page: _this.model.page
+			    		},
+			    		success(data) {
+			    			_this.managerData = data
+			    		}
+			    	})
 	    		}
 	    	})
 	  	}
 	  },
 	  mounted() {
-	  	this.getAll()
 	  }
 	};
 </script>

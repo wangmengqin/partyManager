@@ -23,30 +23,50 @@
 				<td><a :href="'#/tab/editColumn/'+item.id" class="edit">编辑</a><b class="del" @click="deleteColumn(item.id)">删除</b></td>
 			</tr>
 		</table>
-		<xpagination></xpagination>
+		<xpagination v-show="isShowPagination" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
 	</div>
 </template>
 
 <script>
 	import $ from 'jQuery'
-	import xpagination from "../../xpagination.vue";
+	import xpagination from "../../../pagination.vue";
 	export default {
 	  components: {
 	    xpagination
 	  },
 	  data() {
 	  	return {
+	  		model:{
+	            total: 1,//总页数
+	            size:5,//每页显示条目个数不传默认10
+	            page:1,//当前页码
+	        },
+	        isShowPagination: true,
 	  		inputContent: null, // 搜索框的内容
 	  		columnData: [] // 专题内容
 	  	}
 	  },
 	  methods: {
-	  	getAll() {
+	  	getAll(val) {
 	  		var _this = this
+	  		this.model.page=val;
+	  		this.isShowPagination = true
+	  		$.ajax({
+	    		url: 'http://localhost:5555/allColumnsCount',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		success(data) {
+	    			_this.model.total = data[0].count
+	    		}
+	    	})
 	    	$.ajax({
 	    		url: 'http://localhost:5555/allcolumns',
 	    		type: 'POST',
 	    		dataType: 'json',
+	    		data: {
+	    			size: _this.model.size,
+	    			page: _this.model.page
+	    		},
 	    		success(data) {
 	    			_this.columnData = data
 	    		}
@@ -54,6 +74,7 @@
 	  	},
 	  	getColumnById() {
 	  		var _this = this
+	  		this.isShowPagination = false
 	    	$.ajax({
 	    		url: 'http://localhost:5555/getColumnById',
 	    		type: 'POST',
@@ -68,6 +89,7 @@
 	  	},
 	  	getColumnByName(){
 	  		var _this = this
+	  		this.isShowPagination = false
 	  		$.ajax({
 	    		url: 'http://localhost:5555/getColumnByName',
 	    		type: 'POST',
@@ -90,21 +112,23 @@
 	    			id: id
 	    		},
 	    		success(data) {
-	    			_this.getAll();
+	    			$.ajax({
+			    		url: 'http://localhost:5555/allcolumns',
+			    		type: 'POST',
+			    		dataType: 'json',
+			    		data: {
+			    			size: _this.model.size,
+			    			page: _this.model.page
+			    		},
+			    		success(data) {
+			    			_this.columnData = data
+			    		}
+			    	})
 	    		}
 	    	})
 	  	}
 	  },
 	  mounted() {
-	  	var _this = this
-    	$.ajax({
-    		url: 'http://localhost:5555/allcolumns',
-    		type: 'POST',
-    		dataType: 'json',
-    		success(data) {
-    			_this.columnData = data
-    		}
-    	})
 	  }
 	};
 </script>

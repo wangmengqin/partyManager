@@ -38,12 +38,12 @@
 				<td><b @click="passMember(item.id,index)" class="edit">通过</b><b @click="unPassMember(item.id)" class="del">不通过</b></td>
 			</tr>
 		</table>
-		<xpagination />
+		<xpagination v-show="isShowPagination" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
 	</div>
 </template>
 
 <script>
-	import xpagination from "../../xpagination.vue";
+	import xpagination from "../../../pagination.vue";
 	import $ from 'jQuery';
 	export default {
 	  components: {
@@ -51,18 +51,38 @@
 	  },
 	  data() {
 	  	return {
+	  		model:{
+	            total: 1,//总页数
+	            size:5,//每页显示条目个数不传默认10
+	            page:1,//当前页码
+	        },
+	        isShowPagination: true,
 	  		memberData: [], // 党员信息数据
 	  		branchData: [] // 支部数据
 	  	}
 	  },
 	  methods: {
-	  	getAll() {
+	  	getAll(val) {
 	  		var _this = this
+	  		this.model.page=val;
+	  		this.isShowPagination = true
+	  		$.ajax({
+	    		url: 'http://localhost:5555/allMemberCount',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		success(data) {
+	    			_this.model.total = data[0].count
+	    		}
+	    	})
 	  		_this.memberData = []
 	    	$.ajax({
 	    		url: 'http://localhost:5555/allMember',
 	    		type: 'POST',
 	    		dataType: 'json',
+	    		data: {
+	    			size: _this.model.size,
+	    			page: _this.model.page
+	    		},
 	    		success(data) {
 	    			for (var i in data) {
 	    				if(data[i].identify == ''){
@@ -89,7 +109,23 @@
 	    		},
 	    		success(data) {
 	    			alert('审核成功')
-	    			_this.getAll();
+	    			_this.memberData = []
+			    	$.ajax({
+			    		url: 'http://localhost:5555/allMember',
+			    		type: 'POST',
+			    		dataType: 'json',
+			    		data: {
+			    			size: _this.model.size,
+			    			page: _this.model.page
+			    		},
+			    		success(data) {
+			    			for (var i in data) {
+			    				if(data[i].identify == ''){
+			    					_this.memberData.push(data[i])
+			    				}
+			    			}
+			    		}
+			    	})
 	    		}
 	    	})
 	  	},
@@ -105,16 +141,31 @@
 	    		},
 	    		success(data) {
 	    			alert('审核成功')
-	    			_this.getAll();
+	    			_this.memberData = []
+			    	$.ajax({
+			    		url: 'http://localhost:5555/allMember',
+			    		type: 'POST',
+			    		dataType: 'json',
+			    		data: {
+			    			size: _this.model.size,
+			    			page: _this.model.page
+			    		},
+			    		success(data) {
+			    			for (var i in data) {
+			    				if(data[i].identify == ''){
+			    					_this.memberData.push(data[i])
+			    				}
+			    			}
+			    		}
+			    	})
 	    		}
 	    	})
 	  	}
 	  },
 	  mounted() {
 	  	var _this = this
-    	_this.getAll()
     	$.ajax({
-    		url: 'http://localhost:5555/allBranch',
+    		url: 'http://localhost:5555/Branchs',
     		type: 'POST',
     		dataType: 'json',
     		success(data) {
