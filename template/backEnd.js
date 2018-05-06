@@ -505,7 +505,76 @@ app.post("/editMemberPassword",function(req,res){
 		res.send(JSON.stringify(results));
 	});
 })
+/* 党费模块 */
+//查询所有信息
+app.post("/allPartyFree",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `select * from partyfree limit ${size} OFFSET ${offset}`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//获取总条数
+app.post("/allPartyFreeCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from partyfree`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
+	});
+})
+//查询所有教师信息
+app.post("/allTeacherPartyFree",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `select * from partyfree where type='${req.body.type}' limit ${size} OFFSET ${offset}`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//获取教师信息总条数
+app.post("/allTeacherPartyFreeCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from partyfree where type='${req.body.type}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
+	});
+})
+//根据id获取信息
+app.post("/getTeacherMemberById",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from partyfree where type='${req.body.type}' and sno like '%${req.body.sno}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
+	});
+})
+//根据name获取信息
+app.post("/getTeacherMemberByName",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from partyfree where type='${req.body.type}' and member like '%${req.body.name}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
+	});
+})
+// 根据name修改教师工资信息
+app.post("/editTeacherSalary",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update partyfree set salary = '${req.body.salary}', price = '${req.body.price}' where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
 
+/* 普通党员登录 */
 //获取当前登录者的所有信息（普通党员）
 app.post("/getLoginInfo",function(req,res){
 	//解决跨域问题

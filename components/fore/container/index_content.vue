@@ -46,22 +46,22 @@
 		</div>
 		<div class="zheng_box">
 			<h3><img src="/imgs/icon_zheng.png"/>争先创优</h3>
-			<dl>
-				<dt><img src="/imgs/banner1.jpg"/></dt>
-				<dd>十九大报告学习问答十九大报告学习问答十九大报告学习问答</dd>
+			<dl v-for="(item,index) in showExcellent" :key="index"  style="cursor:pointer" @click="linkToDetail(item.id)">
+				<dt><img :src="'/imgs/banner'+(index+1)+'.jpg'"/></dt>
+				<dd>{{item.title}}</dd>
 			</dl>
-			<dl>
+			<!-- <dl>
 				<dt><img src="/imgs/banner2.jpg"/></dt>
-				<dd>十九大报告学习问答十九大报告学习问答十九大报告学习问答</dd>
+				<dd></dd>
 			</dl>
 			<dl>
 				<dt><img src="/imgs/banner3.jpg"/></dt>
-				<dd>十九大报告学习问答十九大报告学习问答</dd>
+				<dd></dd>
 			</dl>
 			<dl>
 				<dt><img src="/imgs/banner4.jpg"/></dt>
-				<dd>十九大报告学习问答十九大报告学习问答十九大报告学习问答十九大报告学习问答十九大报告学习问答</dd>
-			</dl>
+				<dd></dd>
+			</dl> -->
 		</div>
 		<div class="card_box">
 			<h3><img src="/imgs/icon_xiaoxi.png"/>精选帖子</h3>
@@ -104,7 +104,10 @@ export default {
 			sno: null, // 登陆的用户工号、学号
 			memberName: null,
 			messageData: [], // 精选留言
-			informData: [] // 公告栏数据
+			informData: [], // 公告栏数据
+			excellent: [], // 所有争先创优数据
+			showExcellent: [], // 展示的争先创优数据
+			lifeData: [] // 党务管理数据
 		}
 	},
 	filters: {
@@ -161,13 +164,14 @@ export default {
     		dataType: 'json',
     		success(data) {
     			if(data.length >= 4){
-    				for(var i=data.length-4; i<data.length; i++){
+    				for(var i=0; i<4; i++){
 	    				_this.messageData.push(data[i])
 	    			}
 	    			// 每次取最新的4条展示
     			} else {
     				_this.messageData = data
     			}
+    			console.log(data)
     		}
     	})
     	$.ajax({
@@ -176,14 +180,39 @@ export default {
     		dataType: 'json',
     		success(data){
     			if(data.length >= 6){
-    				for(var i=data.length-6; i<data.length; i++){
+    				for(var i=0; i<6; i++){
 	    				_this.informData.push(data[i])
 	    			}
-	    			// 每次取最新的4条展示
+	    			// 每次取最新的6条展示
     			} else {
     				_this.informData = data
     			}
     		}
+    	})
+		$.ajax({
+    		url: 'http://localhost:5555/Lifes',
+    		type: 'POST',
+    		dataType: 'json',
+    		success(data) {
+    			_this.lifeData = data
+    		}
+    	})
+    	.done(function() {
+	    	_this.excellent = []
+	    	for (var i in _this.lifeData) {
+	    		if (_this.lifeData[i].type == '争先创优') {
+	    			_this.excellent.push(_this.lifeData[i])
+	    		}
+	    	}
+	    	_this.showExcellent = []
+	    	if(_this.excellent.length >= 4){
+	    		for(var i=_this.excellent.length-4; i<_this.excellent.length; i++){
+    				_this.showExcellent.push(_this.excellent[i])
+    			}
+    			// 每次取最新的4条展示
+			} else {
+				_this.showExcellent = _this.excellent
+			}
     	})
 	},
 	methods: {
@@ -241,6 +270,9 @@ export default {
 				alert('获取信息失败，请重新登录')
 				location.href = '#/login'
 			}
+		},
+		linkToDetail(id) {
+			this.$router.push({ path: `/fore/detail/life/${id}` })
 		}
 	}
 }
@@ -424,5 +456,8 @@ export default {
 	.look-more:hover{
 		background: #DDDDD8;
 		color: #333;
+	}
+	dl:hover dd{
+		color: #d93732;
 	}
 </style>

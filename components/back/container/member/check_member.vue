@@ -18,7 +18,7 @@
 				</tr>
 			</thead>
 			<tr v-if="memberData==''" style="text-align:center;">
-				<td style="line-height:50px;font-size:20px" colspan="10">无要审核数据</td>
+				<td style="line-height:50px;font-size:20px" colspan="10">此页无要审核数据</td>
 			</tr>
 			<tr v-for="(item,index) in memberData" :key="item.id">
 				<td>{{item.name}}</td>

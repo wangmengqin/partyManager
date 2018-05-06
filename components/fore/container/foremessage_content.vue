@@ -168,7 +168,18 @@ export default {
 				    		},
 				    		success(data) {
 				    			alert('发表成功')
-				    			_this.getAll()
+								$.ajax({
+									url: 'http://localhost:5555/allShowMessage',
+									type: 'POST',
+									dataType: 'json',
+									data: {
+						    			size: _this.model.size,
+						    			page: _this.model.page
+						    		},
+									success(data){
+										_this.messageData = data
+									}
+								})
 				    			_this.content = ''
 				    		}
 				    	})

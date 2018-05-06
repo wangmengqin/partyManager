@@ -4,42 +4,43 @@
 		<p>
 			
 			<input type="text" placeholder="请输入关键字,无内容则搜索所有" v-model="inputContent"/>
-			<button @click="getActivityById">通过id搜索</button>
-			<button @click="getActivityByName">通过名称搜索</button>
+			<button @click="getTeacherMemberById">通过编号搜索</button>
+			<button @click="getTeacherMemberByName">通过姓名搜索</button>
 		</p>
 		<table>
 			<thead>
 				<tr>
-					<th>活动名称</th>
-					<th>学号</th>
+					
+					<th>编号</th>
 					<th>姓名</th>
-					<th>应缴费用</th>
-					<th>缴费状态</th>
-					<th>操作</th>
+					<th>成为正式党员时间</th>
+					<th>身份</th>
+					<th>年月</th>
+					<th>工资</th>
 					<th>操作</th>
 				</tr>
 			</thead>
-			<tr v-if="activityMemberData==''" style="text-align:center;">
+			<tr v-if="memberData==''" style="text-align:center;">
 				<td style="line-height:50px;font-size:20px" colspan="6">无要审核数据</td>
 			</tr>
-			<tr v-if="item.status == '已通过'" v-for="item in activityMemberData" :key="item.id">
-				<td>{{item.activity_name}}</td>
-				<td>{{item.member_sno}}</td>
+			<tr v-for="item in memberData" :key="item.id">
+				<td>{{item.sno}}</td>
 				<td>{{item.member}}</td>
-				<td v-if="item.money!=''">{{item.money}}元</td>
+				<td>{{item.memberTime | formatDate}}</td>
+				<td>{{item.type}}</td>
+				<td>{{new Date(Number(item.memberTime)).getFullYear() +'年'+ (new Date(Number(item.memberTime)).getMonth()+1)+'月'}}</td>
+				<td v-if="item.salary!=''">{{item.salary}}元</td>
 				<td v-else></td>
-				<td :style="{'color': item.money_status=='已缴费'?'green':(item.money_status=='未缴费'?'red':'#666'), 'font-weight': '600'}">{{item.money_status}}</td>
-				<td><b v-show="item.money=='' && item.money_status=='未缴费'" class="edit" @click="showFilter(item)">输入应缴费用</b></td>
-				<td><b v-show="item.money_status=='待确认'" @click="certainPay(item.id, item.money)" class="edit">确认已缴费</b></td>
+				<td><b v-show="item.salary==''" class="edit" @click="showFilter(item)">录入工资</b></td>
 			</tr>
 		</table>
 		<p class="filter" v-show="isShow"></p>
 		<ul v-show="isShow">
-			<h3>请填写应缴费用 <img style="width:20px;height:20px;position: absolute; right: 20px; top: 8px;" src="/imgs/icon_cancel.png" @click="hideFilter" /></h3>
-			<li><span>交费的用户：</span><b>{{itemInfo.member}}</b></li>
-			<li><span>学号：</span><b>{{itemInfo.member_sno}}</b></li>
-			<li><span>费用：</span><input v-model="money" type="number" placeholder="此次要交的活动经费">元</li>
-			<li style="text-align: center;"><button @click="submitMoney">提交</button><button @click="hideFilter">取消</button></li>
+			<h3>请填写工资 <img style="width:20px;height:20px;position: absolute; right: 20px; top: 8px;" src="/imgs/icon_cancel.png" @click="hideFilter" /></h3>
+			<li><span>用户：</span><b>{{itemInfo.member}}</b></li>
+			<li><span>编号：</span><b>{{itemInfo.sno}}</b></li>
+			<li><span>工资：</span><input v-model="salary" type="number" placeholder="该老师的工资">元</li>
+			<li style="text-align: center;"><button @click="submitSalary">提交</button><button @click="hideFilter">取消</button></li>
 		</ul>
 		<xpagination v-show="isShowPagination" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
 	</div>
@@ -47,6 +48,7 @@
 
 <script>
 	import xpagination from "../../../pagination.vue";
+	import {formatDate} from '../../../../template/date.js';
 	import $ from 'jQuery';
 	export default {
 	  components: {
@@ -61,12 +63,18 @@
 	        },
 	        isShowPagination: true,
 	        isShow:false, // 显示输入框
-	        itemInfo: [], // 要交费人的数据
-	        money: null, // 要交费用
+	        itemInfo: [], // 要录入的用户的数据
+	        salary: null, // 工资
 	  		inputContent: '',
-	  		activityMemberData: [] // 活动数据
+	  		memberData: [] // 党员数据
 	  	}
 	  },
+	  filters: {
+		    formatDate(time) {
+		        var date = new Date(Number(time));
+		        return formatDate(date, 'yyyy-MM-dd hh:mm');
+		    }
+		},
 	  methods: {
 	  	showFilter(item) {
 	  		this.isShow=true;
@@ -76,30 +84,41 @@
 			this.isShow=false;
 			$("html").css('overflowY','auto');
 		},
-		submitMoney() {
+		submitSalary() {
 			var _this = this
-			if(this.money != ''){
+			if(this.salary != ''){
+				var free // 党费
+				if(this.salary <= 3000) {
+					free = this.salary * 0.005 * 3
+				} else if(3000 < this.salary <= 5000) {
+					free = this.salary * 0.01 * 3
+				} else if(5000 < this.salary <= 10000) {
+					free = this.salary * 0.015 * 3
+				} else {
+					free = this.salary * 0.02 * 3
+				}
 				$.ajax({
-					url: 'http://localhost:5555/editMemberMoney',
+					url: 'http://localhost:5555/editTeacherSalary',
 					type: 'POST',
 					dataType: 'json',
-					data: { id: _this.itemInfo.id, money: _this.money, money_status: '未缴费' },
+					data: { id: _this.itemInfo.id, salary: _this.salary, price: free },
 					success() {
-						alert('费用录入成功')
-						_this.money = null
+						alert('工资录入成功')
+						_this.salary = null
 						_this.hideFilter()
 					}
 				}).done(function() {
 					$.ajax({
-			    		url: 'http://localhost:5555/allMemberActivity',
+			    		url: 'http://localhost:5555/allTeacherPartyFree',
 			    		type: 'POST',
 			    		dataType: 'json',
 			    		data: {
 			    			size: _this.model.size,
-			    			page: _this.model.page
+			    			page: _this.model.page,
+			    			type: '教师'
 			    		},
 			    		success(data) {
-			    			_this.activityMemberData = data
+			    			_this.memberData = data
 			    		}
 			    	})
 				})
@@ -108,90 +127,98 @@
 				alert('请输入费用')
 			}
 		},
-		certainPay(id, money) {
-			var _this = this
-			$.ajax({
-				url: 'http://localhost:5555/editMemberMoney',
-				type: 'POST',
-				dataType: 'json',
-				data: { id: id, money: money, money_status: '已缴费' },
-				success() {
-					alert('确认成功')
-					$.ajax({
-			    		url: 'http://localhost:5555/allMemberActivity',
-			    		type: 'POST',
-			    		dataType: 'json',
-			    		data: {
-			    			size: _this.model.size,
-			    			page: _this.model.page
-			    		},
-			    		success(data) {
-			    			_this.activityMemberData = data
-			    		}
-			    	})
-				}
-			})
-		},
 	  	getAll(val) {
 	  		var _this = this
 	  		this.model.page=val;
 	  		this.isShowPagination = true
 	  		$.ajax({
-	    		url: 'http://localhost:5555/allMemberActivityCount',
+	    		url: 'http://localhost:5555/allTeacherPartyFreeCount',
 	    		type: 'POST',
 	    		dataType: 'json',
+	    		data: {
+	    			type: '教师'
+	    		},
 	    		success(data) {
 	    			_this.model.total = data[0].count
 	    		}
 	    	})
 	    	$.ajax({
-	    		url: 'http://localhost:5555/allMemberActivity',
+	    		url: 'http://localhost:5555/allTeacherPartyFree',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
 	    			size: _this.model.size,
-	    			page: _this.model.page
+	    			page: _this.model.page,
+	    			type: '教师'
 	    		},
 	    		success(data) {
-	    			_this.activityMemberData = data
+	    			_this.memberData = data
 	    		}
 	    	})
 	  	},
-	  	getActivityById() {
+	  	getTeacherMemberById() {
 	  		var _this = this
-	  		if(_this.inputContent == null) {
+	  		if(_this.inputContent == '') {
 	  			this.isShowPagination = true
+	  			$.ajax({
+		    		url: 'http://localhost:5555/allTeacherPartyFree',
+		    		type: 'POST',
+		    		dataType: 'json',
+		    		data: {
+		    			size: _this.model.size,
+		    			page: _this.model.page,
+		    			type: '教师'
+		    		},
+		    		success(data) {
+		    			_this.memberData = data
+		    		}
+		    	})
 	  		} else {
 	  			this.isShowPagination = false
 	  		}
 	    	$.ajax({
-	    		url: 'http://localhost:5555/getActivityById',
+	    		url: 'http://localhost:5555/getTeacherMemberById',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
-	    			id: _this.inputContent
+	    			sno: _this.inputContent,
+	    			type: '教师'
 	    		},
 	    		success(data) {
-	    			_this.activityData = data
+	    			_this.memberData = data
 	    		}
 	    	})
 	  	},
-	  	getActivityByName(){
+	  	getTeacherMemberByName(){
 	  		var _this = this
-	  		if(_this.inputContent == null) {
+	  		if(_this.inputContent == '') {
 	  			this.isShowPagination = true
+	  			$.ajax({
+		    		url: 'http://localhost:5555/allTeacherPartyFree',
+		    		type: 'POST',
+		    		dataType: 'json',
+		    		data: {
+		    			size: _this.model.size,
+		    			page: _this.model.page,
+		    			type: '教师'
+		    		},
+		    		success(data) {
+		    			_this.memberData = data
+		    		}
+		    	})
 	  		} else {
 	  			this.isShowPagination = false
 	  		}
 	  		$.ajax({
-	    		url: 'http://localhost:5555/getActivityByName',
+	    		url: 'http://localhost:5555/getTeacherMemberByName',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
-	    			name: _this.inputContent
+	    			name: _this.inputContent,
+	    			type: '教师'
 	    		},
 	    		success(data) {
-	    			_this.activityData = data
+	    			_this.memberData = data
 	    		}
 	    	})
 	  	}

@@ -252,7 +252,9 @@
 					    				for(var i in data){
 						    				if(data[i].status=='已通过'){
 							    				alert('您已迁出成功，迁出至：'+ data[i].city+data[i].address)
-							    				break;
+							    				_this.isShow=false;
+												$("html").css('overflowY','auto');
+							    				return;
 							    			} else {
 							    				_this.isShow=true;
 												$("html").css('overflowY','hidden');

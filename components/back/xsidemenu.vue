@@ -104,9 +104,9 @@
 						id:5,
 						txt:"党费管理",
 						isShow:false,
-						url1:"#/tab/addnews",
-						url2:"#/tab/searchnews",
-						menu1: '审核党费情况',
+						url1:"#/tab/addSalary",
+						url2:"#/tab/checkPartyCost",
+						menu1: '录入工资',
 						menu2: '查询党费收缴'
 					},
 					{

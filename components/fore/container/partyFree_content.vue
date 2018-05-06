@@ -10,6 +10,9 @@
 					<th>操作</th>
 				</tr>
 			</thead>
+			<tr v-if="freeData==''" style="text-align:center;">
+				<td style="line-height:50px;font-size:20px" colspan="4">无数据</td>
+			</tr>
 			<tr v-for="item in freeData">
 				<td>{{item.year}}</td>
 				<td>{{item.monthTime}}</td>

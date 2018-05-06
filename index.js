@@ -49,6 +49,9 @@ import xcheckOrg from "./components/back/tab/org/check_org_tab.vue";
 import xsearchLife from "./components/back/tab/life/search_life_tab.vue";
 import xaddLife from "./components/back/tab/life/add_life_tab.vue";
 import xeditLife from "./components/back/tab/life/edit_life_tab.vue";
+// 党费组件
+import xaddSalary from "./components/back/tab/payment/add_salary_tab.vue";
+import xcheckPartyCost from "./components/back/tab/payment/check_partyCost_tab.vue";
 //超级管理员组件
 import xsearchManager from "./components/back/tab/manager/search_manager_tab.vue";
 import xsetManager from "./components/back/tab/manager/set_manager_tab.vue";
@@ -202,6 +205,14 @@ var router = new VueRouter({
             {
               path: "editpassword",
               component: xeditpassword
+            },
+            {
+              path: "addSalary",
+              component: xaddSalary
+            },
+            {
+              path: "checkPartyCost",
+              component: xcheckPartyCost
             }
           ]
        },

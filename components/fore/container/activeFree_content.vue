@@ -47,7 +47,7 @@ export default {
 					url: 'http://localhost:5555/editMemberMoney',
 					type: 'POST',
 					dataType: 'json',
-					data: { id: id, money: money, money_status: '待审核' },
+					data: { id: id, money: money, money_status: '待确认' },
 					success() {
 						alert('成功')
 						$.ajax({
