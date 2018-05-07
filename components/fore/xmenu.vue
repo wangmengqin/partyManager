@@ -5,10 +5,10 @@
 			<li @mouseover="changeShow" @mouseout="changeShow"><a href="#/fore/studyKnow" >我要学习</a>
 				<ul v-show="isShow">
 					<li><a href="#/fore/studyKnow">党章学习</a></li>
-					<li><a href="##">党课培训</a></li>
-					<li><a href="##">积极分子培训</a></li>
-					<li><a href="##">结业考核</a></li>
-					<li><a href="##">专题培训</a></li>
+					<li><a href="javascript:" @click="linkToTrain('party')">党课培训</a></li>
+					<li><a href="javascript:" @click="linkToTrain('active')">积极分子培训</a></li>
+					<li><a href="#/fore/test">结业考核</a></li>
+					<li><a href="javascript:" @click="linkToTrain('topic')">专题培训</a></li>
 				</ul>
 			</li>
 			<li><a href="#/fore/allActivities">查看活动</a></li>
@@ -21,7 +21,7 @@
 			<li><a href="#/fore/life">民主生活</a></li>
 			<li><a href="#/fore/news">新闻资讯</a></li>
 			<li><a href="#/fore/organize">组织结构</a></li>
-			<li><a href="#/fore/message">论坛</a></li>
+			<li><a href="#/fore/message">论坛留言</a></li>
 			<li><a href="#/fore/apply">申请入党</a></li>
 			<li><a href="#/fore/mine">我的</a></li>
 		</ul>
@@ -42,6 +42,9 @@
 			},
 			changeShowFill(){
 				this.isShowFill=!this.isShowFill;
+			},
+			linkToTrain(type) {
+				this.$router.push({ path: '/fore/train', query:{type: type} } )
 			}
 		}
 	}

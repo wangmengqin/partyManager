@@ -17,6 +17,7 @@
 				<ul v-show="obj.isShow">
 					<li><a :href="obj.url1">{{obj.menu1}}</a></li>
 					<li><a :href="obj.url2">{{obj.menu2}}</a></li>
+					<li v-if="obj.menu3"><a :href="obj.url3">{{obj.menu3}}</a></li>
 				</ul>
 			</li>
 		</ul>
@@ -115,8 +116,10 @@
 						isShow:false,
 						url1:"#/tab/addnews",
 						url2:"#/tab/searchnews",
-						menu1: '增加党课',
-						menu2: '查询党校信息'
+						url3: '#/tab/searchnews',
+						menu1: '培训发布',
+						menu2: '查询培训内容',
+						menu3: '审核参加名单'
 					},
 					{
 						id:7,

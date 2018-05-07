@@ -69,6 +69,10 @@ import apply from "./components/fore/tab/fore_apply.vue";
 import partyFree from "./components/fore/tab/fore_partyFree.vue";
 import activeFree from "./components/fore/tab/fore_activeFree.vue";
 import contentDetail from "./components/fore/tab/fore_detail.vue";
+// 培训组件
+import train from "./components/fore/tab/fore_train.vue";
+// 考核组件
+import test from "./components/fore/tab/fore_test.vue";
 //登录组件
 import login from "./components/login.vue";
 
@@ -267,6 +271,14 @@ var router = new VueRouter({
             {
               path: 'detail/:sort/:id',
               component: contentDetail
+            },
+            {
+              path: 'train',
+              component: train
+            },
+            {
+              path: 'test',
+              component: test
             }
           ]
        }
