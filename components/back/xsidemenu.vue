@@ -13,11 +13,12 @@
 		<ul v-else>
 			<!-- 普通管理员菜单 -->
 			<li v-for="(obj,index) in menuArr">
-				<p @click="changeIsShow(index)"><img :src="obj.isShow?selectImg:img"/><span v-text="obj.txt"></span></p>
+				<p @click="changeIsShow(index)"><img :src="obj.isShow?selectImg:img"/><span v-text="(index+1)+'.'+obj.txt"></span></p>
 				<ul v-show="obj.isShow">
 					<li><a :href="obj.url1">{{obj.menu1}}</a></li>
 					<li><a :href="obj.url2">{{obj.menu2}}</a></li>
 					<li v-if="obj.menu3"><a :href="obj.url3">{{obj.menu3}}</a></li>
+					<li v-if="obj.menu4"><a :href="obj.url4">{{obj.menu4}}</a></li>
 				</ul>
 			</li>
 		</ul>
@@ -98,8 +99,10 @@
 						isShow:false,
 						url1:"#/tab/checkMember",
 						url2:"#/tab/searchMember",
+						url3:"#/tab/checkMember",
 						menu1: '审核新增党员',
-						menu2: '查询党员信息'
+						menu2: '查询党员信息',
+						menu3: '审核预备党员'
 					},
 					{
 						id:5,
@@ -114,12 +117,14 @@
 						id:6,
 						txt:"党校管理",
 						isShow:false,
-						url1:"#/tab/addnews",
-						url2:"#/tab/searchnews",
-						url3: '#/tab/searchnews',
+						url1:"#/tab/addTrain",
+						url2:"#/tab/searchTrain",
+						url3: '#/tab/checkTrainMember',
+						url4: '#/tab/searchnews',
 						menu1: '培训发布',
 						menu2: '查询培训内容',
-						menu3: '审核参加名单'
+						menu3: '审核参加名单',
+						menu4: '结业考核成绩'
 					},
 					{
 						id:7,

@@ -52,6 +52,11 @@ import xeditLife from "./components/back/tab/life/edit_life_tab.vue";
 // 党费组件
 import xaddSalary from "./components/back/tab/payment/add_salary_tab.vue";
 import xcheckPartyCost from "./components/back/tab/payment/check_partyCost_tab.vue";
+// 党校组件（培训） 
+import xsearchTrain from "./components/back/tab/school/search_train_tab.vue";
+import xcheckTrainMember from "./components/back/tab/school/check_train_member_tab.vue";
+import xaddTrain from "./components/back/tab/school/add_train_tab.vue";
+import xeditTrain from "./components/back/tab/school/edit_train_tab.vue";
 //超级管理员组件
 import xsearchManager from "./components/back/tab/manager/search_manager_tab.vue";
 import xsetManager from "./components/back/tab/manager/set_manager_tab.vue";
@@ -197,6 +202,22 @@ var router = new VueRouter({
             {
               path: "editLife/:id",
               component: xeditLife
+            },
+            {
+              path: "addTrain",
+              component: xaddTrain
+            },
+            {
+              path: "searchTrain",
+              component: xsearchTrain
+            },
+            {
+              path: "editTrain/:id",
+              component: xeditTrain
+            },
+            {
+              path: "checkTrainMember",
+              component: xcheckTrainMember
             },
             {
               path: "searchManager",

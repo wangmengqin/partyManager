@@ -6,19 +6,23 @@
 			<h3 v-if="type=='topic'">专题培训</h3>
 			<div style="overflow:hidden;margin:30px;">
 				<ul>
-					<!-- <li v-for="item in lectureData">
-						<img v-if="item.img==''" src="/imgs/icon_active.png" class="active_img"/>
-						<img v-if="item.img!=''" :src="item.img" class="active_img"/>
-						<div class="fl">
-							<h5>{{item.activity_name}}</h5>
-							<strong v-if="item.activity_describe!=''">{{item.activity_describe}}</strong>
-							<strong v-if="item.speaker!=''">演讲人：{{item.speaker}}</strong>
-							<br v-if="item.activity_speaker!=''"/>
-							<em style="display: block;">地点：{{item.place}}</em>
-							<b>时间：{{item.time}} <a @click="joinActivity(item.activity_name,item.id)"><img src="/imgs/icon_return.png"/>我要参加</a></b>
+					<li v-for="(item,index) in dataInfo" :key="index">
+						<h4>
+							{{index+1}}、{{item.title}}
+							<a href="javascript:" v-if="type=='party'"><img src="/imgs/icon_return.png"/>我要上党课</a>
+							<a href="javascript:" v-else><img src="/imgs/icon_return.png"/>我要参加培训</a>
+						</h4>
+						<p class="c-8c">{{item.trainDescribe}}</p>
+						<div>
+							<strong>演讲人：{{item.teacher}}</strong><span style="display:inline-block;width:150px;"></span>
+							<em style="color: #333">地点：{{item.address}}</em>
 						</div>
-					</li> -->
-					<li>
+						<div>
+							<b style="color: #333">时间：2{{item.time}} </b>
+							<span style="color: red">(tips：请注意时间，请勿迟到!)</span>
+						</div>
+					</li>
+					<!--<li>
 						<h4>
 							1、以“弘扬光荣传统、发挥先锋模范作用”为主题的党课发挥先锋模范作用”为主题的党课
 							<a href="javascript:" v-if="type=='party'"><img src="/imgs/icon_return.png"/>我要上党课</a>
@@ -81,7 +85,7 @@
 							<b style="color: #333">时间：2018年05月04日 下午2:00 </b>
 							<span style="color: red">(tips：请注意时间，请勿迟到!)</span>
 						</div>
-					</li>
+					</li> -->
 				</ul>
 			</div>
 		</div>
@@ -92,19 +96,53 @@
 	</div>
 </template>
 <script>
+import $ from 'jQuery'
 export default {
 	data() {
 		return {
-			type: '' // 培训类型
+			type: '', // 培训类型
+			dataInfo: [] // 显示的数据
 		}
 	},
 	watch: {
-		type() {
+		$route() {
 			this.type = this.$route.query.type
+			console.log(this.type)
+			if(this.type == 'active') {
+				this.getData('入党积极分子培训')
+			} else if (this.type == 'party') {
+				this.getData('党课')
+			} else {
+				this.getData('专题培训')
+			}
+		}
+	},
+	methods: {
+		getData(type) {
+			var _this = this
+			$.ajax({
+	    		url: 'http://localhost:5555/getTrainByType',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		data: {
+	    			type: type
+	    		},
+	    		success(data) {
+	    			_this.dataInfo = data
+	    			console.log(data)
+	    		}
+	    	})
 		}
 	},
 	mounted() {
 		this.type = this.$route.query.type
+		if(this.type == 'active') {
+			this.getData('入党积极分子培训')
+		} else if (this.type == 'party') {
+			this.getData('党课')
+		} else {
+			this.getData('专题培训')
+		}
 	}
 }
 </script>
@@ -150,6 +188,10 @@ export default {
 	    white-space: pre;
 	    text-overflow: ellipsis;
 	    overflow: hidden;
+	}
+	.c-8c{
+		color: #8C8C8C;
+		font-size: 12px;
 	}
 	ul li a img{
 		width: 40px;

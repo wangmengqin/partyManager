@@ -87,13 +87,13 @@ export default {
 	    			content: _this.editData.content
 	    		},
 	    		success(data) {
-	    			alert('添加成功')
+	    			alert('修改成功')
 	    			_this.back();
 	    		}
 	    	})
     	},
     	back(){
-    		location.href = '#/tab/searchActivity'
+    		this.$router.push({ path: `/tab/searchActivity` })
     	}
     }
 }

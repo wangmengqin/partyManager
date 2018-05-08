@@ -1035,6 +1035,102 @@ app.post("/deleteLife",function(req,res){
 	});
 })
 
+/* 党校模块-培训 */
+// 发布培训
+app.post("/addTrain",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `INSERT INTO topictrain(title, teacher, time, address, trainDescribe, type) VALUES ('${req.body.title}', '${req.body.teacher}', '${req.body.time}', '${req.body.place}', '${req.body.describe}', '${req.body.type}' )`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 不分页
+app.post("/Trains",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from topictrain`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 查询所有 分页
+app.post("/allTrain",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `SELECT * from topictrain limit ${size} OFFSET ${offset}`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//获取总条数
+app.post("/allTrainCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from topictrain`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
+	});
+})
+// 根据id查询
+app.post("/getTrainById",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from topictrain where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据老师查询
+app.post("/getTrainByTeacher",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from topictrain where teacher like '%${req.body.teacher}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据标题查询
+app.post("/getTrainByTitle",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from topictrain where title like '%${req.body.title}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据类型查询
+app.post("/getTrainByType",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from topictrain where type like '%${req.body.type}%'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id 修改内容
+app.post("/editTrain",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update topictrain set title = '${req.body.title}', teacher = '${req.body.teacher}', time = '${req.body.time}', address = '${req.body.address}', trainDescribe = '${req.body.trainDescribe}', type = '${req.body.type}' where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id删除信息
+app.post("/deleteTrain",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `delete from topictrain where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+/* 党校模块-考核 */
+
+/* 登录模块 */
 //获取超级管理员登录信息
 app.post('/getSuperLoginInfo', function(req, res){
 	res.append("Access-Control-Allow-Origin","*");
