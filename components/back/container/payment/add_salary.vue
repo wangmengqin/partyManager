@@ -124,7 +124,7 @@
 				})
 				
 			} else {
-				alert('请输入费用')
+				alert('请输入工资')
 			}
 		},
 	  	getAll(val) {

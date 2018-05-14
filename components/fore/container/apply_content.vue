@@ -2,7 +2,7 @@
 	<div style="overflow: hidden;margin: 0 auto; width: 1200px;padding: 20px 0;background: #FDFDFD;">
 		<div v-if='isShowApply'>
 			<h3>请填写个人信息</h3>
-			<form style="width:500px;margin:0 auto">
+			<form style="width:900px;margin:0 auto">
 				<p>
 					<label for="">姓名：</label><input type="text" v-model="name" placeholder="清填写姓名">
 				</p>
@@ -52,7 +52,7 @@
 				<p>
 					<label for="">学号：</label><input type="text" v-model="sno" placeholder="清填写学号">
 				</p>
-				<p><label for="">入党申请书：</label><input type="file" class="noborder"></p>
+				<p style="overflow:hidden;"><label style="float:left;">入党申请书：</label><vue-editor style="width:650px;float:left" v-model="content"></vue-editor></p>
 				<p style="text-align:center;"><button @click="certainApply">确认申请</button><input type="reset" class="noborder reset" /></p>
 			</form>
 		</div>
@@ -99,8 +99,12 @@
 <script>
 import province from '../../../template/cityData.js';
 import {formatDate} from '../../../template/date.js';
+import { VueEditor } from 'vue2-editor'
 import $ from 'jQuery'
 export default{
+	components: {
+		VueEditor
+	},
 	data(){
 		return {
 			province:province,
@@ -111,10 +115,11 @@ export default{
 			identify: '学生', // 身份（学生或教师）
 			institute: '', // 学院
 			major: '', // 专业
-			grade: '',
+			grade: '2017级',
 			sno: '', // 学号
 			selectProvince: '', // 籍贯
 			selectCity: '', // 城市
+			content: '', // 入党申请书
 			loginSno: null, // 登录的账号
 			isShowApply: true, // 是否显示申请组件
 			userphoto:"/imgs/gray_wode.png",
@@ -212,7 +217,7 @@ export default{
 		margin-right: 30px;
 	}
 	input{
-		width: 300px;
+		width: 600px;
 		height: 36px;
 		outline: none;
 		border: 1px solid #eee;
