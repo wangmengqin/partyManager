@@ -1128,6 +1128,63 @@ app.post("/deleteTrain",function(req,res){
 		res.send(JSON.stringify(results));
 	});
 })
+/* 报名培训模块 */
+/* 参加培训 */
+app.post("/joinTrain",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `INSERT INTO trainmember(sno, member, title, type, enrollTime, status) VALUES ('${req.body.sno}', '${req.body.member}', '${req.body.title}', '${req.body.type}', '${req.body.enrollTime}', '${req.body.status}' )`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 审核培训状态
+app.post("/checkTrain",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update trainmember set status = '${req.body.status}', checkTime = '${req.body.checkTime}' where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 不分页
+app.post("/trainMembers",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from trainmember`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 查询所有 分页
+app.post("/allTrainMember",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `SELECT * from trainmember limit ${size} OFFSET ${offset}`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//获取总条数
+app.post("/allTrainMemberCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from trainmember`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
+	});
+})
+// 根据学号姓名获取参加培训信息
+app.post("/getTrainMemberBySnoName",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from trainmember where title='${req.body.title}' AND sno = '${req.body.sno}' AND member = '${req.body.member}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
 /* 党校模块-考核 */
 
 /* 登录模块 */

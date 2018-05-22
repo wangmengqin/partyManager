@@ -9,8 +9,8 @@
 					<li v-for="(item,index) in dataInfo" :key="index">
 						<h4>
 							{{index+1}}、{{item.title}}
-							<a href="javascript:" v-if="type=='party'"><img src="/imgs/icon_return.png"/>我要上党课</a>
-							<a href="javascript:" v-else><img src="/imgs/icon_return.png"/>我要参加培训</a>
+							<a href="javascript:" v-if="type=='party'" @click="joinTrain(type, item.title)"><img src="/imgs/icon_return.png"/>我要上党课</a>
+							<a href="javascript:" v-else  @click="joinTrain(type, item.title)"><img src="/imgs/icon_return.png"/>我要参加培训</a>
 						</h4>
 						<p class="c-8c">{{item.trainDescribe}}</p>
 						<div>
@@ -18,7 +18,7 @@
 							<em style="color: #333">地点：{{item.address}}</em>
 						</div>
 						<div>
-							<b style="color: #333">时间：2{{item.time}} </b>
+							<b style="color: #333">时间：{{item.time}} </b>
 							<span style="color: red">(tips：请注意时间，请勿迟到!)</span>
 						</div>
 					</li>
@@ -101,7 +101,9 @@ export default {
 	data() {
 		return {
 			type: '', // 培训类型
-			dataInfo: [] // 显示的数据
+			dataInfo: [], // 显示的数据
+			sno: '',
+			memberName: '' // 登陆者姓名
 		}
 	},
 	watch: {
@@ -126,6 +128,84 @@ export default {
 	    		dataType: 'json',
 	    		data: {
 	    			type: type
+	    		},
+	    		success(data) {
+	    			_this.dataInfo = data
+	    			console.log(data)
+	    		}
+	    	})
+		},
+		joinTrain(type, title) {
+			// 参加培训
+			var _this = this
+			let joinType = ''
+			if(type == 'active') {
+				joinType = '入党积极分子培训'
+			} else if (type == 'party') {
+				joinType = '党课'
+			} else {
+				joinType = '专题培训'
+			}
+			_this.sno = sessionStorage.getItem("sno");
+			if(this.sno != null){
+				$.ajax({
+		    		url: 'http://localhost:5555/getMemberBySno',
+		    		type: 'POST',
+		    		dataType: 'json',
+		    		data: {
+		    			sno: _this.sno
+		    		},
+		    		success(data) {
+		    			_this.memberName = data[0].name
+		    		}
+		    	})
+		    	.done(() => {
+		    		$.ajax({
+			    		url: 'http://localhost:5555/getTrainMemberBySnoName',
+			    		type: 'POST',
+			    		dataType: 'json',
+			    		data: {
+			    			sno: _this.sno,
+			    			title: title,
+				    		member: _this.memberName
+			    		},
+			    		success(data) {
+			    			if(data == ''){
+			    				console.log("join the activity success");
+					    		$.ajax({
+						    		url: 'http://localhost:5555/joinTrain',
+						    		type: 'POST',
+						    		dataType: 'json',
+						    		data: {
+						    			sno: _this.sno,
+						    			member: _this.memberName,
+						    			title: title,
+						    			type: joinType,
+						    			enrollTime: new Date().getTime(),
+						    			status: '待审核'
+						    		},
+						    		success(data) {
+						    			alert('报名成功')
+						    		}
+						    	})
+			    			}else{
+			    				alert('你已报名参加该培训！')
+			    			}
+			    		}
+			    	})
+		    		
+		    	})
+			}
+			else{
+				alert('获取信息失败，请重新登录')
+				this.$router.push({ path: '/login' })
+			}
+			$.ajax({
+	    		url: 'http://localhost:5555/getTrainByType',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		data: {
+	    			type: joinType
 	    		},
 	    		success(data) {
 	    			_this.dataInfo = data

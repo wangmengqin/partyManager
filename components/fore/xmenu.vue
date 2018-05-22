@@ -5,8 +5,8 @@
 			<li @mouseover="changeShow" @mouseout="changeShow"><a href="#/fore/studyKnow" >我要学习</a>
 				<ul v-show="isShow">
 					<li><a href="#/fore/studyKnow">党章学习</a></li>
-					<li><a href="javascript:" @click="linkToTrain('party')">党课培训</a></li>
 					<li><a href="javascript:" @click="linkToTrain('active')">积极分子培训</a></li>
+					<li><a href="javascript:" @click="linkToTrain('party')">党课培训</a></li>
 					<li><a href="#/fore/test">结业考核</a></li>
 					<li><a href="javascript:" @click="linkToTrain('topic')">专题培训</a></li>
 				</ul>
