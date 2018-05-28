@@ -37,6 +37,7 @@
 				<td><b @click="addManager(item)" class="del">设置管理员</b></td>
 			</tr>
 		</table>
+		<xpagination v-show="isShowPagination" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
 	</div>
 </template>
 
@@ -49,24 +50,39 @@
 	  },
 	  data() {
 	  	return {
+	  		model:{
+          total: 1,//总页数
+          size:5,//每页显示条目个数不传默认10
+          page:1,//当前页码
+        },
 	  		inputContent: '',
+	  		isShowPagination: true,
 	  		memberData: [] // 党员信息数据
 	  	}
 	  },
 	  methods: {
-	  	getAll() {
+	  	getAll(val) {
 	  		var _this = this
-	  		_this.memberData = []
-	    	$.ajax({
-	    		url: 'http://localhost:5555/allMember',
+	  		this.model.page=val;
+	  		this.isShowPagination = true
+	  		$.ajax({
+	    		url: 'http://localhost:5555/allSecretaryMemberCount',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		success(data) {
-	    			for (var i in data) {
-	    				if(data[i].identify == '书记' && data[i].identify != '不通过'){
-	    					_this.memberData.push(data[i])
-	    				}
-	    			}
+	    			_this.model.total = data[0].count
+	    		}
+	    	})
+	    	$.ajax({
+	    		url: 'http://localhost:5555/allSecretaryMember',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		data: {
+	    			size: _this.model.size,
+	    			page: _this.model.page
+	    		},
+	    		success(data) {
+	    			_this.memberData = data
 	    		}
 	    	})
 	  	},
@@ -173,7 +189,6 @@
 	  	}
 	  },
 	  mounted() {
-	  	this.getAll()
 	  }
 	};
 </script>

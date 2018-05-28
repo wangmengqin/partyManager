@@ -29,7 +29,7 @@
 				<td>{{item.grade}}</td>
 				<td>{{item.native}}</td>
 				<td>{{item.type}}</td>
-				<td><b @click="passMember(item.id,index)" class="edit">投票已通过</b></td>
+				<td><b @click="passMember(item.id,item)" class="edit">投票已通过</b></td>
 			</tr>
 		</table>
 		<xpagination v-show="isShowPagination" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
@@ -46,13 +46,13 @@
 	  data() {
 	  	return {
 	  		model:{
-	            total: 1,//总页数
-	            size:5,//每页显示条目个数不传默认10
-	            page:1,//当前页码
-	        },
-	        isShowPagination: true,
+          total: 1,//总页数
+          size:5,//每页显示条目个数不传默认10
+          page:1,//当前页码
+        },
+        isShowPagination: true,
 	  		memberData: [], // 党员信息数据
-	  		branchData: [] // 支部数据
+	  		itemInfo: {} // 选择要操作的数据
 	  	}
 	  },
 	  methods: {
@@ -68,7 +68,6 @@
 	    			_this.model.total = data[0].count
 	    		}
 	    	})
-	  		_this.memberData = []
 	    	$.ajax({
 	    		url: 'http://localhost:5555/allPrepareMember',
 	    		type: 'POST',
@@ -82,78 +81,44 @@
 	    		}
 	    	})
 	  	},
-	  	passMember(id,index){
+	  	passMember(id,item){
 	  		var _this = this
-	  		console.log(index, _this.memberData[index].branch)
-	  		$.ajax({
-	    		url: 'http://localhost:5555/editMemberIdentify',
-	    		type: 'POST',
-	    		dataType: 'json',
-	    		data: {
-	    			id: id,
-	    			identify: '入党积极分子',
-	    			branch: _this.memberData[index].branch,
-	    			head: '/imgs/gray_wode.png',
-	    			password: '123456',
-	    			time: new Date().getTime()
-	    		},
-	    		success(data) {
-	    			alert('审核成功')
-	    			_this.memberData = []
-			    	$.ajax({
-			    		url: 'http://localhost:5555/allPrepareMember',
-			    		type: 'POST',
-			    		dataType: 'json',
-			    		data: {
-			    			size: _this.model.size,
-			    			page: _this.model.page
-			    		},
-			    		success(data) {
-			    			_this.memberData = data
-			    		}
-			    	})
-	    		}
-	    	})
-	  	},
-	  	unPassMember(id){
-	  		var _this = this
-	  		$.ajax({
-	    		url: 'http://localhost:5555/editMemberIdentify',
-	    		type: 'POST',
-	    		dataType: 'json',
-	    		data: {
-	    			id: id,
-	    			identify: '不通过'
-	    		},
-	    		success(data) {
-	    			alert('审核成功')
-	    			_this.memberData = []
-			    	$.ajax({
-			    		url: 'http://localhost:5555/allPrepareMember',
-			    		type: 'POST',
-			    		dataType: 'json',
-			    		data: {
-			    			size: _this.model.size,
-			    			page: _this.model.page
-			    		},
-			    		success(data) {
-			    			_this.memberData = data
-			    		}
-			    	})
-	    		}
-	    	})
+	  		this.itemInfo = item
+	  		// console.log(Math.abs(Number(item.prepareTime)-(new Date().getTime())))
+	  		console.log(Number.parseInt(Math.abs((Number(item.prepareTime)/1000)-new Date().getTime()/1000))/(3600*24))
+	  		if(Number.parseInt(Math.abs((Number(item.prepareTime)/1000)-new Date().getTime()/1000))/(3600*24)>365){
+	  			$.ajax({
+		    		url: 'http://localhost:5555/editPrePareMemberIdentify',
+		    		type: 'POST',
+		    		dataType: 'json',
+		    		data: {
+		    			id: id,
+		    			identify: '党员',
+		    			memberTime: new Date().getTime()
+		    		},
+		    		success(data) {
+		    			alert('审核成功')
+		    			_this.memberData = []
+				    	$.ajax({
+				    		url: 'http://localhost:5555/allPrepareMember',
+				    		type: 'POST',
+				    		dataType: 'json',
+				    		data: {
+				    			size: _this.model.size,
+				    			page: _this.model.page
+				    		},
+				    		success(data) {
+				    			_this.memberData = data
+				    		}
+				    	})
+		    		}
+		    	})
+	  		} else {
+	  			alert('该同志观察期没有到一年，还不能成为正式党员哦')
+	  		}
 	  	}
 	  },
 	  mounted() {
-	  	var _this = this
-    	$.ajax({
-    		url: 'http://localhost:5555/Branchs',
-    		type: 'POST',
-    		dataType: 'json',
-    		success(data) {
-    			_this.branchData = data
-    		}
-    	})
 	  }
 	};
 </script>

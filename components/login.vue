@@ -29,7 +29,7 @@ export default {
 			username: '',
 			password: '',
 			type: '普通党员',
-			checkbox: null
+			checkbox: true
 		}
 	},
 	methods: {
@@ -113,7 +113,7 @@ export default {
 			}
 		},
 		apply() {
-			location.href = "#/fore/apply"
+			this.$router.push('/fore/apply')
 		}
 	},
 	mounted() {

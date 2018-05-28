@@ -111,7 +111,8 @@ export default {
 		border-radius: 5px;
 	}
 	a:hover {
-		color: #d93732;
+		color: #fff;
+		background: deepskyblue;
 	}
 	img{
 		cursor: pointer;

@@ -80,6 +80,7 @@
 		position: absolute;
 		background: #f9f9f9;
 		width: 120px;
+		z-index: 1000;
 	}
 	ul li ul li{
 		float: none;

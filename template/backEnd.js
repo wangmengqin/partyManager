@@ -503,6 +503,26 @@ app.post("/allPrepareMemberCount",function(req,res){
 		res.send(results);
 	});
 })
+//查询书记所有信息
+app.post("/allSecretaryMember",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `select * from member where identify='书记' limit ${size} OFFSET ${offset}`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//获取书记总条数
+app.post("/allSecretaryMemberCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from member where identify='书记'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
+	});
+})
 //根据id查询信息
 app.post("/getMemberById",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
@@ -1258,7 +1278,16 @@ app.post("/allTrainMemberCount",function(req,res){
 // 根据学号姓名获取参加培训信息
 app.post("/getTrainMemberBySnoName",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `SELECT * from trainmember where title='${req.body.title}' AND sno = '${req.body.sno}' AND member = '${req.body.member}'`;
+	var sql = `SELECT * from trainmember where sno = '${req.body.sno}' AND member = '${req.body.member}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据学号姓名，类型查询
+app.post("/getTrainMemberBySnoNameType",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from trainmember where type='${req.body.type}' AND sno = '${req.body.sno}' AND member = '${req.body.member}'`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
@@ -1355,6 +1384,15 @@ app.post("/addGrade",function(req,res){
 app.post('/getSuperLoginInfo', function(req, res){
 	res.append("Access-Control-Allow-Origin","*");
 	var sql = `select * from user where username = '${req.body.username}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id修改超级管理员密码信息
+app.post("/editSuperManagerPassword",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update user set password = '${req.body.password}' where id = '${req.body.id}'`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));

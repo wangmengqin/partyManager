@@ -83,10 +83,11 @@
 	    		}
 	    	})
 	  	},
-	  	validateMember() {
+	  	passMember(id, item) {
 	  		var _this = this
+	  		this.itemInfo = item
 	  		$.ajax({
-	    		url: 'http://localhost:5555/getTrainTestBySnoName',
+	    		url: 'http://localhost:5555/getTrainMemberBySnoNameType',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
@@ -94,70 +95,68 @@
 	    			member: _this.itemInfo.name,
 	    			type: '入党积极分子培训'
 	    		},
-	    		success(data) {
-	    			console.log('入党积极分子': data)
-	    			if(data.length<=0) {
-	    				_this.isJoinTrain = false
-	    			} else {
-	    				_this.isJoinTrain = true
-	    				$.ajax({
+	    	}).done((data) => {
+	    		console.log('入党积极分子', data)
+	    		if(data.length <= 0) {
+    				_this.isJoinTrain = false
+    				alert('该入党积极分子没参加入党积极分子培训，不符合要求')
+    			} else {
+    				if(data.filter(item=>item.status=='已通过').length != 0) {
+    					_this.isJoinTrain = true
+    					$.ajax({
 				    		url: 'http://localhost:5555/getTrainTestBySnoName',
 				    		type: 'POST',
 				    		dataType: 'json',
 				    		data: {
 				    			sno: _this.itemInfo.sno,
 				    			member: _this.itemInfo.name
-				    		},
-				    		success(data) {
-				    			if(data.length <=0) {
-				    				_this.isPassTrainTest = false
-				    			} else {
-				    				if(data[0].testGrade<60) {
-				    					_this.isPassTrainTest = false
-				    				} else {
-				    					_this.isPassTrainTest = true
-				    				}
-				    			}
-				    			console.log('考核信息：', data)
 				    		}
+				    	}).done(()=>{
+				    		if(data.length <=0) {
+			    				_this.isPassTrainTest = false
+			    				alert('该入党积极分子没参加结业考核，不符合要求')
+			    			} else {
+			    				if(data[0].testGrade<60) {
+			    					_this.isPassTrainTest = false
+			    					alert('该入党积极分子结业考核不通过，不符合要求')
+			    				} else {
+			    					_this.isPassTrainTest = true
+			    					if(this.isJoinTrain && this.isPassTrainTest) {
+							  			$.ajax({
+								    		url: 'http://localhost:5555/editActiveMemberIdentify',
+								    		type: 'POST',
+								    		dataType: 'json',
+								    		data: {
+								    			id: id,
+								    			identify: '预备党员',
+								    			prepareTime: new Date().getTime()
+								    		},
+								    		success(data) {
+								    			alert('审核成功')
+								    			_this.memberData = []
+										    	$.ajax({
+										    		url: 'http://localhost:5555/allActiveMember',
+										    		type: 'POST',
+										    		dataType: 'json',
+										    		data: {
+										    			size: _this.model.size,
+										    			page: _this.model.page
+										    		},
+										    		success(data) {
+										    			_this.memberData = data
+										    		}
+										    	})
+								    		}
+								    	})
+							  		}
+			    				}
+			    			}
 				    	})
-	    			}
-	    		}
+    				} else {
+    					alert('该入党积极分子没参加入党积极分子培训，不符合要求')
+    				}
+    			}
 	    	})
-	  	},
-	  	passMember(id,item){
-	  		var _this = this
-	  		this.itemInfo = item
-	  		if(this.isJoinTrain && this.isPassTrainTest) {
-	  			$.ajax({
-		    		url: 'http://localhost:5555/editActiveMemberIdentify',
-		    		type: 'POST',
-		    		dataType: 'json',
-		    		data: {
-		    			id: id,
-		    			identify: '预备党员',
-		    			prepareTime: new Date().getTime()
-		    		},
-		    		success(data) {
-		    			alert('审核成功')
-		    			_this.memberData = []
-				    	$.ajax({
-				    		url: 'http://localhost:5555/allActiveMember',
-				    		type: 'POST',
-				    		dataType: 'json',
-				    		data: {
-				    			size: _this.model.size,
-				    			page: _this.model.page
-				    		},
-				    		success(data) {
-				    			_this.memberData = data
-				    		}
-				    	})
-		    		}
-		    	})
-	  		} else {
-	  			alert('该入党积极分子不符合要求，未参加入党积极分子培训或者结业考核不合格')
-	  		}
 	  	}
 	  	// unPassMember(id){
 	  	// 	var _this = this
@@ -193,15 +192,6 @@
 	  	// }
 	  },
 	  mounted() {
-	  	var _this = this
-    	$.ajax({
-    		url: 'http://localhost:5555/Branchs',
-    		type: 'POST',
-    		dataType: 'json',
-    		success(data) {
-    			_this.branchData = data
-    		}
-    	})
 	  }
 	};
 </script>

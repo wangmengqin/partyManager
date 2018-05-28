@@ -8,37 +8,45 @@
 			<p><span>新密码：</span><input type="text" placeholder="请输入新密码" /><b class="result1">通过</b><b class="result2">6-18位字符或数字下划线</b></p>
 			<p><span>确认：</span><input type="text" placeholder="请再次输入新密码" /><b class="result1">密码一致</b><b class="result2">两次密码不一致</b></p>
 			<p><button>确认修改</button></p> -->
-			<div>
-				<span>姓名：</span>
-				<input type="text" placeholder="请输入姓名" disabled v-model="myInfo.name"/>
+			<div v-if="type==0">
+				<div>
+					<span>账号：</span>
+					<input type="text" placeholder="请输入账号" disabled v-model="myInfo.username"/>
+				</div>
 			</div>
-			<div>
-				<span>性别：</span>
-				<input type="text" placeholder="请输入姓名" disabled v-model="myInfo.sex"/>
-			</div>
-			<div>
-				<span>年龄：</span>
-				<input type="text" placeholder="请输入姓名" disabled v-model="myInfo.age"/>
-			</div>
-			<div>
-				<span>编号：</span>
-				<input type="text" placeholder="请输入编号" disabled v-model="myInfo.sno"/>
-			</div>
-			<div>
-				<span>学院：</span>
-				<input type="text" placeholder="请输入学院" disabled v-model="myInfo.institute"/>
-			</div>
-			<div>
-				<span>所属支部：</span>
-				<input type="text" placeholder="所属支部" disabled v-model="myInfo.branch"/>
-			</div>
-			<div>
-				<span>入党时间：</span>
-				<b>{{myInfo.becomeMemberTime | formatDate}}</b>
-			</div>
-			<div v-show="myInfo.memberTime != ''">
-				<span>成为正式党员时间：</span>
-				<b>{{myInfo.memberTime | formatDate}}</b>
+			<div v-else>
+				<div>
+					<span>姓名：</span>
+					<input type="text" placeholder="请输入姓名" disabled v-model="myInfo.name"/>
+				</div>
+				<div>
+					<span>性别：</span>
+					<input type="text" placeholder="请输入姓名" disabled v-model="myInfo.sex"/>
+				</div>
+				<div>
+					<span>年龄：</span>
+					<input type="text" placeholder="请输入姓名" disabled v-model="myInfo.age"/>
+				</div>
+				<div>
+					<span>编号：</span>
+					<input type="text" placeholder="请输入编号" disabled v-model="myInfo.sno"/>
+				</div>
+				<div>
+					<span>学院：</span>
+					<input type="text" placeholder="请输入学院" disabled v-model="myInfo.institute"/>
+				</div>
+				<div>
+					<span>所属支部：</span>
+					<input type="text" placeholder="所属支部" disabled v-model="myInfo.branch"/>
+				</div>
+				<div>
+					<span>入党时间：</span>
+					<b>{{myInfo.becomeMemberTime | formatDate}}</b>
+				</div>
+				<div v-show="myInfo.memberTime != ''">
+					<span>成为正式党员时间：</span>
+					<b>{{myInfo.memberTime | formatDate}}</b>
+				</div>
 			</div>
 			<div>
 				<span>请输入原密码：</span>
@@ -77,7 +85,8 @@
 				becomeMemberTime: '',
 				memberTime: '',
 				isError: false,
-				isCorrect: false
+				isCorrect: false,
+				type: 1 // 0表示超级管理员 1 表示管理员
 			}
 		},
 		filters: {
@@ -88,7 +97,7 @@
 		},
 		methods: {
 			getManagerByName() {
-		   		var _this = this
+	   		var _this = this
 				this.managerName = sessionStorage.getItem('managerLoginNum')
 				if (this.managerName != null) {
 					$.ajax({
@@ -109,43 +118,71 @@
 					location.href = '#/login'
 					return false
 				}
-		    },
-		    judgePassword() {
-		    	if(this.primePassword == this.myInfo.password) {
-		    		this.isCorrect = true
-		    		this.isError = false
-		    		return true
-		    	} else {
-		    		this.isError = true
-		    		this.isCorrect = false
-		    		return false
-		    	}
-		    },
-		    editPassword() {
-		    	var _this = this
-		    	if(this.judgePassword() && this.getManagerByName() && this.password === this.password1)
-		    	{
-		    		$.ajax({
-			    		url: 'http://localhost:5555/editManagerPassword',
+	    },
+	    getSuperManagerByName() {
+	   		var _this = this
+				this.managerName = sessionStorage.getItem('superLoginNum')
+				if (this.managerName != null) {
+					$.ajax({
+			    		url: 'http://localhost:5555/getSuperLoginInfo',
 			    		type: 'POST',
 			    		dataType: 'json',
 			    		data: {
-			    			id: _this.myInfo.id,
-			    			password: _this.password
+			    			username: _this.managerName
 			    		},
 			    		success(data) {
-			    			alert('修改成功,请重新登录')
-			    			location.href = '#/login'
+			    			_this.myInfo = data[0]
 			    		}
 			    	})
-		    	} else {
-		    		alert('两次输入密码不一致')
-		    	}
-		    	
-		    }
+			    	return true
+				}
+				else{
+					alert('获取信息失败，请重新登录')
+					this.$router.puah({ path: '/login' })
+					return false
+				}
+	    },
+	    judgePassword() {
+	    	if(this.primePassword == this.myInfo.password) {
+	    		this.isCorrect = true
+	    		this.isError = false
+	    		return true
+	    	} else {
+	    		this.isError = true
+	    		this.isCorrect = false
+	    		return false
+	    	}
+	    },
+	    editPassword() {
+	    	var _this = this
+	    	if(this.judgePassword() && this.getManagerByName() && this.password === this.password1)
+	    	{
+	    		$.ajax({
+		    		url: 'http://localhost:5555/editManagerPassword',
+		    		type: 'POST',
+		    		dataType: 'json',
+		    		data: {
+		    			id: _this.myInfo.id,
+		    			password: _this.password
+		    		},
+		    		success(data) {
+		    			alert('修改成功,请重新登录')
+		    			location.href = '#/login'
+		    		}
+		    	})
+	    	} else {
+	    		alert('两次输入密码不一致')
+	    	}
+	    }
 		},
 		mounted() {
-			this.getManagerByName()
+			this.type = this.$route.query.type
+			if(this.type == 0) {
+				// 超级管理员
+				this.getSuperManagerByName()
+			} else {
+				this.getManagerByName()
+			}
 		}
 	};
 </script>
