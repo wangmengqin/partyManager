@@ -1,6 +1,6 @@
 <template>
 	<div class="content_box">
-		<h4><img src="/imgs/icon_search.png"/>审核新增党员</h4>
+		<h4><img src="/imgs/icon_search.png"/>审核预备党员</h4>
 		<table>
 			<thead>
 				<tr>
@@ -13,12 +13,11 @@
 					<th>年级</th>
 					<th>籍贯</th>
 					<th>类型</th>
-					<th>选择支部</th>
 					<th>操作</th>
 				</tr>
 			</thead>
 			<tr v-if="memberData==''" style="text-align:center;">
-				<td style="line-height:50px;font-size:20px" colspan="10">此页无要审核数据</td>
+				<td style="line-height:50px;font-size:20px" colspan="10">无要审核数据</td>
 			</tr>
 			<tr v-for="(item,index) in memberData" :key="item.id">
 				<td>{{item.name}}</td>
@@ -30,12 +29,7 @@
 				<td>{{item.grade}}</td>
 				<td>{{item.native}}</td>
 				<td>{{item.type}}</td>
-				<td>
-					<select v-model="item.branch" style="width: 70px;">
-						<option v-for="i in branchData" :key="i.id" :value="i.name">{{i.name}}</option>
-					</select>
-				</td>
-				<td><b @click="passMember(item.id,index)" class="edit">通过</b><b @click="unPassMember(item.id)" class="del">不通过</b></td>
+				<td><b @click="passMember(item.id,index)" class="edit">投票已通过</b></td>
 			</tr>
 		</table>
 		<xpagination v-show="isShowPagination" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
@@ -67,7 +61,7 @@
 	  		this.model.page=val;
 	  		this.isShowPagination = true
 	  		$.ajax({
-	    		url: 'http://localhost:5555/allNewMemberCount',
+	    		url: 'http://localhost:5555/allPrepareMemberCount',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		success(data) {
@@ -76,7 +70,7 @@
 	    	})
 	  		_this.memberData = []
 	    	$.ajax({
-	    		url: 'http://localhost:5555/allNewMember',
+	    		url: 'http://localhost:5555/allPrepareMember',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
@@ -84,11 +78,7 @@
 	    			page: _this.model.page
 	    		},
 	    		success(data) {
-	    			for (var i in data) {
-	    				if(data[i].identify == ''){
-	    					_this.memberData.push(data[i])
-	    				}
-	    			}
+	    			_this.memberData = data
 	    		}
 	    	})
 	  	},
@@ -111,7 +101,7 @@
 	    			alert('审核成功')
 	    			_this.memberData = []
 			    	$.ajax({
-			    		url: 'http://localhost:5555/allMember',
+			    		url: 'http://localhost:5555/allPrepareMember',
 			    		type: 'POST',
 			    		dataType: 'json',
 			    		data: {
@@ -119,11 +109,7 @@
 			    			page: _this.model.page
 			    		},
 			    		success(data) {
-			    			for (var i in data) {
-			    				if(data[i].identify == ''){
-			    					_this.memberData.push(data[i])
-			    				}
-			    			}
+			    			_this.memberData = data
 			    		}
 			    	})
 	    		}
@@ -143,7 +129,7 @@
 	    			alert('审核成功')
 	    			_this.memberData = []
 			    	$.ajax({
-			    		url: 'http://localhost:5555/allMember',
+			    		url: 'http://localhost:5555/allPrepareMember',
 			    		type: 'POST',
 			    		dataType: 'json',
 			    		data: {
@@ -151,11 +137,7 @@
 			    			page: _this.model.page
 			    		},
 			    		success(data) {
-			    			for (var i in data) {
-			    				if(data[i].identify == ''){
-			    					_this.memberData.push(data[i])
-			    				}
-			    			}
+			    			_this.memberData = data
 			    		}
 			    	})
 	    		}
@@ -269,4 +251,4 @@
 	    text-align: center;
 	    cursor: pointer;
 	}
-</style>
+</style>A

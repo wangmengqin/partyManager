@@ -98,11 +98,13 @@
 						txt:"党员管理",
 						isShow:false,
 						url1:"#/tab/checkMember",
-						url2:"#/tab/searchMember",
-						url3:"#/tab/checkMember",
+						url2:"#/tab/checkActiveMember",
+						url3:"#/tab/checkPrepareMember",
+						url4:"#/tab/searchMember",
 						menu1: '审核新增党员',
-						menu2: '查询党员信息',
-						menu3: '审核预备党员'
+						menu2: '审核入党积极分子',
+						menu3: '审核预备党员',
+						menu4: '查询党员信息'
 					},
 					{
 						id:5,
@@ -120,11 +122,11 @@
 						url1:"#/tab/addTrain",
 						url2:"#/tab/searchTrain",
 						url3: '#/tab/checkTrainMember',
-						url4: '#/tab/searchnews',
+						url4: '#/tab/trainTest',
 						menu1: '培训发布',
 						menu2: '查询培训内容',
 						menu3: '审核参加名单',
-						menu4: '结业考核成绩'
+						menu4: '结业考核'
 					},
 					{
 						id:7,

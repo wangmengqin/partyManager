@@ -1,6 +1,6 @@
 <template>
 	<div class="content_box">
-		<h4><img src="/imgs/icon_search.png"/>审核新增党员</h4>
+		<h4><img src="/imgs/icon_search.png"/>审核入党积极分子</h4>
 		<table>
 			<thead>
 				<tr>
@@ -13,12 +13,11 @@
 					<th>年级</th>
 					<th>籍贯</th>
 					<th>类型</th>
-					<th>选择支部</th>
 					<th>操作</th>
 				</tr>
 			</thead>
 			<tr v-if="memberData==''" style="text-align:center;">
-				<td style="line-height:50px;font-size:20px" colspan="10">此页无要审核数据</td>
+				<td style="line-height:50px;font-size:20px" colspan="10">无要审核数据</td>
 			</tr>
 			<tr v-for="(item,index) in memberData" :key="item.id">
 				<td>{{item.name}}</td>
@@ -30,12 +29,7 @@
 				<td>{{item.grade}}</td>
 				<td>{{item.native}}</td>
 				<td>{{item.type}}</td>
-				<td>
-					<select v-model="item.branch" style="width: 70px;">
-						<option v-for="i in branchData" :key="i.id" :value="i.name">{{i.name}}</option>
-					</select>
-				</td>
-				<td><b @click="passMember(item.id,index)" class="edit">通过</b><b @click="unPassMember(item.id)" class="del">不通过</b></td>
+				<td><b @click="passMember(item.id,item)" class="edit">投票通过</b></td>
 			</tr>
 		</table>
 		<xpagination v-show="isShowPagination" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
@@ -58,7 +52,9 @@
 	        },
 	        isShowPagination: true,
 	  		memberData: [], // 党员信息数据
-	  		branchData: [] // 支部数据
+	  		itemInfo: {}, // 要操作的党员数据
+	  		isJoinTrain: false, // 是否参加培训
+	  		isPassTrainTest: false // 是否通过结业考核
 	  	}
 	  },
 	  methods: {
@@ -67,16 +63,15 @@
 	  		this.model.page=val;
 	  		this.isShowPagination = true
 	  		$.ajax({
-	    		url: 'http://localhost:5555/allNewMemberCount',
+	    		url: 'http://localhost:5555/allActiveMemberCount',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		success(data) {
 	    			_this.model.total = data[0].count
 	    		}
 	    	})
-	  		_this.memberData = []
 	    	$.ajax({
-	    		url: 'http://localhost:5555/allNewMember',
+	    		url: 'http://localhost:5555/allActiveMember',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
@@ -84,83 +79,118 @@
 	    			page: _this.model.page
 	    		},
 	    		success(data) {
-	    			for (var i in data) {
-	    				if(data[i].identify == ''){
-	    					_this.memberData.push(data[i])
-	    				}
+	    			_this.memberData = data
+	    		}
+	    	})
+	  	},
+	  	validateMember() {
+	  		var _this = this
+	  		$.ajax({
+	    		url: 'http://localhost:5555/getTrainTestBySnoName',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		data: {
+	    			sno: _this.itemInfo.sno,
+	    			member: _this.itemInfo.name,
+	    			type: '入党积极分子培训'
+	    		},
+	    		success(data) {
+	    			console.log('入党积极分子': data)
+	    			if(data.length<=0) {
+	    				_this.isJoinTrain = false
+	    			} else {
+	    				_this.isJoinTrain = true
+	    				$.ajax({
+				    		url: 'http://localhost:5555/getTrainTestBySnoName',
+				    		type: 'POST',
+				    		dataType: 'json',
+				    		data: {
+				    			sno: _this.itemInfo.sno,
+				    			member: _this.itemInfo.name
+				    		},
+				    		success(data) {
+				    			if(data.length <=0) {
+				    				_this.isPassTrainTest = false
+				    			} else {
+				    				if(data[0].testGrade<60) {
+				    					_this.isPassTrainTest = false
+				    				} else {
+				    					_this.isPassTrainTest = true
+				    				}
+				    			}
+				    			console.log('考核信息：', data)
+				    		}
+				    	})
 	    			}
 	    		}
 	    	})
 	  	},
-	  	passMember(id,index){
+	  	passMember(id,item){
 	  		var _this = this
-	  		console.log(index, _this.memberData[index].branch)
-	  		$.ajax({
-	    		url: 'http://localhost:5555/editMemberIdentify',
-	    		type: 'POST',
-	    		dataType: 'json',
-	    		data: {
-	    			id: id,
-	    			identify: '入党积极分子',
-	    			branch: _this.memberData[index].branch,
-	    			head: '/imgs/gray_wode.png',
-	    			password: '123456',
-	    			time: new Date().getTime()
-	    		},
-	    		success(data) {
-	    			alert('审核成功')
-	    			_this.memberData = []
-			    	$.ajax({
-			    		url: 'http://localhost:5555/allMember',
-			    		type: 'POST',
-			    		dataType: 'json',
-			    		data: {
-			    			size: _this.model.size,
-			    			page: _this.model.page
-			    		},
-			    		success(data) {
-			    			for (var i in data) {
-			    				if(data[i].identify == ''){
-			    					_this.memberData.push(data[i])
-			    				}
-			    			}
-			    		}
-			    	})
-	    		}
-	    	})
-	  	},
-	  	unPassMember(id){
-	  		var _this = this
-	  		$.ajax({
-	    		url: 'http://localhost:5555/editMemberIdentify',
-	    		type: 'POST',
-	    		dataType: 'json',
-	    		data: {
-	    			id: id,
-	    			identify: '不通过'
-	    		},
-	    		success(data) {
-	    			alert('审核成功')
-	    			_this.memberData = []
-			    	$.ajax({
-			    		url: 'http://localhost:5555/allMember',
-			    		type: 'POST',
-			    		dataType: 'json',
-			    		data: {
-			    			size: _this.model.size,
-			    			page: _this.model.page
-			    		},
-			    		success(data) {
-			    			for (var i in data) {
-			    				if(data[i].identify == ''){
-			    					_this.memberData.push(data[i])
-			    				}
-			    			}
-			    		}
-			    	})
-	    		}
-	    	})
+	  		this.itemInfo = item
+	  		if(this.isJoinTrain && this.isPassTrainTest) {
+	  			$.ajax({
+		    		url: 'http://localhost:5555/editActiveMemberIdentify',
+		    		type: 'POST',
+		    		dataType: 'json',
+		    		data: {
+		    			id: id,
+		    			identify: '预备党员',
+		    			prepareTime: new Date().getTime()
+		    		},
+		    		success(data) {
+		    			alert('审核成功')
+		    			_this.memberData = []
+				    	$.ajax({
+				    		url: 'http://localhost:5555/allActiveMember',
+				    		type: 'POST',
+				    		dataType: 'json',
+				    		data: {
+				    			size: _this.model.size,
+				    			page: _this.model.page
+				    		},
+				    		success(data) {
+				    			_this.memberData = data
+				    		}
+				    	})
+		    		}
+		    	})
+	  		} else {
+	  			alert('该入党积极分子不符合要求，未参加入党积极分子培训或者结业考核不合格')
+	  		}
 	  	}
+	  	// unPassMember(id){
+	  	// 	var _this = this
+	  	// 	$.ajax({
+	   //  		url: 'http://localhost:5555/editMemberIdentify',
+	   //  		type: 'POST',
+	   //  		dataType: 'json',
+	   //  		data: {
+	   //  			id: id,
+	   //  			identify: '不通过'
+	   //  		},
+	   //  		success(data) {
+	   //  			alert('审核成功')
+	   //  			_this.memberData = []
+			 //    	$.ajax({
+			 //    		url: 'http://localhost:5555/allActiveMember',
+			 //    		type: 'POST',
+			 //    		dataType: 'json',
+			 //    		data: {
+			 //    			size: _this.model.size,
+			 //    			page: _this.model.page
+			 //    		},
+			 //    		success(data) {
+			 //    			for (var i in data) {
+			 //    				if(data[i].identify == ''){
+			 //    					_this.memberData.push(data[i])
+			 //    				}
+			 //    			}
+			 //    		}
+			 //    	})
+	   //  		}
+	   //  	})
+	  	// }
 	  },
 	  mounted() {
 	  	var _this = this

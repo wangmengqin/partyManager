@@ -57,8 +57,8 @@
 			</form>
 		</div> -->
 		<div>
-			<h3>请准时参加考核, 您的结业考核信息如下：</h3>
-			<h3>您已参加考核，考核信息如下</h3>
+			<h3 v-if="testInfo.testGrade==0">请准时参加考核, 您的结业考核信息如下：</h3>
+			<h3 v-else>您已参加考核，考核信息如下</h3>
 			<div class="input_box">
 				<div>
 					<span>姓名：</span>
@@ -77,16 +77,24 @@
 					<input type="text" placeholder="请输入专业" disabled v-model="myInfo.major"/>
 				</div>
 				<div>
+					<span>支部：</span>
+					<input type="text" placeholder="请输入支部" disabled v-model="myInfo.branch"/>
+				</div>
+				<div>
 					<span>考核地点：</span>
-					<input type="text" placeholder="所属支部" disabled v-model="myInfo.branch"/>
+					<b>{{testInfo.testPlace}}</b>
 				</div>
 				<div>
 					<span>考核时间：</span>
-					<b>{{myInfo.becomeMemberTime | formatDate}}</b>
+					<b>{{testInfo.testTime}}</b>
 				</div>
 				<div>
+					<span>座位号：</span>
+					<b>{{testInfo.testNum}}</b>
+				</div>
+				<div v-if="testInfo.testGrade!=0">
 					<span>成绩：</span>
-					<b>{{myInfo.becomeMemberTime | formatDate}}</b>
+					<b :style="{'color': testInfo.testGrade<=60?'red':'green'}">{{testInfo.testGrade}}</b>
 				</div>
 			</div>
 		</div>
@@ -114,7 +122,8 @@ export default{
 			loginSno: null, // 登录的账号
 			isShowApply: true, // 是否显示申请组件
 			userphoto:"/imgs/gray_wode.png",
-			myInfo: {} // 我的信息
+			myInfo: {}, // 我的信息
+			testInfo: {} // 考核信息
 		}
 	},
 	filters: {
@@ -140,9 +149,24 @@ export default{
 	    		},
 	    		success(data) {
 	    			_this.myInfo = data[0]
-	    			console.log(data)
+	    			console.log('党员信息', data)
+	    			$.ajax({
+			    		url: 'http://localhost:5555/getTrainTestBySnoName',
+			    		type: 'POST',
+			    		dataType: 'json',
+			    		data: {
+			    			sno: _this.loginSno,
+			    			member: _this.myInfo.name
+			    		},
+			    		success(data) {
+			    			_this.testInfo = data[0]
+			    			console.log('考核信息：', data)
+			    		}
+			    	})
 	    		}
 	    	})
+		} else {
+			alert('获取信息失败，请重新登录!')
 		}
 	},
 	methods:{

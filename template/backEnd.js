@@ -424,6 +424,85 @@ app.post("/allMemberCount",function(req,res){
 		res.send(results);
 	});
 })
+//查询新增党员所有信息
+app.post("/allNewMember",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `select * from member where identify='' limit ${size} OFFSET ${offset}`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//获取新增党员总条数
+app.post("/allNewMemberCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from member where identify=''`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
+	});
+})
+//查询入党积极分子所有信息
+app.post("/allActiveMember",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `select * from member where identify='入党积极分子' limit ${size} OFFSET ${offset}`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//获取入党积极分子总条数
+app.post("/allActiveMemberCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from member where identify='入党积极分子'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
+	});
+})
+// 审核入党积极分子
+app.post("/editActiveMemberIdentify",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update member set identify = '${req.body.identify}', prepareTime = '${req.body.prepareTime}' where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 审核预备党员
+app.post("/editPrePareMemberIdentify",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update member set identify = '${req.body.identify}', memberTime = '${req.body.memberTime}' where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+
+//查询预备党员所有信息
+app.post("/allPrepareMember",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `select * from member where identify='预备党员' limit ${size} OFFSET ${offset}`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//获取预备党员总条数
+app.post("/allPrepareMemberCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from member where identify='预备党员'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
+	});
+})
 //根据id查询信息
 app.post("/getMemberById",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
@@ -1185,7 +1264,91 @@ app.post("/getTrainMemberBySnoName",function(req,res){
 		res.send(JSON.stringify(results));
 	});
 })
+// 根据学生姓名获取参加名单
+app.post("/getTrainMemberByName",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from trainmember where member = '${req.body.member}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据培训名称获取参加名单
+app.post("/getTrainMemberByTitle",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from trainmember where title = '${req.body.title}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+
 /* 党校模块-考核 */
+// 不分页
+app.post("/trainTest",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from traintest`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 查询所有 分页
+app.post("/allTrainTest",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `SELECT * from traintest limit ${size} OFFSET ${offset}`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//获取总条数
+app.post("/allTrainTestCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from traintest`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
+	});
+})
+// 根据姓名学号查找考核记录
+app.post("/getTrainTestBySnoName",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `SELECT * from traintest where sno = '${req.body.sno}' AND member = '${req.body.member}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 插入考核记录
+app.post("/addTrainTest",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `INSERT INTO traintest(sno, member) VALUES ('${req.body.sno}', '${req.body.member}')`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id修改考核地点，考核时间
+app.post("/addTimeAndPlace",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update traintest set testTime = '${req.body.testTime}', testPlace = '${req.body.testPlace}', testNum = '${req.body.testNumber}' where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据id修改考核成绩， 录入时间
+app.post("/addGrade",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update traintest set testGrade = '${req.body.testGrade}', upTime = '${req.body.upTime}' where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
 
 /* 登录模块 */
 //获取超级管理员登录信息

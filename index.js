@@ -35,6 +35,8 @@ import xeditBranch from "./components/back/tab/branch/edit_branch_tab.vue";
 // 党员组件
 import xsearchMember from "./components/back/tab/member/search_member_tab.vue";
 import xcheckMember from "./components/back/tab/member/check_member_tab.vue";
+import xcheckActiveMember from "./components/back/tab/member/check_active_tab.vue";
+import xcheckPrepareMember from "./components/back/tab/member/check_prepare_tab.vue";
 import xeditMember from "./components/back/tab/member/edit_member_tab.vue";
 // 留言组件
 import xsearchMessage from "./components/back/tab/message/search_message_tab.vue";
@@ -57,6 +59,7 @@ import xsearchTrain from "./components/back/tab/school/search_train_tab.vue";
 import xcheckTrainMember from "./components/back/tab/school/check_train_member_tab.vue";
 import xaddTrain from "./components/back/tab/school/add_train_tab.vue";
 import xeditTrain from "./components/back/tab/school/edit_train_tab.vue";
+import xtrainTest from "./components/back/tab/school/train_test_tab.vue";
 //超级管理员组件
 import xsearchManager from "./components/back/tab/manager/search_manager_tab.vue";
 import xsetManager from "./components/back/tab/manager/set_manager_tab.vue";
@@ -164,6 +167,14 @@ var router = new VueRouter({
               component: xcheckMember
             },
             {
+              path: "checkActiveMember",
+              component: xcheckActiveMember
+            },
+            {
+              path: "checkPrepareMember",
+              component: xcheckPrepareMember
+            },
+            {
               path: "editMember/:id",
               component: xeditMember
             },
@@ -218,6 +229,10 @@ var router = new VueRouter({
             {
               path: "checkTrainMember",
               component: xcheckTrainMember
+            },
+            {
+              path: "trainTest",
+              component: xtrainTest
             },
             {
               path: "searchManager",

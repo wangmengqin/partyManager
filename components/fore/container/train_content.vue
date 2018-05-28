@@ -170,7 +170,7 @@ export default {
 				    		member: _this.memberName
 			    		},
 			    		success(data) {
-			    			if(data == ''){
+			    			if(data.length<=0 || data[data.length-1].status=='不通过'){
 			    				console.log("join the activity success");
 					    		$.ajax({
 						    		url: 'http://localhost:5555/joinTrain',
@@ -189,7 +189,11 @@ export default {
 						    		}
 						    	})
 			    			}else{
-			    				alert('你已报名参加该培训！')
+			    				if(data[data.length-1].status=='待审核') {
+			    					alert('你已报名参加该培训！请耐心等待审核')
+			    				} else {
+			    					alert('你已参加该培训')
+			    				}
 			    			}
 			    		}
 			    	})

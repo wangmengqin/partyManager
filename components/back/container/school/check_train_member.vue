@@ -4,8 +4,8 @@
 		<p>
 			
 			<input type="text" placeholder="请输入关键字,无内容则搜索所有" v-model="inputContent"/>
-			<button @click="getActivityMemberByName">通过活动名称搜索</button>
-			<button @click="getActivityMemberBySno">通过学生学号搜索</button>
+			<button @click="getTrainMemberByName">通过学生姓名搜索</button>
+			<button @click="getTrainMemberByTitle">通过活动名称搜索</button>
 		</p>
 		<table>
 			<thead>
@@ -32,7 +32,10 @@
 				<td>{{item.status}}</td>
 				<td v-if="item.checkTime==''||item.checkTime==null"></td>
 				<td v-else>{{item.checkTime | formatDate}}</td>
-				<td><b @click="check(0,item.id)" class="edit">通过</b><b @click="check(1,item.id)" class="del">不通过</b></td>
+				<td>
+					<b @click="check(0,item.id, item)" class="edit">通过</b>
+					<b @click="check(1,item.id, item)" class="del">不通过</b>
+				</td>
 			</tr>
 		</table>
 		<xpagination :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
@@ -91,20 +94,23 @@
 		    	})
 	    	})
 	  	},
-	  	pass(id,index){
+	  	check(num, id, item){
+	  		let status
+	  		num == 0 ? status='已通过' : status = '不通过'
 	  		var _this = this
 	  		$.ajax({
-	    		url: 'http://localhost:5555/editMemberActivityStatus',
+	    		url: 'http://localhost:5555/checkTrain',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
 	    			id: id,
-	    			status: '已通过'
+	    			status: status,
+	    			checkTime: new Date().getTime()
 	    		},
 	    		success(data) {
 	    			alert('审核成功')
 	    			$.ajax({
-			    		url: 'http://localhost:5555/allCheckMemberActivity',
+			    		url: 'http://localhost:5555/allTrainMember',
 			    		type: 'POST',
 			    		dataType: 'json',
 			    		data: {
@@ -112,42 +118,72 @@
 			    			page: _this.model.page
 			    		},
 			    		success(data) {
-			    			console.log(data)
 			    			_this.trainMemberData = data
 			    		}
 			    	})
+			    	console.log(num, item)
+			    	// 参加了党课培训，往考核表插入学号姓名，好安排考核
+			    	if(num==0 && item.type == '党课') {
+			    		$.ajax({
+				    		url: 'http://localhost:5555/getTrainTestBySnoName',
+				    		type: 'POST',
+				    		dataType: 'json',
+				    		data: {
+				    			sno: item.sno,
+				    			member: item.member
+				    		},
+				    		success(data) {
+				    			if(data.length<=0) {
+				    				console.log('没考核过')
+				    				$.ajax({
+							    		url: 'http://localhost:5555/addTrainTest',
+							    		type: 'POST',
+							    		dataType: 'json',
+							    		data: {
+							    			sno: item.sno,
+				    						member: item.member
+							    		},
+							    		success(data) {
+							    			console.log('插入成功')
+							    		}
+							    	})
+				    			}
+				    		}
+				    	})
+			    	}
 	    		}
 	    	})
 	  	},
-	  	unPass(id){
+	  	getTrainMemberByName() {
 	  		var _this = this
+	  		this.isShowPagination = false
 	  		$.ajax({
-	    		url: 'http://localhost:5555/deleteMemberActivityById',
+	    		url: 'http://localhost:5555/getTrainMemberByName',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
-	    			id: id
+	    			member: _this.inputContent
 	    		},
 	    		success(data) {
-	    			alert('审核成功')
-	    			$.ajax({
-			    		url: 'http://localhost:5555/allCheckMemberActivity',
-			    		type: 'POST',
-			    		dataType: 'json',
-			    		data: {
-			    			size: _this.model.size,
-			    			page: _this.model.page
-			    		},
-			    		success(data) {
-			    			console.log(data)
-			    			_this.trainMemberData = data
-			    		}
-			    	})
+	    			_this.trainMemberData = data
 	    		}
 	    	})
 	  	},
-	  	getActivityMemberByName() {},
-	  	getActivityMemberBySno() {}
+	  	getTrainMemberByTitle() {
+	  		var _this = this
+	  		this.isShowPagination = false
+	  		$.ajax({
+	    		url: 'http://localhost:5555/getTrainMemberByTitle',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		data: {
+	    			title: _this.inputContent
+	    		},
+	    		success(data) {
+	    			_this.trainMemberData = data
+	    		}
+	    	})
+	  	}
 	  },
 	  mounted() {
 	  	var _this = this
