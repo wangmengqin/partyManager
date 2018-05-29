@@ -6,7 +6,23 @@
 			<tr>
 				<th colspan="3">党建机构组织机构</th>
 			</tr>
-			<tr>
+			<tbody v-for="item in branchData">
+				<tr>
+					<td rowspan="3">{{item.institute}}<br />{{item.name}}</td>
+					<td>书记</td>
+					<td>{{item.secretary}}</td>
+				</tr>
+				<tr>
+					<td>副书记</td>
+					<td>{{item.fu_secretary}}</td>
+				</tr>
+				<tr>
+					<td>宣传委员</td>
+					<td>{{item.propagate}}</td>
+				</tr>
+			</tbody>
+			
+			<!-- <tr>
 				<td rowspan="7">中共重庆科技学院<br />电气与信息工程学院<br />总支委员</td>
 				<td>书记</td>
 				<td>张三</td>
@@ -164,7 +180,7 @@
 			<tr>
 				<td>宣传委员</td>
 				<td>张三</td>
-			</tr>
+			</tr> -->
 		</table>
 		<p class="filter" v-show="isShow"></p>
 		<ul v-show="isShow">
@@ -200,13 +216,26 @@
 				loginSno: '', // 登录的编号
 				selectProvince: '', // 省份
 				selectCity: '', // 城市
-				myInfo: {} // 我的信息
+				myInfo: {}, // 我的信息
+				branchData: []
 			}
 		},
 		mounted(){
 			this.cityArr = this.province[0].list;
 			this.selectProvince = this.province[0].id
 			this.selectCity = this.cityArr[0].id
+			var _this = this
+			$.ajax({
+				url: 'http://localhost:5555/Branchs',
+				type: 'POST',
+				dataType: 'json',
+			})
+			.done(function(data) {
+				_this.branchData = data
+			})
+			.fail(function() {
+				console.log("error");
+			})
 		},
 		methods:{
 			getSelect(e){

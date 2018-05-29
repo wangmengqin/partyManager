@@ -41,8 +41,8 @@
 					<b @click="goSetSalary" class="del">去设置工资</b>
 				</td>
 				<td v-else>
-					<b @click="checkOrg(item.id,'已通过')" class="edit">已收到党费</b>
-					<b @click="checkOrg(item.id,'不通过')" class="del">没收到</b>
+					<b v-if="item.status=='待审核'" @click="checkOrg(item.id,'已通过')" class="edit">已收到党费</b>
+					<b v-if="item.status=='待审核'" @click="checkOrg(item.id,'不通过')" class="del">没收到</b>
 				</td>
 			</tr>
 		</table>

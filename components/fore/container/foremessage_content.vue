@@ -63,11 +63,11 @@ export default {
 	data() {
 		return {
 			model:{
-	            total: 1,//总页数
-	            size:5,//每页显示条目个数不传默认10
-	            page:1,//当前页码
-	        },
-	        isShowPagination: true,
+          total: 1,//总页数
+          size:5,//每页显示条目个数不传默认10
+          page:1,//当前页码
+      },
+      isShowPagination: true,
 			messageData: [],
 			content: '', // 发表的内容
 			sno: null, // 登录的学号
@@ -84,16 +84,16 @@ export default {
 	methods: {
 		getAll(val) {
 			var _this = this
-	  		this.model.page=val;
-	  		this.isShowPagination = true
-            $.ajax({
-	    		url: 'http://localhost:5555/allShowMessageCount',
-	    		type: 'POST',
-	    		dataType: 'json',
-	    		success(data) {
-	    			_this.model.total = data[0].count
-	    		}
-	    	})
+  		this.model.page=val;
+  		this.isShowPagination = true
+      $.ajax({
+    		url: 'http://localhost:5555/allShowMessageCount',
+    		type: 'POST',
+    		dataType: 'json',
+    		success(data) {
+    			_this.model.total = data[0].count
+    		}
+    	})
 			this.sno = sessionStorage.getItem('sno')
 			$.ajax({
 	    		url: 'http://localhost:5555/getMemberBySno',
@@ -190,7 +190,7 @@ export default {
 			}
 			else{
 				alert('获取信息失败，请重新登录')
-				location.href = '#/login'
+				this.$router.push({ path: '/login' })
 			}
 		},
 		lookMyMessage() {

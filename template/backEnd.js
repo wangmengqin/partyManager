@@ -683,6 +683,26 @@ app.post("/getTeacherMemberByName",function(req,res){
 		res.send(results);
 	});
 })
+// 根据学号姓名获取信息
+app.post("/getFreeBySnoName",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `select * from partyfree where sno='${req.body.sno}' and member='${req.body.member}' order by id desc limit ${size} OFFSET ${offset}`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据学号姓名获取信息总条数
+app.post("/getFreeBySnoNameCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from partyfree where sno='${req.body.sno}' and member='${req.body.member}' order by id desc`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
+	});
+})
 //根据姓名和月份获取信息
 app.post("/getFreeByNameDuration",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
@@ -708,6 +728,15 @@ app.post("/addTeacherSalary",function(req,res){
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
+	});
+})
+//根据id修改状态
+app.post("/editStatusById",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update partyfree set status='${req.body.status}' where id='${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
 	});
 })
 
