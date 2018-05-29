@@ -23,15 +23,25 @@
 			<tr v-if="memberData==''" style="text-align:center;">
 				<td style="line-height:50px;font-size:20px" colspan="6">无要审核数据</td>
 			</tr>
-			<tr v-for="item in memberData" :key="item.id">
+			<tr v-for="item in currentData" v-if="currentData.length>0">
 				<td>{{item.sno}}</td>
 				<td>{{item.member}}</td>
 				<td>{{item.memberTime | formatDate}}</td>
 				<td>{{item.type}}</td>
-				<td>{{new Date(Number(item.memberTime)).getFullYear() +'年'+ (new Date(Number(item.memberTime)).getMonth()+1)+'月'}}</td>
+				<td>{{new Date().getFullYear() +'年'+ (new Date().getMonth()+1)+'月'}}</td>
 				<td v-if="item.salary!=''">{{item.salary}}元</td>
 				<td v-else></td>
-				<td><b v-show="item.salary==''" class="edit" @click="showFilter(item)">录入工资</b></td>
+				<td><b v-show="item.salary==''" class="edit" @click="showFilter(item, new Date().getFullYear() +'年'+ (new Date().getMonth()+1)+'月', 1)">录入工资</b></td>
+			</tr>
+			<tr v-for="item in memberData">
+				<td>{{item.sno}}</td>
+				<td>{{item.member}}</td>
+				<td>{{item.memberTime | formatDate}}</td>
+				<td>{{item.type}}</td>
+				<td>{{item.duration}}</td>
+				<td v-if="item.salary!=''">{{item.salary}}元</td>
+				<td v-else></td>
+				<td><b v-show="item.salary==''" class="edit" @click="showFilter(item, new Date(Number(item.memberTime)).getFullYear() +'年'+ (new Date(Number(item.memberTime)).getMonth()+1)+'月', 2)">录入工资</b></td>
 			</tr>
 		</table>
 		<p class="filter" v-show="isShow"></p>
@@ -57,16 +67,20 @@
 	  data() {
 	  	return {
 	  		model:{
-	            total: 1,//总页数
-	            size:5,//每页显示条目个数不传默认10
-	            page:1,//当前页码
-	        },
-	        isShowPagination: true,
-	        isShow:false, // 显示输入框
-	        itemInfo: [], // 要录入的用户的数据
-	        salary: null, // 工资
+            total: 1,//总页数
+            size:5,//每页显示条目个数不传默认10
+            page:1,//当前页码
+        },
+        isShowPagination: true,
+        isShow:false, // 显示输入框
+        itemInfo: [], // 要录入的用户的数据
+        salary: null, // 工资
+        duration: '', // 月份
+        type: 1, // 1 新增记录， 2 修改
 	  		inputContent: '',
-	  		memberData: [] // 党员数据
+	  		isShowTr: false, // 是否显示单月
+	  		memberData: [], // 党员数据
+	  		currentData: [] // 党员数据
 	  	}
 	  },
 	  filters: {
@@ -76,9 +90,11 @@
 		    }
 		},
 	  methods: {
-	  	showFilter(item) {
+	  	showFilter(item, duration, type) {
 	  		this.isShow=true;
 	  		this.itemInfo = item
+	  		this.duration = duration
+	  		this.type = type
 	  	},
 	  	hideFilter(){
 			this.isShow=false;
@@ -89,40 +105,83 @@
 			if(this.salary != ''){
 				var free // 党费
 				if(this.salary <= 3000) {
-					free = this.salary * 0.005 * 3
+					free = this.salary * 0.005
 				} else if(3000 < this.salary <= 5000) {
-					free = this.salary * 0.01 * 3
+					free = this.salary * 0.01
 				} else if(5000 < this.salary <= 10000) {
-					free = this.salary * 0.015 * 3
+					free = this.salary * 0.015
 				} else {
-					free = this.salary * 0.02 * 3
+					free = this.salary * 0.02
 				}
-				$.ajax({
-					url: 'http://localhost:5555/editTeacherSalary',
-					type: 'POST',
-					dataType: 'json',
-					data: { id: _this.itemInfo.id, salary: _this.salary, price: free },
-					success() {
-						alert('工资录入成功')
-						_this.salary = null
-						_this.hideFilter()
-					}
-				}).done(function() {
+				if(this.type == 1) {
 					$.ajax({
-			    		url: 'http://localhost:5555/allTeacherPartyFree',
-			    		type: 'POST',
-			    		dataType: 'json',
-			    		data: {
-			    			size: _this.model.size,
-			    			page: _this.model.page,
-			    			type: '教师'
-			    		},
-			    		success(data) {
-			    			_this.memberData = data
-			    		}
-			    	})
-				})
-				
+						url: 'http://localhost:5555/addTeacherSalary',
+						type: 'POST',
+						dataType: 'json',
+						data: { 
+							sno: _this.itemInfo.sno,
+							member: _this.itemInfo.member,
+							memberTime: _this.itemInfo.memberTime,
+							type: _this.itemInfo.type,
+							salary: _this.salary, 
+							price: free, 
+							duration: _this.duration,
+							status: '未缴费'
+						},
+						success() {
+							alert('工资录入成功')
+							_this.currentData.splice(_this.currentData.indexOf(_this.currentData.filter(item=>item.member == _this.itemInfo.member)[0]), 1)
+							_this.salary = null
+							_this.hideFilter()
+						}
+					}).done(function() {
+						$.ajax({
+				    		url: 'http://localhost:5555/allTeacherPartyFree',
+				    		type: 'POST',
+				    		dataType: 'json',
+				    		data: {
+				    			size: _this.model.size,
+				    			page: _this.model.page,
+				    			type: '教师'
+				    		},
+				    		success(data) {
+				    			_this.memberData = data
+				    		}
+				    	})
+					})
+				} else {
+					$.ajax({
+						url: 'http://localhost:5555/editTeacherSalary',
+						type: 'POST',
+						dataType: 'json',
+						data: { 
+							id: _this.itemInfo.id, 
+							salary: _this.salary, 
+							price: free, 
+							duration: _this.duration,
+							status: '未缴费'
+						},
+						success() {
+							alert('工资录入成功')
+							_this.salary = null
+							_this.hideFilter()
+						}
+					}).done(function() {
+						$.ajax({
+				    		url: 'http://localhost:5555/allTeacherPartyFree',
+				    		type: 'POST',
+				    		dataType: 'json',
+				    		data: {
+				    			size: _this.model.size,
+				    			page: _this.model.page,
+				    			type: '教师'
+				    		},
+				    		success(data) {
+				    			_this.memberData = data
+				    		}
+				    	})
+					})
+				}
 			} else {
 				alert('请输入工资')
 			}
@@ -153,6 +212,28 @@
 	    		},
 	    		success(data) {
 	    			_this.memberData = data
+	    			let str = new Date().getFullYear() +'年'+ (new Date().getMonth()+1)+'月'
+	    			_this.currentData = []
+	    			for(var i in _this.memberData) {
+	    				// 如果数据中没有当前月的缴费记录，则要在页面上先生成
+	    				if(_this.currentData.filter(item=>item.member==_this.memberData[i].member).length<=0) {
+	    					_this.currentData.push({
+  								sno: _this.memberData[i].sno,
+  								member: _this.memberData[i].member,
+  								memberTime: _this.memberData[i].memberTime,
+  								type: _this.memberData[i].type,
+  								salary: '',
+  								duration:str
+  							})
+	    				}
+	    				// 有记录的则删除
+	    				let arr = _this.memberData.filter(item=>item.duration==str && item.member==_this.memberData[i].member)
+	    				if(arr != undefined && arr.length>0){
+	    					var name = arr[0].member
+	    					// 删除
+	    					_this.currentData.splice(_this.currentData.indexOf(_this.currentData.filter(item=>item.member == name)[0]), 1)
+	    				}
+	    			}
 	    		}
 	    	})
 	  	},

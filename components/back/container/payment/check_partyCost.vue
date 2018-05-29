@@ -1,39 +1,49 @@
 <template>
 	<div class="content_box">
-		<h4><img src="/imgs/icon_search.png"/>审核组织关系的迁入迁出</h4>
+		<h4><img src="/imgs/icon_search.png"/>审核党费收缴情况</h4>
 		<p>
 			
 			<input type="text" placeholder="请输入关键字,无内容则搜索所有" v-model="inputContent"/>
 			<button @click="getOrgByName">通过党员姓名搜索</button>
-			<button @click="getOrgByBranch">通过支部搜索</button>
+			<button @click="getOrgByBranch">通过月份搜索</button>
 		</p>
 		<table>
 			<thead>
 				<tr>
 					<th>姓名</th>
-					<th>学号</th>
-					<th>支部</th>
-					<th>迁出城市</th>
-					<th>详细地址</th>
-					<th>申请时间</th>
-					<th>审核时间</th>
+					<th>编号</th>
+					<th>转正时间</th>
+					<th>类型</th>
+					<th>工资</th>
+					<th>月份</th>
+					<th>党费</th>
 					<th>状态</th>
+					<th>缴费时间</th>
 					<th style="width: 200px;">操作</th>
 				</tr>
 			</thead>
-			<tr v-if="orgData==''" style="text-align:center;">
-				<td style="line-height:50px;font-size:20px" colspan="9">无要审核数据</td>
+			<tr v-if="freeData==''" style="text-align:center;">
+				<td style="line-height:50px;font-size:20px" colspan="10">无要审核数据</td>
 			</tr>
-			<tr v-for="(item,index) in orgData" :key="item.id">
-				<td>{{item.name}}</td>
+			<tr v-for="(item,index) in freeData" :key="item.id">
+				<td>{{item.member}}</td>
 				<td>{{item.sno}}</td>
-				<td>{{item.branch}}</td>
-				<td>{{item.city}}</td>
-				<td>{{item.address}}</td>
-				<td>{{item.applyTime | formatDate}}</td>
-				<td>{{item.checkTime | formatDate}}</td>
+				<td>{{item.memberTime | formatDate}}</td>
+				<td>{{item.type}}</td>
+				<td v-if="item.type=='教师' || item.type=='书记'">{{item.salary}}</td>
+				<td v-else>学生无工资</td>
+				<td>{{item.duration}}</td>
+				<td>{{item.price}}</td>
 				<td>{{item.status}}</td>
-				<td v-if="item.status=='待审核'"><b @click="checkOrg(item.id,'已通过')" class="edit">确认收到回执</b><b @click="checkOrg(item.id,'不通过')" class="del">不通过</b></td>
+				<td v-if="item.payTime==''"></td>
+				<td v-else>{{item.payTime | formatDate}}</td>
+				<td v-if="(item.type=='教师' || item.type=='书记') && item.salary==''">
+					<b @click="goSetSalary" class="del">去设置工资</b>
+				</td>
+				<td v-else>
+					<b @click="checkOrg(item.id,'已通过')" class="edit">已收到党费</b>
+					<b @click="checkOrg(item.id,'不通过')" class="del">没收到</b>
+				</td>
 			</tr>
 		</table>
 		<xpagination v-show="isShowPagination" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
@@ -51,12 +61,12 @@
 	  data() {
 	  	return {
 	  		model:{
-	            total: 1,//总页数
-	            size:5,//每页显示条目个数不传默认10
-	            page:1,//当前页码
-	        },
-	        isShowPagination: true,
-	  		orgData: [], // 组织关系迁入迁出数据
+            total: 1,//总页数
+            size:5,//每页显示条目个数不传默认10
+            page:1,//当前页码
+        },
+        isShowPagination: true,
+	  		freeData: [], // 党费数据
 	  		inputContent: '' // 搜索的内容
 	  	}
 	  },
@@ -71,8 +81,8 @@
 	  		var _this = this
 	  		this.model.page=val;
 	  		this.isShowPagination = true
-            $.ajax({
-	    		url: 'http://localhost:5555/allCheckOrgCount',
+        $.ajax({
+	    		url: 'http://localhost:5555/allPartyFreeCount',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		success(data) {
@@ -81,7 +91,7 @@
 	    	})
 	  		_this.memberData = []
 	    	$.ajax({
-	    		url: 'http://localhost:5555/allCheckOrg',
+	    		url: 'http://localhost:5555/allPartyFree',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
@@ -89,9 +99,12 @@
 	    			page: _this.model.page
 	    		},
 	    		success(data) {
-	    			_this.orgData = data
+	    			_this.freeData = data
 	    		}
 	    	})
+	  	},
+	  	goSetSalary() {
+	  		this.$router.push({ path: '/tab/addSalary' })
 	  	},
 	  	checkOrg(id,status){
 	  		var _this = this
@@ -115,7 +128,7 @@
 			    			page: _this.model.page
 			    		},
 			    		success(data) {
-			    			_this.orgData = data
+			    			_this.freeData = data
 			    		}
 			    	})
 	    		}
@@ -133,7 +146,7 @@
 	    			name: _this.inputContent
 	    		},
 	    		success(data) {
-	    			_this.orgData = data
+	    			_this.freeData = data
 	    		}
 	    	})
 	  	},
@@ -149,7 +162,7 @@
 	    			branch: _this.inputContent
 	    		},
 	    		success(data) {
-	    			_this.orgData = data
+	    			_this.freeData = data
 	    		}
 	    	})
 	  	}

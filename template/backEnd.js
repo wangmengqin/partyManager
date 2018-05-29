@@ -424,6 +424,26 @@ app.post("/allMemberCount",function(req,res){
 		res.send(results);
 	});
 })
+//查询所有教师党员信息
+app.post("/allTeacherMember",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `select * from member where type='教师' AND identify='党员' OR identify='书记' limit ${size} OFFSET ${offset}`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//获取总条数
+app.post("/allTeacherMemberCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from member where type='教师' AND identify='党员' OR identify='书记'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
+	});
+})
 //查询新增党员所有信息
 app.post("/allNewMember",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
@@ -610,7 +630,7 @@ app.post("/allPartyFree",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
 	var offset = (Number(req.body.page)-1) * Number(req.body.size)
 	var size = Number(req.body.size)
-	var sql = `select * from partyfree limit ${size} OFFSET ${offset}`;
+	var sql = `select * from partyfree order by id desc limit ${size} OFFSET ${offset}`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
@@ -619,7 +639,7 @@ app.post("/allPartyFree",function(req,res){
 //获取总条数
 app.post("/allPartyFreeCount",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `select count(*) as count from partyfree`;
+	var sql = `select count(*) as count from partyfree order by id desc`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(results);
@@ -630,7 +650,7 @@ app.post("/allTeacherPartyFree",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
 	var offset = (Number(req.body.page)-1) * Number(req.body.size)
 	var size = Number(req.body.size)
-	var sql = `select * from partyfree where type='${req.body.type}' limit ${size} OFFSET ${offset}`;
+	var sql = `select * from partyfree where type='书记' OR type= '教师' order by id desc limit ${size} OFFSET ${offset}`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
@@ -639,7 +659,7 @@ app.post("/allTeacherPartyFree",function(req,res){
 //获取教师信息总条数
 app.post("/allTeacherPartyFreeCount",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `select count(*) as count from partyfree where type='${req.body.type}'`;
+	var sql = `select count(*) as count from partyfree where type='书记' OR type= '教师' order by id desc`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(results);
@@ -663,10 +683,28 @@ app.post("/getTeacherMemberByName",function(req,res){
 		res.send(results);
 	});
 })
+//根据姓名和月份获取信息
+app.post("/getFreeByNameDuration",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from partyfree where member='${req.body.member}' and duration='${req.body.duration}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
+	});
+})
 // 根据name修改教师工资信息
 app.post("/editTeacherSalary",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `update partyfree set salary = '${req.body.salary}', price = '${req.body.price}' where id = '${req.body.id}'`;
+	var sql = `update partyfree set salary = '${req.body.salary}', duration= '${req.body.duration}', price = '${req.body.price}', status= '${req.body.status}' where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 插入党费记录信息
+app.post("/addTeacherSalary",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `INSERT INTO partyfree (sno, member, memberTime, type, salary, duration, price, status) values('${req.body.sno}', '${req.body.member}', '${req.body.memberTime}', '${req.body.type}', '${req.body.salary}', '${req.body.duration}', '${req.body.price}', '未缴费')`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));

@@ -98,7 +98,21 @@
 		    		},
 		    		success(data) {
 		    			alert('审核成功')
-		    			_this.memberData = []
+		    			$.ajax({
+							url: 'http://localhost:5555/addTeacherSalary',
+							type: 'POST',
+							dataType: 'json',
+							data: { 
+								sno: _this.itemInfo.sno,
+								member: _this.itemInfo.name,
+								memberTime: new Date().getTime(),
+								type: _this.itemInfo.type, 
+								salary: '', 
+								price: _this.itemInfo.type=='学生'?'0.2':'', 
+								duration: new Date().getFullYear() +'年'+ (new Date().getMonth()+1)+'月',
+								status: '未缴费'
+							}
+						})
 				    	$.ajax({
 				    		url: 'http://localhost:5555/allPrepareMember',
 				    		type: 'POST',
