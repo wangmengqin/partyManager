@@ -20,15 +20,15 @@
 			<tr v-if="currentData.length>0" v-for="item in currentData">
 				<td>{{item.member}}</td>
 				<td>{{item.duration}}</td>
-				<td>{{item.price==''?'管理员还没录入哦':item.price}}</td>
-				<td>{{item.status}}</td>
+				<td>{{item.price==''?'管理员还没录入哦':(item.price+'元')}}</td>
+				<td :style="{'color': item.status=='已缴费'?'green':(item.status=='未缴费'?'red':'#666'), 'font-weight': '600'}">{{item.status}}</td>
 				<td><a href="javascript" class="edit" v-if="item.status=='未缴费'">缴费</a></td>
 			</tr>
 			<tr v-if="freeData.length>0 && (identify=='党员'||identify=='书记')" v-for="(item,index) in freeData">
 				<td>{{item.member}}</td>
 				<td>{{item.duration}}</td>
-				<td>{{item.price==''?'管理员还没录入哦':item.price}}</td>
-				<td>{{item.status}}</td>
+				<td>{{item.price==''?'管理员还没录入哦':(item.price+'元')}}</td>
+				<td :style="{'color': item.status=='已缴费'?'green':(item.status=='未缴费'?'red':'#666'), 'font-weight': '600'}">{{item.status}}</td>
 				<td><a href="javascript:" class="edit" v-if="item.status=='未缴费'" @click="pay(item.id, index)">缴费</a></td>
 			</tr>
 		</table>
@@ -136,12 +136,13 @@ export default {
 			console.log('缴费id', id)
 			let _this = this
 			$.ajax({
-    		url: 'http://localhost:5555/editStatusById',
+    		url: 'http://localhost:5555/payFreeById',
     		type: 'POST',
     		dataType: 'json',
     		data: {
     			id: id,
-    			status: '待审核'
+    			status: '待审核',
+    			payTime: new Date().getTime()
     		},
     		success(data) {
     			alert('缴费成功，请等待管理员确认')

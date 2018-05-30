@@ -730,10 +730,19 @@ app.post("/addTeacherSalary",function(req,res){
 		res.send(JSON.stringify(results));
 	});
 })
+// 党员缴费
+app.post("/payFreeById",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `update partyfree set status='${req.body.status}', payTime='${req.body.payTime}' where id='${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
+	});
+})
 //根据id修改状态
 app.post("/editStatusById",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `update partyfree set status='${req.body.status}' where id='${req.body.id}'`;
+	var sql = `update partyfree set status='${req.body.status}', checkTime='${req.body.checkTime}' where id='${req.body.id}'`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(results);

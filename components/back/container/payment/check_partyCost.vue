@@ -41,8 +41,8 @@
 					<b @click="goSetSalary" class="del">去设置工资</b>
 				</td>
 				<td v-else>
-					<b v-if="item.status=='待审核'" @click="checkOrg(item.id,'已通过')" class="edit">已收到党费</b>
-					<b v-if="item.status=='待审核'" @click="checkOrg(item.id,'不通过')" class="del">没收到</b>
+					<b v-if="item.status=='待审核'" @click="checkFree(item.id,'已缴费')" class="edit">已收到党费</b>
+					<b v-if="item.status=='待审核'" @click="checkFree(item.id,'未缴费')" class="del">没收到</b>
 				</td>
 			</tr>
 		</table>
@@ -73,7 +73,7 @@
 	  filters: {
 	    formatDate(time) {
 	        var date = new Date(Number(time));
-	        return formatDate(date, 'yyyy-MM-dd');
+	        return formatDate(date, 'yyyy-MM-dd hh:mm');
 	    }
 	  },
 	  methods: {
@@ -106,10 +106,10 @@
 	  	goSetSalary() {
 	  		this.$router.push({ path: '/tab/addSalary' })
 	  	},
-	  	checkOrg(id,status){
+	  	checkFree(id,status){
 	  		var _this = this
 	  		$.ajax({
-	    		url: 'http://localhost:5555/editOrgStatus',
+	    		url: 'http://localhost:5555/editStatusById',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
@@ -120,7 +120,7 @@
 	    		success(data) {
 	    			alert('审核成功')
 	    			$.ajax({
-			    		url: 'http://localhost:5555/allCheckOrg',
+			    		url: 'http://localhost:5555/allPartyFree',
 			    		type: 'POST',
 			    		dataType: 'json',
 			    		data: {
