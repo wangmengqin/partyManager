@@ -1,7 +1,7 @@
 <template>
 	<div style="overflow: hidden;margin: 0 auto; width: 1200px;padding: 20px 0;background: #FDFDFD;">
 		<div class="active-detail">
-			<h3>支部活动</h3>
+			<h3>讲座</h3>
 			<ul>
 				<li v-for="item in lectureData">
 					<img v-if="item.img==''" src="/imgs/icon_active.png" class="active_img"/>
@@ -54,7 +54,7 @@
 			</ul>
 		</div>
 		<div class="active-detail">
-			<h3>讲座</h3>
+			<h3>支部活动</h3>
 			<ul>
 				<li v-for="item in branchActivityData">
 					<img v-if="item.img==''" src="/imgs/icon_active.png" class="active_img"/>
@@ -182,6 +182,7 @@
 				dataType: 'json',
 				data: {type: '讲座'},
 				success(data) {
+					console.log('jiangzuo活动', data)
 					_this.lectureData = data
 				}
 			})
@@ -191,6 +192,7 @@
 				dataType: 'json',
 				data: {type: '支部活动'},
 				success(data) {
+					console.log('支部活动', data)
 					_this.branchActivityData = data
 				}
 			})
@@ -200,6 +202,7 @@
 				dataType: 'json',
 				data: {type: '组织生活'},
 				success(data) {
+					console.log('组织生活', data)
 					_this.orgActivityData = data
 				}
 			})
@@ -258,7 +261,7 @@
 				}
 				else{
 					alert('获取信息失败，请重新登录')
-					location.href = '#/login'
+					this.$router.push({ path: '/login' })
 				}
 			}
 		}
@@ -303,6 +306,7 @@
 		zoom: 1;
 		padding:0 30px 20px 30px;
 		width: 504px;
+		height: 130px;
 	}
 	h5{
 		font-size: 16px;

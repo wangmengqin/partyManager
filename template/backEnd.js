@@ -107,7 +107,7 @@ app.post("/addcolumns",function(req,res){
 //查询所有信息
 app.post("/News",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `select * from news`;
+	var sql = `select * from news order by id desc`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
@@ -284,7 +284,7 @@ app.post("/getActivityByDescribe",function(req,res){
 // 根据活动类型活动信息
 app.post("/getActivityByType",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `select * from activities where type like '%${req.body.type}%' order by id desc LIMIT 6 `;
+	var sql = `select * from activities where type like '%${req.body.type}%' order by id desc`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
