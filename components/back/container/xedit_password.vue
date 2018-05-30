@@ -97,7 +97,7 @@
 		},
 		methods: {
 			getManagerByName() {
-	   		var _this = this
+		   		var _this = this
 				this.managerName = sessionStorage.getItem('managerLoginNum')
 				if (this.managerName != null) {
 					$.ajax({
@@ -115,12 +115,12 @@
 				}
 				else{
 					alert('获取信息失败，请重新登录')
-					location.href = '#/login'
+					this.$router.push({ path: '/login' })
 					return false
 				}
-	    },
-	    getSuperManagerByName() {
-	   		var _this = this
+		    },
+		    getSuperManagerByName() {
+		   		var _this = this
 				this.managerName = sessionStorage.getItem('superLoginNum')
 				if (this.managerName != null) {
 					$.ajax({
@@ -138,42 +138,66 @@
 				}
 				else{
 					alert('获取信息失败，请重新登录')
-					this.$router.puah({ path: '/login' })
+					this.$router.push({ path: '/login' })
 					return false
 				}
-	    },
-	    judgePassword() {
-	    	if(this.primePassword == this.myInfo.password) {
-	    		this.isCorrect = true
-	    		this.isError = false
-	    		return true
-	    	} else {
-	    		this.isError = true
-	    		this.isCorrect = false
-	    		return false
-	    	}
-	    },
-	    editPassword() {
-	    	var _this = this
-	    	if(this.judgePassword() && this.getManagerByName() && this.password === this.password1)
-	    	{
-	    		$.ajax({
-		    		url: 'http://localhost:5555/editManagerPassword',
-		    		type: 'POST',
-		    		dataType: 'json',
-		    		data: {
-		    			id: _this.myInfo.id,
-		    			password: _this.password
-		    		},
-		    		success(data) {
-		    			alert('修改成功,请重新登录')
-		    			location.href = '#/login'
-		    		}
-		    	})
-	    	} else {
-	    		alert('两次输入密码不一致')
-	    	}
-	    }
+		    },
+		    judgePassword() {
+		    	if(this.primePassword == this.myInfo.password) {
+		    		this.isCorrect = true
+		    		this.isError = false
+		    		return true
+		    	} else {
+		    		this.isError = true
+		    		this.isCorrect = false
+		    		return false
+		    	}
+		    },
+		    editPassword() {
+		    	var _this = this
+		    	if(this.type==0) {
+					// 超级管理员修改密码
+					if(this.judgePassword() && this.getSuperManagerByName() && this.password === this.password1)
+			    	{
+						$.ajax({
+				    		url: 'http://localhost:5555/editSuperManagerPassword',
+				    		type: 'POST',
+				    		dataType: 'json',
+				    		data: {
+				    			id: _this.myInfo.id,
+				    			password: _this.password
+				    		},
+				    		success(data) {
+				    			alert('修改成功,请重新登录')
+				    			_this.$router.push({ path: '/login' })
+				    		}
+				    	})
+			    	} else {
+			    		alert('两次输入密码不一致')
+			    	}
+		    	} else {
+		    		// 普通管理员修改密码
+		    		if(this.judgePassword() && this.getManagerByName() && this.password === this.password1)
+			    	{
+		    			$.ajax({
+				    		url: 'http://localhost:5555/editManagerPassword',
+				    		type: 'POST',
+				    		dataType: 'json',
+				    		data: {
+				    			id: _this.myInfo.id,
+				    			password: _this.password
+				    		},
+				    		success(data) {
+				    			alert('修改成功,请重新登录')
+				    			_this.$router.push({ path: '/login' })
+				    		}
+				    	})
+			    	} else {
+			    		alert('两次输入密码不一致')
+			    	}
+		    	}
+		    	
+		    }
 		},
 		mounted() {
 			this.type = this.$route.query.type

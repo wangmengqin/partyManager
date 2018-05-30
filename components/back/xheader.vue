@@ -1,7 +1,7 @@
 <template>
 	<header>
 		<h3><img src="/imgs/logo1.png"	/>党务管理工作平台</h3>
-		<p>当前用户：{{loginNum}} <a href="javascript:" @click="linkToLogin">[退出]</a>|<a href="#/tab/editpassword">修改密码</a></p>
+		<p>当前用户：{{loginNum}} <a href="javascript:" @click="linkToLogin">[退出]</a>|<a :href="'#/tab/editpassword?type='+type">修改密码</a></p>
 	</header>
 </template>
 
@@ -9,15 +9,21 @@
 export default {
 	data() {
 		return {
-			loginNum: 'XXX'
+			loginNum: 'XXX',
+			type: 1
 		}
 	},
 	methods: {
 		linkToLogin() {
-			this.$router.push({ path: `/login` })
+			this.$router.push({ path: `/login`, query:{ type: this.$route.query.type } })
+			sessionStorage.removeItem('superLoginNum')
+			sessionStorage.removeItem('superLoginPassword')
+			sessionStorage.removeItem('managerLoginNum')
+			sessionStorage.removeItem('managerLoginPassword')
 		}
 	},
 	mounted() {
+		this.type = this.$route.query.type
 		if(this.$route.query.type == 0) {
 			this.loginNum = sessionStorage.getItem('superLoginNum')
 		} else {

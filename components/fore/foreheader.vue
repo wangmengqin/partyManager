@@ -25,7 +25,8 @@ export default {
 		},
 		linkToLogin() {
 			sessionStorage.removeItem('sno')
-			this.$router.push({ path: `/login` })
+			sessionStorage.removeItem('password')
+			this.$router.push({ path: `/login`, query:{ type: 2 } })
 		}
 	}
 }

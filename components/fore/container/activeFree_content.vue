@@ -24,7 +24,10 @@
 				<td v-if="item.money != ''">￥{{item.money}}</td>
 				<td v-else>管理员未录入</td>
 				<td>{{item.money_status}}</td>
-				<td><a href="javascript:" class="edit" v-if="item.money_status=='未缴费' && item.status=='已通过'" @click="payMoney(item.id, item.money)">缴费</a></td>
+				<td>
+					<a href="javascript:" class="edit" v-if="item.money_status=='未缴费' && item.status=='已通过'" @click="payMoney(item.id, item.money)">缴费</a>
+					<a href="javascript:" class="edit" v-if="item.status=='待审核'" @click="cancelJoin(item.id)">我不想参加了</a>
+				</td>
 			</tr>
 		</table>
 	</div>
@@ -40,6 +43,42 @@ export default {
 		}
 	},
 	methods: {
+		getAll() {
+			var _this = this
+			this.sno = sessionStorage.getItem('sno')
+			this.freeData = []
+			if (this.sno != null) {
+				$.ajax({
+		    		url: 'http://localhost:5555/getMemberBySno',
+		    		type: 'POST',
+		    		dataType: 'json',
+		    		data: {
+		    			sno: _this.sno
+		    		},
+		    		success(data) {
+		    			_this.memberInfo = data
+		    			
+		    		}
+		    	})
+		    	.done(function() {
+					$.ajax({
+			    		url: 'http://localhost:5555/memberActivity',
+			    		type: 'POST',
+			    		dataType: 'json',
+			    		success(data) {
+			    			for(var i in data) {
+			    				if(_this.sno = data[i].member_sno && _this.memberInfo[0].name == data[i].member){
+			    					_this.freeData.push(data[i])
+			    				}
+			    			}
+			    		}
+			    	})
+				})
+			}else{
+				alert('您还未登录或者获取信息失败')
+				this.$router.push({ path: '/login' })
+			}
+		},
 		payMoney(id, money) {
 			var _this = this
 			if(money != '') {
@@ -81,43 +120,25 @@ export default {
 			} else {
 				alert('无活动经费可缴！！')
 			}
-		}
-	},
-	mounted() {
-		var _this = this
-		this.sno = sessionStorage.getItem('sno')
-		this.freeData = []
-		if (this.sno != null) {
+		},
+		cancelJoin(id) {
+			var _this = this
 			$.ajax({
-	    		url: 'http://localhost:5555/getMemberBySno',
+	    		url: 'http://localhost:5555/deleteMemberActivityById',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
-	    			sno: _this.sno
+	    			id: id
 	    		},
 	    		success(data) {
-	    			_this.memberInfo = data
-	    			
+	    			alert('操作成功')
+	    			_this.getAll()
 	    		}
 	    	})
-	    	.done(function() {
-				$.ajax({
-		    		url: 'http://localhost:5555/memberActivity',
-		    		type: 'POST',
-		    		dataType: 'json',
-		    		success(data) {
-		    			for(var i in data) {
-		    				if(_this.sno = data[i].member_sno && _this.memberInfo[0].name == data[i].member){
-		    					_this.freeData.push(data[i])
-		    				}
-		    			}
-		    		}
-		    	})
-			})
-		}else{
-			alert('您还未登录或者获取信息失败')
-			this.$router.push({ path: '/login' })
 		}
+	},
+	mounted() {
+		this.getAll()
 	}
 }
 </script>
@@ -162,7 +183,7 @@ export default {
 	a{
 		display: inline-block;
 		color: #fff;
-		width: 50px;
+		padding: 0 10px;
 		height: 30px;
 		line-height: 30px;
 		text-align: center;

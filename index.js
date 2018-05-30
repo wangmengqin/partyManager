@@ -79,6 +79,7 @@ import activeFree from "./components/fore/tab/fore_activeFree.vue";
 import contentDetail from "./components/fore/tab/fore_detail.vue";
 // 培训组件
 import train from "./components/fore/tab/fore_train.vue";
+import myTrain from "./components/fore/tab/fore_myTrain.vue";
 // 考核组件
 import test from "./components/fore/tab/fore_test.vue";
 //登录组件
@@ -311,6 +312,10 @@ var router = new VueRouter({
             {
               path: 'train',
               component: train
+            },
+            {
+              path: 'myTrain',
+              component: myTrain
             },
             {
               path: 'test',

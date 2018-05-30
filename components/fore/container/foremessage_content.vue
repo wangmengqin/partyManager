@@ -96,17 +96,17 @@ export default {
     	})
 			this.sno = sessionStorage.getItem('sno')
 			$.ajax({
-	    		url: 'http://localhost:5555/getMemberBySno',
-	    		type: 'POST',
-	    		dataType: 'json',
-	    		data: {
-	    			sno: _this.sno
-	    		},
-	    		success(data) {
-	    			_this.memberName = data[0].name
-	    			_this.head = data[0].head
-	    		}
-	    	})
+    		url: 'http://localhost:5555/getMemberBySno',
+    		type: 'POST',
+    		dataType: 'json',
+    		data: {
+    			sno: _this.sno
+    		},
+    		success(data) {
+    			_this.memberName = data[0].name
+    			_this.head = data[0].head
+    		}
+    	})
 			$.ajax({
 				url: 'http://localhost:5555/allShowMessage',
 				type: 'POST',

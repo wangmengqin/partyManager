@@ -746,7 +746,7 @@ app.post("/getLoginInfo",function(req,res){
 	//解决跨域问题
 	res.append("Access-Control-Allow-Origin","*");
 	//连接后执行相应功能
-	connect.query(`SELECT password FROM member where sno = ${req.body.username}`, function(error, results, fields) {
+	connect.query(`SELECT password FROM member where sno = '${req.body.username}'`, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
 	});
@@ -1294,6 +1294,7 @@ app.post("/deleteTrain",function(req,res){
 		res.send(JSON.stringify(results));
 	});
 })
+
 /* 报名培训模块 */
 /* 参加培训 */
 app.post("/joinTrain",function(req,res){
@@ -1345,7 +1346,7 @@ app.post("/allTrainMemberCount",function(req,res){
 // 根据学号姓名获取参加培训信息
 app.post("/getTrainMemberBySnoName",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `SELECT * from trainmember where sno = '${req.body.sno}' AND member = '${req.body.member}'`;
+	var sql = `SELECT * from trainmember where sno = '${req.body.sno}' AND member = '${req.body.member}' AND title='${req.body.title}'`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
@@ -1376,6 +1377,35 @@ app.post("/getTrainMemberByTitle",function(req,res){
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
+	});
+})
+// 根据学号姓名查询
+app.post("/getMyTrain",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `SELECT * from trainmember where sno = '${req.body.sno}' AND member='${req.body.member}' limit ${size} OFFSET ${offset}`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 我的培训总数
+app.post("/getMyTrainCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from trainmember where sno = '${req.body.sno}' AND member='${req.body.member}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
+	});
+})
+// 删除培训记录
+app.post("/deleteMyTrain",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `delete from trainmember where id = '${req.body.id}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
 	});
 })
 

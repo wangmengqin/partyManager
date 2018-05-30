@@ -9,6 +9,7 @@
 					<li><a href="javascript:" @click="linkToTrain('party')">党课培训</a></li>
 					<li><a href="#/fore/test">结业考核</a></li>
 					<li><a href="javascript:" @click="linkToTrain('topic')">专题培训</a></li>
+					<li><a href="javascript:" @click="linkToMyTrain">我的培训</a></li>
 				</ul>
 			</li>
 			<li><a href="#/fore/allActivities">查看活动</a></li>
@@ -45,6 +46,9 @@
 			},
 			linkToTrain(type) {
 				this.$router.push({ path: '/fore/train', query:{type: type} } )
+			},
+			linkToMyTrain() {
+				this.$router.push({ path: '/fore/myTrain' })
 			}
 		}
 	}

@@ -17,15 +17,22 @@
 			<tr v-if="freeData.length<=0 && (identify=='党员'||identify=='书记')" style="text-align:center;">
 				<td style="line-height:50px;font-size:20px" colspan="5">您暂无缴费记录</td>
 			</tr>
-			<tr v-if="freeData.length>0 && (identify=='党员'||identify=='书记')" v-for="item in freeData">
+			<tr v-if="currentData.length>0" v-for="item in currentData">
 				<td>{{item.member}}</td>
 				<td>{{item.duration}}</td>
 				<td>{{item.price==''?'管理员还没录入哦':item.price}}</td>
 				<td>{{item.status}}</td>
 				<td><a href="javascript" class="edit" v-if="item.status=='未缴费'">缴费</a></td>
 			</tr>
+			<tr v-if="freeData.length>0 && (identify=='党员'||identify=='书记')" v-for="(item,index) in freeData">
+				<td>{{item.member}}</td>
+				<td>{{item.duration}}</td>
+				<td>{{item.price==''?'管理员还没录入哦':item.price}}</td>
+				<td>{{item.status}}</td>
+				<td><a href="javascript:" class="edit" v-if="item.status=='未缴费'" @click="pay(item.id, index)">缴费</a></td>
+			</tr>
 		</table>
-		<xpagination v-if="freeData.length>0 && (identify=='党员'||identify=='书记')" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
+		<xpagination :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
 	</div>
 </template>
 <script>
@@ -45,38 +52,8 @@ export default {
       memberName: '',
       sno: '',
       identify: '',
-			freeData: [
-				{
-					id: 0,
-					year: '2018年',
-					monthTime: '04-06月',
-					situation: '未缴费'
-				},
-				{
-					id: 1,
-					year: '2018年',
-					monthTime: '01-03月',
-					situation: '已缴费'
-				},
-				{
-					id: 2,
-					year: '2017年',
-					monthTime: '10-12月',
-					situation: '已缴费'
-				},
-				{
-					id: 3,
-					year: '2017年',
-					monthTime: '07-09月',
-					situation: '已缴费'
-				},
-				{
-					id: 4,
-					year: '2017年',
-					monthTime: '04-06月',
-					situation: '已缴费'
-				}
-			]
+      currentData: [], // 当前月的数据，若本月无记录，则先添加
+			freeData: [] // 缴费记录数据
 		}
 	},
 	methods: {
@@ -122,6 +99,30 @@ export default {
 		    		},
 		    		success(data) {
 		    			_this.freeData = data
+		    			let str = new Date().getFullYear() +'年'+ (new Date().getMonth()+1)+'月'
+		    			_this.currentData = []
+		    			for(var i in _this.freeData) {
+		    				// 如果数据中没有当前月的缴费记录，则要在页面上先生成
+		    				if(_this.currentData.filter(item=>item.member==_this.freeData[i].member).length<=0) {
+		    					_this.currentData.push({
+	  								sno: _this.freeData[i].sno,
+	  								member: _this.freeData[i].member,
+	  								memberTime: _this.freeData[i].memberTime,
+	  								type: _this.freeData[i].type,
+	  								salary: '',
+	  								price: '',
+	  								duration:str
+	  							})
+		    				}
+		    				// 有记录的则删除
+		    				let arr = _this.freeData.filter(item=>item.duration==str && item.member==_this.freeData[i].member)
+		    				if(arr != undefined && arr.length>0){
+		    					var name = arr[0].member
+		    					// 删除
+		    					_this.currentData.splice(_this.currentData.indexOf(_this.currentData.filter(item=>item.member == name)[0]), 1)
+		    				}
+		    				console.log(_this.currentData)
+		    			}
 		    		}
 		    	})
 	    	})
@@ -130,6 +131,23 @@ export default {
 				alert('获取信息失败，请重新登录')
 				this.$router.push({ path: '/login' })
 			}
+		},
+		pay(id,index) {
+			console.log('缴费id', id)
+			let _this = this
+			$.ajax({
+    		url: 'http://localhost:5555/editStatusById',
+    		type: 'POST',
+    		dataType: 'json',
+    		data: {
+    			id: id,
+    			status: '待审核'
+    		},
+    		success(data) {
+    			alert('缴费成功，请等待管理员确认')
+    			_this.freeData[index].status='待审核'
+    		}
+    	})
 		}
 	},
 	mounted() {

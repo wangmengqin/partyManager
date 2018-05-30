@@ -7,11 +7,11 @@
 				<p class="p200"><span>密码：</span><input v-model="password" type="password" placeholder="请输入密码"/></p>
 				<p  class="p200">
 					<span>身份：</span>
-					<select v-model="type">
-					<option key="0" value="管理员">管理员</option>
-					<option key="1" value="普通党员">普通党员</option>
-					<option key="2" value="超级管理员">超级管理员</option>
-				</select>
+					<select v-model="type" @change="changeType(type)">
+						<option key="0" value="管理员">管理员</option>
+						<option key="1" value="普通党员">普通党员</option>
+						<option key="2" value="超级管理员">超级管理员</option>
+					</select>
 				</p>
 				<p class="padding50"><input type="checkbox" v-model="checkbox"/><span>记住用户名和密码</span></p>
 				<p style="width:100%;text-align: center;"><button @click="login">登录</button><button @click="apply">申请入党</button></p>
@@ -23,6 +23,7 @@
 
 <script>
 import $ from 'jQuery';
+import { addCookie, getCookie, delCookie } from '../template/date.js'
 export default {
 	data() {
 		return {
@@ -33,6 +34,38 @@ export default {
 		}
 	},
 	methods: {
+		changeType(type) {
+			switch (type) {
+				case '超级管理员':
+					// 超级管理员
+					if(getCookie('superLoginNum')) {
+						this.username = getCookie("superLoginNum");
+						this.password = getCookie("superLoginPassword");
+						this.type = '超级管理员'
+					}
+					break;
+				case '管理员':
+					// 管理员
+					if(getCookie('managerLoginNum')){
+						this.username = getCookie("managerLoginNum");
+						this.password = getCookie("managerLoginPassword");
+						this.type = '管理员'
+					}
+					break;
+				case '普通党员':
+					// 普通
+					if(getCookie('sno')) {
+						this.username = getCookie('sno');
+						this.password = getCookie("password");
+					}
+					break;
+				default:
+					// 默认显示普通
+					this.username = '';
+					this.password = '';
+					break;
+			}
+		},
 		login(){
 			console.log(this.username, this.password, this.type, this.checkbox)
 			var _this = this
@@ -47,11 +80,20 @@ export default {
 					success(data){
 						if(data != ''){
 							if(_this.password === data[0].password){
-								sessionStorage.setItem("sno", _this.username);
 								if(_this.checkbox){
-									sessionStorage.setItem("password", _this.password);
+									addCookie('sno', _this.username, 7);
+									addCookie('password', _this.password, 7);
+								} else {
+									if(getCookie('sno')) {
+										delCookie('sno');
+										delCookie("password");
+									}
+									sessionStorage.setItem('sno', _this.username)
+									sessionStorage.setItem('password', _this.password)
 								}
-								location.href = "#/fore/index"
+								sessionStorage.setItem('sno', _this.username)
+								sessionStorage.setItem('password', _this.password)
+								_this.$router.push({ path: '/fore/index' })
 							}else{
 								alert('密码错误')
 							}
@@ -71,10 +113,19 @@ export default {
 					success(data){
 						if(data != ''){
 							if(_this.password === data[0].password){
-								sessionStorage.setItem("managerLoginNum", _this.username);
 								if(_this.checkbox){
-									sessionStorage.setItem("managerLoginPassword", _this.password);
+									addCookie('managerLoginNum', _this.username, 7);
+									addCookie('managerLoginPassword', _this.password, 7);
+								} else {
+									if(getCookie('managerLoginNum')){
+										delCookie("managerLoginNum");
+										delCookie("managerLoginPassword");
+									}
+									sessionStorage.setItem('managerLoginNum', _this.username)
+									sessionStorage.setItem('managerLoginPassword', _this.password)
 								}
+								sessionStorage.setItem('managerLoginNum', _this.username)
+								sessionStorage.setItem('managerLoginPassword', _this.password)
 								_this.$router.push({ path: '/tab', query:{type: 1} })
 							}else{
 								alert('密码错误')
@@ -95,10 +146,19 @@ export default {
 					success(data){
 						if(data != ''){
 							if(_this.password === data[0].password){
-								sessionStorage.setItem("superLoginNum", _this.username);
 								if(_this.checkbox){
-									sessionStorage.setItem("superLoginPassword", _this.password);
+									addCookie('superLoginNum', _this.username, 7);
+									addCookie('superLoginPassword', _this.password, 7);
+								} else {
+									if(getCookie('superLoginNum')) {
+										delCookie("superLoginNum");
+										delCookie("superLoginPassword");
+									}
+									sessionStorage.setItem('superLoginNum', _this.username)
+									sessionStorage.setItem('superLoginPassword', _this.password)
 								}
+								sessionStorage.setItem('superLoginNum', _this.username)
+								sessionStorage.setItem('superLoginPassword', _this.password)
 								_this.$router.push({ path: '/tab', query:{type: 0} })
 							}else{
 								alert('密码错误')
@@ -117,15 +177,59 @@ export default {
 		}
 	},
 	mounted() {
-		if(sessionStorage.getItem("sno")!=null) {
-			this.username = sessionStorage.getItem("sno");
-			this.password = sessionStorage.getItem("password");
-		} else if(sessionStorage.getItem("superLoginNum")!=null){
-			this.username = sessionStorage.getItem("superLoginNum");
-			this.password = sessionStorage.getItem("superLoginPassword");
-			this.type = '超级管理员'
+		// if(sessionStorage.getItem("sno")!=null) {
+		// 	this.username = sessionStorage.getItem("sno");
+		// 	this.password = sessionStorage.getItem("password");
+		// } else if(sessionStorage.getItem("superLoginNum")!=null){
+		// 	this.username = sessionStorage.getItem("superLoginNum");
+		// 	this.password = sessionStorage.getItem("superLoginPassword");
+		// 	this.type = '超级管理员'
+		// }
+		let type = this.$route.query.type
+		switch (type) {
+			case 0:
+				// 超级管理员
+				if(getCookie('superLoginNum')) {
+					this.username = getCookie("superLoginNum");
+					this.password = getCookie("superLoginPassword");
+					this.type = '超级管理员'
+				}
+				break;
+			case 1:
+				// 管理员
+				if(getCookie('managerLoginNum')){
+					this.username = getCookie("managerLoginNum");
+					this.password = getCookie("managerLoginPassword");
+					this.type = '管理员'
+				}
+				break;
+			case 2:
+				// 普通
+				if(getCookie('sno')) {
+					this.username = getCookie('sno');
+					this.password = getCookie("password");
+				}
+				break;
+			default:
+				// 默认显示普通
+				if(getCookie('sno')) {
+					this.username = getCookie('sno');
+					this.password = getCookie("password");
+				}
+				break;
 		}
-		
+		// if(getCookie('sno')) {
+		// 	this.username = getCookie('sno');
+		// 	this.password = getCookie("password");
+		// } else if(getCookie('managerLoginNum')){
+		// 	this.username = getCookie("managerLoginNum");
+		// 	this.password = getCookie("managerLoginPassword");
+		// 	this.type = '管理员'
+		// } else if(getCookie('superLoginNum')) {
+		// 	this.username = getCookie("superLoginNum");
+		// 	this.password = getCookie("superLoginPassword");
+		// 	this.type = '超级管理员'
+		// }
 		if(this.username != '' && this.password != ''){
 			this.checkbox = true
 		}

@@ -170,6 +170,7 @@ export default {
 				    		member: _this.memberName
 			    		},
 			    		success(data) {
+			    			console.log('ss', data, title)
 			    			if(data.length<=0 || data[data.length-1].status=='不通过'){
 			    				console.log("join the activity success");
 					    		$.ajax({
