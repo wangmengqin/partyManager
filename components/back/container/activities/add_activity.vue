@@ -22,7 +22,13 @@
 					<option key="2" value="组织生活">组织生活</option>
 				</select>
 			</div>
-			<div><span>活动封面(建议100*100)：</span><input style="border:0" type="file"/></div>
+			<div>
+				<span>活动封面(建议100*100)：</span>
+				<div class="upload-box">
+					<img src="/imgs/jia.png" alt="">
+					<input style="border:0" type="file"/>
+				</div>
+			</div>
 			<div style="text-align:center"><button @click="addActivity">确认发布活动</button></div>
 		</div>
 	</div>
@@ -63,33 +69,36 @@ export default {
     methods: {
     	addActivity() {
     		var _this = this;
-    		console.log(this.branch)
-    		$.ajax({
-	    		url: 'http://localhost:5555/addActivity',
-	    		type: 'POST',
-	    		dataType: 'json',
-	    		data: {
-	    			name: _this.activityName,
-	    			speaker: _this.speaker,
-	    			place: _this.place,
-	    			time: _this.time,
-	    			branch: _this.branch,
-	    			describe: _this.describe,
-	    			img: _this.img,
-	    			type: _this.type
-	    		},
-	    		success(data) {
-	    			alert('添加成功')
-	    			_this.activityName = '';
-	    			_this.speaker = '';
-	    			_this.place = '';
-	    			_this.branch = '重庆科技学院党总支';
-	    			_this.time = '';
-	    			_this.describe = '';
-	    			_this.img = '',
-	    			_this.type = '支部活动'
-	    		}
-	    	})
+    		if(_this.activityName != ''&&_this.place != ''&&_this.time != ''){
+    			$.ajax({
+		    		url: 'http://localhost:5555/addActivity',
+		    		type: 'POST',
+		    		dataType: 'json',
+		    		data: {
+		    			name: _this.activityName,
+		    			speaker: _this.speaker,
+		    			place: _this.place,
+		    			time: _this.time,
+		    			branch: _this.branch,
+		    			describe: _this.describe,
+		    			img: _this.img,
+		    			type: _this.type
+		    		},
+		    		success(data) {
+		    			alert('添加成功')
+		    			_this.activityName = '';
+		    			_this.speaker = '';
+		    			_this.place = '';
+		    			_this.branch = '重庆科技学院党总支';
+		    			_this.time = '';
+		    			_this.describe = '';
+		    			_this.img = '',
+		    			_this.type = '支部活动'
+		    		}
+		    	})
+    		} else {
+    			alert('活动名称、活动地点、活动时间不能为空')
+    		}
     	}
     }
 }
@@ -146,5 +155,33 @@ export default {
 		outline: none;
 		color: #fff;
 		padding:0 10px;
+	}
+	.upload-box{
+		 display: inline-block;
+	    width: 200px;
+	    height: 200px;
+	    border: 1px dashed #ccc;
+	    text-align: center;
+	    line-height: 200px;
+	    position: relative;
+	    vertical-align: middle;
+	}
+	.upload-box img{
+	    width: 50px;
+	    height: 50px;
+	    position: absolute;
+	    top: 36%;
+	    left: 39%;
+	    z-index: 1;
+	}
+	.upload-box input {
+	    border: 0px;
+	    width: 50px;
+	    height: 50px;
+	    position: absolute;
+	    left: 33%;
+	    top: 40%;
+	    z-index: 100000;
+	    opacity: 0;
 	}
 </style>

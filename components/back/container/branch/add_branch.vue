@@ -43,26 +43,30 @@ export default {
     methods: {
     	addBranch() {
     		var _this = this;
-    		$.ajax({
-	    		url: 'http://localhost:5555/addBranch',
-	    		type: 'POST',
-	    		dataType: 'json',
-	    		data: {
-	    			branchName: _this.branchName, // 名称
-		        	institute: _this.institute, // 学院
-		        	secretary: _this.secretary, // 书记
-		        	deputySecretary: _this.deputySecretary, // 副书记
-		        	propagate: _this.propagate // 宣传委员
-	    		},
-	    		success(data) {
-	    			alert('添加成功')
-	    			_this.branchName = '';
-	    			_this.institute = '';
-	    			_this.secretary = '';
-	    			_this.deputySecretary = '';
-	    			_this.propagate = '';
-	    		}
-	    	})
+    		if(_this.branchName != ''&&_this.institute != ''&&_this.secretary != ''&&_this.deputySecretary != ''&&_this.propagate != ''){
+    			$.ajax({
+		    		url: 'http://localhost:5555/addBranch',
+		    		type: 'POST',
+		    		dataType: 'json',
+		    		data: {
+		    			branchName: _this.branchName, // 名称
+			        	institute: _this.institute, // 学院
+			        	secretary: _this.secretary, // 书记
+			        	deputySecretary: _this.deputySecretary, // 副书记
+			        	propagate: _this.propagate // 宣传委员
+		    		},
+		    		success(data) {
+		    			alert('添加成功')
+		    			_this.branchName = '';
+		    			_this.institute = '';
+		    			_this.secretary = '';
+		    			_this.deputySecretary = '';
+		    			_this.propagate = '';
+		    		}
+		    	})
+    		} else {
+    			alert('请把信息填写完整')
+    		}
     	}
     }
 }

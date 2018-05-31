@@ -38,28 +38,32 @@ export default {
     methods: {
     	addTrain() {
     		var _this = this;
-    		$.ajax({
-	    		url: 'http://localhost:5555/addTrain',
-	    		type: 'POST',
-	    		dataType: 'json',
-	    		data: {
-	    			title: _this.trainTitle,
-	    			teacher: _this.teacher,
-	    			place: _this.place,
-	    			time: _this.time,
-	    			describe: _this.describe,
-	    			type: _this.type
-	    		},
-	    		success(data) {
-	    			alert('添加成功')
-	    			_this.trainTitle = '';
-	    			_this.teacher = '';
-	    			_this.place = '';
-	    			_this.time = '';
-	    			_this.describe = '';
-	    			_this.type = '专题培训'
-	    		}
-	    	})
+    		if(_this.trainTitle != ''&&_this.teacher != ''&&_this.place != ''&&_this.time != ''&&_this.describe != ''){
+    			$.ajax({
+		    		url: 'http://localhost:5555/addTrain',
+		    		type: 'POST',
+		    		dataType: 'json',
+		    		data: {
+		    			title: _this.trainTitle,
+		    			teacher: _this.teacher,
+		    			place: _this.place,
+		    			time: _this.time,
+		    			describe: _this.describe,
+		    			type: _this.type
+		    		},
+		    		success(data) {
+		    			alert('添加成功')
+		    			_this.trainTitle = '';
+		    			_this.teacher = '';
+		    			_this.place = '';
+		    			_this.time = '';
+		    			_this.describe = '';
+		    			_this.type = '专题培训'
+		    		}
+		    	})
+    		} else {
+    			alert('请把信息填写完整再发布')
+    		}
     	}
     }
 }

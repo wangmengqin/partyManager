@@ -170,6 +170,15 @@ app.post("/getNewsByAuthor",function(req,res){
 	});
 })
 // 根据专题查询新闻信息
+app.post("/getNewsByColumn",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select * from news where theme='${req.body.column}' order by id desc`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 根据专题查询新闻信息
 app.post("/getNewsByTheme",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
 	var sql = `select * from news where theme like '%${req.body.theme}%' order by id desc LIMIT 6 `;
@@ -916,6 +925,46 @@ app.post("/getMessageBySno",function(req,res){
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));
+	});
+})
+// 根据学号查找留言 fenye
+app.post("/getMyMessageBySno",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `SELECT * from message where sno = '${req.body.sno}' order by time Desc limit ${size} OFFSET ${offset}`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+//我的留言总条数
+app.post("/myMessageCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from message WHERE sno = '${req.body.sno}'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
+	});
+})
+// 获取精选留言 分页
+app.post("/recommandMessages",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var offset = (Number(req.body.page)-1) * Number(req.body.size)
+	var size = Number(req.body.size)
+	var sql = `SELECT * from message where status = '精选' order by time Desc limit ${size} OFFSET ${offset}`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(JSON.stringify(results));
+	});
+})
+// 精选留言总条数
+app.post("/recommandMessagesCount",function(req,res){
+	res.append("Access-Control-Allow-Origin","*");
+	var sql = `select count(*) as count from message WHERE status = '精选'`;
+	connect.query(sql, function(error, results, fields) {
+		if(error) throw error;
+		res.send(results);
 	});
 })
 // 根据内容查找留言

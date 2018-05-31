@@ -4,10 +4,10 @@
 			<h3>请填写个人信息</h3>
 			<form style="width:900px;margin:0 auto">
 				<p>
-					<label for="">姓名：</label><input type="text" v-model="name" placeholder="清填写姓名">
+					<label for="">姓名：</label><input type="text" v-model="name" placeholder="请填写姓名">
 				</p>
 				<p>
-					<label for="">年龄：</label><input type="number" v-model="age" placeholder="清填写年龄" size="2">
+					<label for="">年龄：</label><input type="number" v-model="age" placeholder="请填写年龄" size="2">
 				</p>
 				<p>
 					<label>性别：</label>
@@ -35,10 +35,10 @@
 					</select>
 				</p>
 				<p>
-					<label for="">学院：</label><input v-model="institute" type="text" placeholder="清填写学院">
+					<label for="">学院：</label><input v-model="institute" type="text" placeholder="请填写学院">
 				</p>
 				<p>
-					<label for="">专业：</label><input v-model="major" type="text" placeholder="清填写专业">
+					<label for="">专业：</label><input v-model="major" type="text" placeholder="请填写专业">
 				</p>
 				<p v-if="identify=='学生'">
 					<label>您的年级：</label>
@@ -50,7 +50,7 @@
 					</select>
 				</p>
 				<p>
-					<label for="">学号：</label><input type="text" v-model="sno" placeholder="清填写学号">
+					<label for="">学号：</label><input type="text" v-model="sno" placeholder="请填写学号">
 				</p>
 				<p style="overflow:hidden;"><label style="float:left;">入党申请书：</label><vue-editor style="width:650px;float:left" v-model="content"></vue-editor></p>
 				<p style="text-align:center;"><button @click="certainApply">确认申请</button><input type="reset" class="noborder reset" /></p>
@@ -165,35 +165,56 @@ export default{
 		certainApply() {
 			var _this = this
 			console.log(this.province[this.selectProvince].txt, this.cityArr[this.selectCity].txt)
-			$.ajax({
-				url: 'http://localhost:5555/addMember',
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					name: _this.name,
-					age: _this.age,
-					sex: _this.sex,
-					type: _this.identify,
-					institute: _this.institute,
-					major: _this.major,
-					grade: _this.grade,
-					sno: _this.sno,
-					native: this.province[this.selectProvince].txt+this.cityArr[this.selectCity].txt
-				},
-				success(){
-					alert('申请成功')
-					_this.name = ''
-					_this.age = ''
-					_this.sex = '男'
-					_this.identify = '学生'
-					_this.institute = ''
-					_this.major = ''
-					_this.sno = ''
-					_this.grade = ''
-					_this.selectProvince = _this.province[0].id
-					_this.selectCity = _this.cityArr[0].id
-				}
-			})
+			if(_this.name != ''&&_this.age != ''&&_this.institute != ''&&_this.major != ''&&_this.sno != ''&&_this.grade != ''){
+				$.ajax({
+		    		url: 'http://localhost:5555/getMemberBySno',
+		    		type: 'POST',
+		    		dataType: 'json',
+		    		data: {
+		    			sno: _this.sno
+		    		},
+		    		success(data) {
+		    			_this.myInfo = data[0]
+		    			console.log(data)
+		    		}
+		    	}).done((data)=>{
+		    		if(data.length<=0 || (data[data.length-1].identify=='不通过')){
+		    			$.ajax({
+							url: 'http://localhost:5555/addMember',
+							type: 'POST',
+							dataType: 'json',
+							data: {
+								name: _this.name,
+								age: _this.age,
+								sex: _this.sex,
+								type: _this.identify,
+								institute: _this.institute,
+								major: _this.major,
+								grade: _this.grade,
+								sno: _this.sno,
+								native: this.province[this.selectProvince].txt+this.cityArr[this.selectCity].txt
+							},
+							success(){
+								alert('申请成功')
+								_this.name = ''
+								_this.age = ''
+								_this.sex = '男'
+								_this.identify = '学生'
+								_this.institute = ''
+								_this.major = ''
+								_this.sno = ''
+								_this.grade = ''
+								_this.selectProvince = _this.province[0].id
+								_this.selectCity = _this.cityArr[0].id
+							}
+						})
+		    		} else {
+		    			alert('该学号已申请入党!')
+		    		}
+		    	})
+			}else {
+				alert('请把信息填写完整再申请入党')
+			}
 		}
 	}
 }

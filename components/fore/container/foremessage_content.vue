@@ -47,7 +47,9 @@
 					<p>呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵</p>
 				</div>
 			</div>  -->
-			<xpagination v-show="isShowPagination" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
+			<xpagination v-show="isShowPagination && type==0" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
+			<xpagination v-show="isShowPagination && type==1" :total="model.total" :size="model.size" :page="model.page" :changge="recommandMessage"/>
+			<xpagination v-show="isShowPagination && type==2" :total="model.total" :size="model.size" :page="model.page" :changge="myMessage"/>
 		</div>
 	</div>
 </template>
@@ -63,16 +65,17 @@ export default {
 	data() {
 		return {
 			model:{
-          total: 1,//总页数
-          size:5,//每页显示条目个数不传默认10
-          page:1,//当前页码
-      },
-      isShowPagination: true,
+	          total: 1,//总页数
+	          size:5,//每页显示条目个数不传默认10
+	          page:1,//当前页码
+	      	},
+	      	isShowPagination: true,
 			messageData: [],
 			content: '', // 发表的内容
 			sno: null, // 登录的学号
 			memberName: null,
-			head: null
+			head: null,
+			type: 0 // 0 所有 1 精选 2 我的 
 		}
 	},
 	filters: {
@@ -84,29 +87,29 @@ export default {
 	methods: {
 		getAll(val) {
 			var _this = this
-  		this.model.page=val;
-  		this.isShowPagination = true
-      $.ajax({
-    		url: 'http://localhost:5555/allShowMessageCount',
-    		type: 'POST',
-    		dataType: 'json',
-    		success(data) {
-    			_this.model.total = data[0].count
-    		}
-    	})
+  			this.model.page=val;
+  			this.isShowPagination = true
+	      	$.ajax({
+	    		url: 'http://localhost:5555/allShowMessageCount',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		success(data) {
+	    			_this.model.total = data[0].count
+	    		}
+	    	})
 			this.sno = sessionStorage.getItem('sno')
 			$.ajax({
-    		url: 'http://localhost:5555/getMemberBySno',
-    		type: 'POST',
-    		dataType: 'json',
-    		data: {
-    			sno: _this.sno
-    		},
-    		success(data) {
-    			_this.memberName = data[0].name
-    			_this.head = data[0].head
-    		}
-    	})
+	    		url: 'http://localhost:5555/getMemberBySno',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		data: {
+	    			sno: _this.sno
+	    		},
+	    		success(data) {
+	    			_this.memberName = data[0].name
+	    			_this.head = data[0].head
+	    		}
+	    	})
 			$.ajax({
 				url: 'http://localhost:5555/allShowMessage',
 				type: 'POST',
@@ -122,7 +125,18 @@ export default {
 		},
 		// 刷新
 		fresh() {
+			this.type = 0
 			var _this = this
+			this.model.page=1;
+  			this.isShowPagination = true
+	      	$.ajax({
+	    		url: 'http://localhost:5555/allShowMessageCount',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		success(data) {
+	    			_this.model.total = data[0].count
+	    		}
+	    	})
 			$.ajax({
 				url: 'http://localhost:5555/allShowMessage',
 				type: 'POST',
@@ -193,30 +207,119 @@ export default {
 				this.$router.push({ path: '/login' })
 			}
 		},
-		lookMyMessage() {
+		myMessage(val) {
 			var _this = this
-			$.ajax({
-	    		url: 'http://localhost:5555/getMessageBySno',
+			this.model.page=val;
+  			this.isShowPagination = true
+	      	$.ajax({
+	    		url: 'http://localhost:5555/myMessageCount',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		data: {
 	    			sno: _this.sno
 	    		},
 	    		success(data) {
-	    			_this.messageData = data
+	    			_this.model.total = data[0].count
 	    		}
 	    	})
-		},
-		lookRecommandMessage() {
-			var _this = this
 			$.ajax({
-	    		url: 'http://localhost:5555/allRecommandMessage',
+				url: 'http://localhost:5555/getMyMessageBySno',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+	    			size: _this.model.size,
+	    			page: _this.model.page,
+	    			sno: _this.sno
+	    		},
+				success(data){
+					_this.messageData = data
+				}
+			})
+		},
+		lookMyMessage() {
+			this.type = 2
+			var _this = this
+			this.model.page=1;
+  			this.isShowPagination = true
+	      	$.ajax({
+	    		url: 'http://localhost:5555/myMessageCount',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		data: {
+	    			sno: _this.sno
+	    		},
+	    		success(data) {
+	    			_this.model.total = data[0].count
+	    		}
+	    	})
+			$.ajax({
+				url: 'http://localhost:5555/getMyMessageBySno',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+	    			size: _this.model.size,
+	    			page: _this.model.page,
+	    			sno: _this.sno
+	    		},
+				success(data){
+					_this.messageData = data
+				}
+			})
+		},
+		recommandMessage(val) {
+			var _this = this
+			this.model.page=val;
+  			this.isShowPagination = true
+	      	$.ajax({
+	    		url: 'http://localhost:5555/recommandMessagesCount',
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		success(data) {
-	    			_this.messageData = data
+	    			console.log('count', data[0].count)
+	    			_this.model.total = data[0].count
 	    		}
 	    	})
+			$.ajax({
+				url: 'http://localhost:5555/recommandMessages',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+	    			size: _this.model.size,
+	    			page: _this.model.page
+	    		},
+				success(data){
+					console.log('message', data)
+					_this.messageData = data
+				}
+			})
+		},
+		lookRecommandMessage() {
+			this.type = 1
+			var _this = this
+			this.model.page=1;
+  			this.isShowPagination = true
+	      	$.ajax({
+	    		url: 'http://localhost:5555/recommandMessagesCount',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		success(data) {
+	    			console.log('count', data[0].count)
+	    			_this.model.total = data[0].count
+	    		}
+	    	})
+			$.ajax({
+				url: 'http://localhost:5555/recommandMessages',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+	    			size: _this.model.size,
+	    			page: _this.model.page
+	    		},
+				success(data){
+					console.log('message', data)
+					_this.messageData = data
+				}
+			})
 		},
 		deleteMyMessage(id) {
 			var _this = this
@@ -246,6 +349,7 @@ export default {
 		}
 	},
 	mounted() {
+		type = 0
 	}
 }
 </script>

@@ -29,23 +29,27 @@ export default {
     methods: {
     	editCloumns() {
     		var _this = this;
-    		$.ajax({
-    			url: 'http://localhost:5555/editColumnById',
-    			type: 'POST',
-    			dataType: 'json',
-    			data: {
-    				id: _this.$route.params.id,
-    				name: _this.editData.columnName,
-    				describe: _this.editData.columnDescribe
-    			},
-    			success(data) {
-    				alert('修改成功')
-    				_this.back()
-    			}
-    		})
+    		if(_this.editData.columnName != ''){
+    			$.ajax({
+	    			url: 'http://localhost:5555/editColumnById',
+	    			type: 'POST',
+	    			dataType: 'json',
+	    			data: {
+	    				id: _this.$route.params.id,
+	    				name: _this.editData.columnName,
+	    				describe: _this.editData.columnDescribe
+	    			},
+	    			success(data) {
+	    				alert('修改成功')
+	    				_this.back()
+	    			}
+	    		})
+    		}else {
+    			alert('专题名字不能为空')
+    		}
     	},
     	back(){
-    		location.href = '#/tab/searchColumn'
+    		this.$router.push({ path: '/tab/searchColumn' })
     	}
     },
     mounted() {

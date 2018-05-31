@@ -26,20 +26,24 @@ export default {
     methods: {
     	addCloumns() {
     		var _this = this;
-    		$.ajax({
-    			url: 'http://localhost:5555/addcolumns',
-    			type: 'POST',
-    			dataType: 'json',
-    			data: {
-    				name: _this.name,
-    				describe: _this.describe
-    			},
-    			success(data) {
-    				alert('添加成功')
-    				_this.name = ''
-    				_this.describe = ''
-    			}
-    		})
+    		if(_this.name != '') {
+    			$.ajax({
+	    			url: 'http://localhost:5555/addcolumns',
+	    			type: 'POST',
+	    			dataType: 'json',
+	    			data: {
+	    				name: _this.name,
+	    				describe: _this.describe
+	    			},
+	    			success(data) {
+	    				alert('添加成功')
+	    				_this.name = ''
+	    				_this.describe = ''
+	    			}
+	    		})
+    		} else {
+    			alert('专题名称不能为空')
+    		}
     	}
     }
 }

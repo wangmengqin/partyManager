@@ -157,7 +157,7 @@
 		    	var _this = this
 		    	if(this.type==0) {
 					// 超级管理员修改密码
-					if(this.judgePassword() && this.getSuperManagerByName() && this.password === this.password1)
+					if(this.judgePassword() && this.getSuperManagerByName() && (this.password != '') && (this.password === this.password1))
 			    	{
 						$.ajax({
 				    		url: 'http://localhost:5555/editSuperManagerPassword',
@@ -173,11 +173,11 @@
 				    		}
 				    	})
 			    	} else {
-			    		alert('两次输入密码不一致')
+			    		alert('密码不能为空或者两次输入密码不一致')
 			    	}
 		    	} else {
 		    		// 普通管理员修改密码
-		    		if(this.judgePassword() && this.getManagerByName() && this.password === this.password1)
+		    		if(this.judgePassword() && this.getManagerByName() && (this.password != '') && this.password === this.password1)
 			    	{
 		    			$.ajax({
 				    		url: 'http://localhost:5555/editManagerPassword',
@@ -193,7 +193,7 @@
 				    		}
 				    	})
 			    	} else {
-			    		alert('两次输入密码不一致')
+			    		alert('密码不能为空或者两次输入密码不一致')
 			    	}
 		    	}
 		    	

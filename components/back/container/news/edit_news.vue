@@ -59,27 +59,32 @@ export default {
     methods: {
     	editNews() {
     		var _this = this;
-    		$.ajax({
-	    		url: 'http://localhost:5555/editNewsById',
-	    		type: 'POST',
-	    		dataType: 'json',
-	    		data: {
-	    			id: _this.$route.params.id,
-	    			title: _this.editData.title,
-	    			author: _this.editData.author,
-	    			remark: _this.editData.remark,
-	    			theme: _this.editData.theme,
-	    			content: _this.editData.content,
-	    			time: new Date().getTime()
-	    		},
-	    		success(data) {
-	    			alert('修改成功')
-	    			_this.back();
-	    		}
-	    	})
+    		if(_this.editData.title != '' && _this.editData.content != '') {
+    			$.ajax({
+		    		url: 'http://localhost:5555/editNewsById',
+		    		type: 'POST',
+		    		dataType: 'json',
+		    		data: {
+		    			id: _this.$route.params.id,
+		    			title: _this.editData.title,
+		    			author: _this.editData.author,
+		    			remark: _this.editData.remark,
+		    			theme: _this.editData.theme,
+		    			content: _this.editData.content,
+		    			time: new Date().getTime()
+		    		},
+		    		success(data) {
+		    			alert('修改成功')
+		    			_this.back();
+		    		}
+		    	})
+    		} else {
+    			alert('新闻标题或内容不能为空')
+    		}
+    		
     	},
     	back(){
-    		location.href = '#/tab/searchnews'
+    		this.$router.push({ path: '/tab/searchnews' })
     	}
     }
 }

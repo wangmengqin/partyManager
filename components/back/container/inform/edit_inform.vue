@@ -47,23 +47,27 @@ export default {
 	  	},
     	editInform() {
     		var _this = this;
-    		$.ajax({
-	    		url: 'http://localhost:5555/editInform',
-	    		type: 'POST',
-	    		dataType: 'json',
-	    		data: {
-	    			id: _this.$route.params.id,
-	    			title: _this.editData.title,
-	    			name: _this.editData.name,
-	    			sno: _this.editData.sno,
-	    			content: _this.editData.content,
-	    			time: new Date().getTime()
-	    		},
-	    		success(data) {
-	    			alert('修改成功')
-	    			_this.$router.push({ path: `/tab/searchInform` })
-	    		}
-	    	})
+    		if(_this.editData.title != ''&&_this.editData.name != ''&&_this.editData.sno != ''&&_this.editData.content != '') {
+    			$.ajax({
+		    		url: 'http://localhost:5555/editInform',
+		    		type: 'POST',
+		    		dataType: 'json',
+		    		data: {
+		    			id: _this.$route.params.id,
+		    			title: _this.editData.title,
+		    			name: _this.editData.name,
+		    			sno: _this.editData.sno,
+		    			content: _this.editData.content,
+		    			time: new Date().getTime()
+		    		},
+		    		success(data) {
+		    			alert('修改成功')
+		    			_this.$router.push({ path: `/tab/searchInform` })
+		    		}
+		    	})
+    		} else {
+    			alert('请把信息填写完整')
+    		}
     	},
     	cancel() {
     		this.$router.push({ path: `/tab/searchInform` })

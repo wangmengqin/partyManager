@@ -50,27 +50,31 @@ export default {
     methods: {
     	addNews() {
     		var _this = this;
-    		$.ajax({
-	    		url: 'http://localhost:5555/addNews',
-	    		type: 'POST',
-	    		dataType: 'json',
-	    		data: {
-	    			title: _this.title,
-	    			author: _this.author,
-	    			remark: _this.remark,
-	    			column: _this.theme,
-	    			content: _this.content,
-	    			time: new Date().getTime()
-	    		},
-	    		success(data) {
-	    			alert('添加成功')
-	    			_this.title = '';
-	    			_this.author = '';
-	    			_this.remark = '';
-	    			_this.theme = '其他';
-	    			_this.content = '';
-	    		}
-	    	})
+    		if(_this.title != '' && _this.content != '') {
+    			$.ajax({
+		    		url: 'http://localhost:5555/addNews',
+		    		type: 'POST',
+		    		dataType: 'json',
+		    		data: {
+		    			title: _this.title,
+		    			author: _this.author,
+		    			remark: _this.remark,
+		    			column: _this.theme,
+		    			content: _this.content,
+		    			time: new Date().getTime()
+		    		},
+		    		success(data) {
+		    			alert('添加成功')
+		    			_this.title = '';
+		    			_this.author = '';
+		    			_this.remark = '';
+		    			_this.theme = '其他';
+		    			_this.content = '';
+		    		}
+		    	})
+    		} else {
+    			alert('请把信息填写完整')
+    		}
     	}
     }
 }

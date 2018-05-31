@@ -100,3 +100,8 @@ button{
 .page-wrap .active {
     border-color: #246c81;
 }
+
+.c-w10{ width: 10%; }
+.c-w90{ width: 90%; }
+
+.c-textAlign-c{ text-align: center; }

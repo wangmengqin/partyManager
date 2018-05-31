@@ -14,12 +14,14 @@
 			<!-- 普通管理员菜单 -->
 			<li v-for="(obj,index) in menuArr">
 				<p @click="changeIsShow(index)"><img :src="obj.isShow?selectImg:img"/><span v-text="(index+1)+'.'+obj.txt"></span></p>
-				<ul v-show="obj.isShow">
-					<li><a :href="obj.url1">{{obj.menu1}}</a></li>
-					<li><a :href="obj.url2">{{obj.menu2}}</a></li>
-					<li v-if="obj.menu3"><a :href="obj.url3">{{obj.menu3}}</a></li>
-					<li v-if="obj.menu4"><a :href="obj.url4">{{obj.menu4}}</a></li>
-				</ul>
+				<transition name="fold">
+					<ul v-show="obj.isShow">
+						<li><a :href="obj.url1">{{obj.menu1}}</a></li>
+						<li><a :href="obj.url2">{{obj.menu2}}</a></li>
+						<li v-if="obj.menu3"><a :href="obj.url3">{{obj.menu3}}</a></li>
+						<li v-if="obj.menu4"><a :href="obj.url4">{{obj.menu4}}</a></li>
+					</ul>
+				</transition>
 			</li>
 		</ul>
 	</div>
@@ -33,7 +35,7 @@
 					{
 						id:0,
 						txt:"新闻管理",
-						isShow:true,
+						isShow:false,
 						url1:"#/tab/addnews",
 						url2:"#/tab/searchnews",
 						menu1: '增加新闻',
@@ -42,7 +44,7 @@
 					{
 						id:1,
 						txt:"新闻专题",
-						isShow:true,
+						isShow:false,
 						url1:"#/tab/addColumn",
 						url2:"#/tab/searchColumn",
 						menu1: '增加专题',
@@ -67,7 +69,7 @@
 						menu2: '活动经费名单'
 					},
 					{
-						id:2,
+						id:4,
 						txt:"支部管理",
 						isShow:false,
 						url1:"#/tab/addBranch",
@@ -76,7 +78,7 @@
 						menu2: '查询支部'
 					},
 					{
-						id:3,
+						id:5,
 						txt:"公告管理",
 						isShow:false,
 						url1:"#/tab/addInform",
@@ -85,7 +87,7 @@
 						menu2: '查看公告'
 					},
 					{
-						id:3,
+						id:6,
 						txt:"组织管理",
 						isShow:false,
 						url1:"#/tab/searchBranch",
@@ -94,7 +96,7 @@
 						menu2: '审核组织关系'
 					},
 					{
-						id:4,
+						id:7,
 						txt:"党员管理",
 						isShow:false,
 						url1:"#/tab/checkMember",
@@ -107,7 +109,7 @@
 						menu4: '查询党员信息'
 					},
 					{
-						id:5,
+						id:8,
 						txt:"党费管理",
 						isShow:false,
 						url1:"#/tab/addSalary",
@@ -116,7 +118,7 @@
 						menu2: '查询党费收缴'
 					},
 					{
-						id:6,
+						id:9,
 						txt:"党校管理",
 						isShow:false,
 						url1:"#/tab/addTrain",
@@ -129,7 +131,7 @@
 						menu4: '结业考核'
 					},
 					{
-						id:7,
+						id:10,
 						txt:"留言管理",
 						isShow:false,
 						url1:"#/tab/checkMessage",
@@ -138,7 +140,7 @@
 						menu2: '查看留言'
 					},
 					{
-						id:8,
+						id:11,
 						txt:"党务管理",
 						isShow:false,
 						url1:"#/tab/addLife",
@@ -147,7 +149,7 @@
 						menu2: '查询党务信息'
 					},
 					{
-						id:8,
+						id:12,
 						txt:"我的信息",
 						isShow:true,
 						url1:"#/tab/editpassword",
@@ -183,6 +185,9 @@
 		},
 		methods:{
 			changeIsShow(id){
+				for(var i in this.menuArr) {
+					this.menuArr[i].isShow = false
+				}
 				this.menuArr[id].isShow = !this.menuArr[id].isShow;
 			},
 			changeIsShow1(id){
@@ -201,6 +206,13 @@
 </script>
 
 <style scoped>
+	.fold-enter-active, .fold-leave-active {
+	    transition: all .5s;
+	}
+	.fold-enter, .fold-leave-active {
+      	opacity: 0;
+      	height: 0;
+    }
 	ul{
 		width: 200px;
 		background: #f5f6fa;

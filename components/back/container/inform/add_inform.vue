@@ -3,7 +3,7 @@
 		<h4>发布公告</h4>
 		<div class="input_box">
 			<div><span>标题：</span><input type="text" placeholder="请输入标题" v-model="title"/></div>
-			<div><span>作者：</span><input type="text" placeholder="请输入作者名字" v-model="author"/></div>
+			<div><span>作者：</span><input type="text" placeholder="请输入发布者名字" v-model="author"/></div>
 			<div><span>编号：</span><input type="text" placeholder="请输入发布者编号" v-model="num"/></div>
 			<div style="overflow:hidden;margin-top: 20px;"><span style="float:left">内容：</span><vue-editor style="width:650px;float:left" v-model="content"></vue-editor></div>
 			<div style="text-align:center"><button @click="addInform">确认</button></div>
@@ -32,25 +32,29 @@ export default {
     methods: {
     	addInform() {
     		var _this = this;
-    		$.ajax({
-	    		url: 'http://localhost:5555/addInform',
-	    		type: 'POST',
-	    		dataType: 'json',
-	    		data: {
-	    			title: _this.title,
-	    			name: _this.author,
-	    			sno: _this.num,
-	    			content: _this.content,
-	    			time: new Date().getTime()
-	    		},
-	    		success(data) {
-	    			alert('添加成功')
-	    			_this.title = '';
-	    			_this.author = '';
-	    			_this.num = '';
-	    			_this.content = '';
-	    		}
-	    	})
+    		if(_this.title != ''&&_this.author != ''&&_this.num != ''&&_this.content != '') {
+    			$.ajax({
+		    		url: 'http://localhost:5555/addInform',
+		    		type: 'POST',
+		    		dataType: 'json',
+		    		data: {
+		    			title: _this.title,
+		    			name: _this.author,
+		    			sno: _this.num,
+		    			content: _this.content,
+		    			time: new Date().getTime()
+		    		},
+		    		success(data) {
+		    			alert('添加成功')
+		    			_this.title = '';
+		    			_this.author = '';
+		    			_this.num = '';
+		    			_this.content = '';
+		    		}
+		    	})
+    		} else {
+    			alert('请把信息填写完整')
+    		}
     	}
     }
 }
