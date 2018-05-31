@@ -4,7 +4,7 @@
 			<h3>讲座</h3>
 			<ul>
 				<li v-for="item in lectureData">
-					<img v-if="item.img==''" src="/imgs/icon_active.png" class="active_img"/>
+					<img v-if="item.img==''" src="/imgs/activity.jpg" class="active_img"/>
 					<img v-if="item.img!=''" :src="item.img" class="active_img"/>
 					<div class="fl">
 						<h5>{{item.activity_name}}</h5>
@@ -57,7 +57,7 @@
 			<h3>支部活动</h3>
 			<ul>
 				<li v-for="item in branchActivityData">
-					<img v-if="item.img==''" src="/imgs/icon_active.png" class="active_img"/>
+					<img v-if="item.img==''" src="/imgs/activity.jpg" class="active_img"/>
 					<img v-if="item.img!=''" :src="item.img" class="active_img"/>
 					<div class="fl">
 						<h5>{{item.activity_name}}</h5>
@@ -110,7 +110,7 @@
 			<h3>组织生活</h3>
 			<ul>
 				<li v-for="item in orgActivityData">
-					<img v-if="item.img==''" src="/imgs/icon_active.png" class="active_img"/>
+					<img v-if="item.img==''" src="/imgs/activity.jpg" class="active_img"/>
 					<img v-if="item.img!=''" :src="item.img" class="active_img"/>
 					<div class="fl">
 						<h5>{{item.activity_name}}</h5>

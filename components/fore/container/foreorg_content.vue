@@ -1,7 +1,7 @@
 <template>
 	<div style="overflow: hidden;margin: 0 auto; width: 1200px;padding: 20px 0;background: #FDFDFD;">
-		<p>我所在支部：<span>学生党员第一支部</span></p>
-		<p class="button-p"><button @click="showFilter">我是毕业生党员，申请迁出</button></p>
+		<p v-if="loginSno">我所在支部：<span>{{myInfo.branch}}</span></p>
+		<p v-if="loginSno" class="button-p"><button @click="showFilter">我是毕业生党员，申请迁出</button></p>
 		<table>
 			<tr>
 				<th colspan="3">党建机构组织机构</th>
@@ -213,7 +213,7 @@
 				address:"",
 				cityArr:[],
 				isShow:false,
-				loginSno: '', // 登录的编号
+				loginSno: null, // 登录的编号
 				selectProvince: '', // 省份
 				selectCity: '', // 城市
 				myInfo: {}, // 我的信息
@@ -225,6 +225,21 @@
 			this.selectProvince = this.province[0].id
 			this.selectCity = this.cityArr[0].id
 			var _this = this
+			this.loginSno = sessionStorage.getItem('sno')
+			var _this = this
+			if (_this.loginSno != null) {
+				$.ajax({
+		    		url: 'http://localhost:5555/getMemberBySno',
+		    		type: 'POST',
+		    		dataType: 'json',
+		    		data: {
+		    			sno: _this.loginSno
+		    		},
+		    		success(data) {
+		    			_this.myInfo = data[0]
+		    		}
+		    	})
+			}
 			$.ajax({
 				url: 'http://localhost:5555/Branchs',
 				type: 'POST',
