@@ -733,7 +733,7 @@ app.post("/editTeacherSalary",function(req,res){
 // 插入党费记录信息
 app.post("/addTeacherSalary",function(req,res){
 	res.append("Access-Control-Allow-Origin","*");
-	var sql = `INSERT INTO partyfree (sno, member, memberTime, type, salary, duration, price, status) values('${req.body.sno}', '${req.body.member}', '${req.body.memberTime}', '${req.body.type}', '${req.body.salary}', '${req.body.duration}', '${req.body.price}', '未缴费')`;
+	var sql = `INSERT INTO partyfree (sno, member, memberTime, type, salary, duration, price, status) values('${req.body.sno}', '${req.body.member}', '${req.body.memberTime}', '${req.body.type}', '${req.body.salary}', '${req.body.duration}', '${req.body.price}', '${req.body.status}')`;
 	connect.query(sql, function(error, results, fields) {
 		if(error) throw error;
 		res.send(JSON.stringify(results));

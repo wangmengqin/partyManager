@@ -22,13 +22,13 @@
 					<option key="2" value="组织生活">组织生活</option>
 				</select>
 			</div>
-			<div>
+			<!-- <div>
 				<span>活动封面(建议100*100)：</span>
 				<div class="upload-box">
 					<img src="/imgs/jia.png" alt="">
 					<input style="border:0" type="file"/>
 				</div>
-			</div>
+			</div> -->
 			<div style="text-align:center"><button @click="addActivity">确认发布活动</button></div>
 		</div>
 	</div>

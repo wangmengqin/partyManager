@@ -22,7 +22,7 @@
 					<option key="2" value="组织生活">组织生活</option>
 				</select>
 			</div>
-			<div><span>活动封面(建议100*100)：</span><input style="border:0" type="file"/></div>
+			<!-- <div><span>活动封面(建议100*100)：</span><input style="border:0" type="file"/></div> -->
 			<div style="overflow:hidden"><span style="float:left">活动精彩瞬间：</span><vue-editor style="width:650px;float:left" v-model="editData.content"></vue-editor></div>
 			<div style="text-align:center">
 				<button @click="editActivity">确认修改</button>

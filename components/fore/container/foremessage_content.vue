@@ -1,7 +1,7 @@
 <template>
 	<div style="overflow: hidden;margin: 0 auto; width: 1200px;padding: 20px 0;background: #FDFDFD;">
 		<div class="publish-box">
-			<p><img :src="head"/></p>
+			<p><img :src="head?head:'/imgs/gray_wode.png'"/></p>
 			<div class="txt-box">
 				<span class="trangle"></span>
 				<textarea v-model="content" name="" rows="5" cols="80" placeholder="你在做什么？你在想什么？"></textarea><br />
@@ -15,8 +15,11 @@
 				<b style="float: right;margin-right:20px;" @click="lookMyMessage">查看我发表的</b>
 				<b style="float: right;margin-right:20px;" @click="lookRecommandMessage">查看精选</b>
 			</p>
-			<div class="message-box" v-for="item in messageData" :key="item.id">
-				<p class="img-p fl"><img :src="item.head"/></p>
+			<div class="message-box" v-if="messageData.length<=0">
+				<p class="c-textAlign-c">还没有数据哦~快去发表吧</p>
+			</div>
+			<div class="message-box" v-else v-for="item in messageData" :key="item.id">
+				<p class="img-p fl"><img :src="item.head?item.head:'/imgs/gray_wode.png'"/></p>
 				<div class="message-detail fl">
 					<span class="trangle"></span>
 					<h4><b>{{item.name}}</b>发表于<span>{{item.time | formatDate}}</span><a @click="deleteMyMessage(item.id)" v-if="item.name==memberName && item.sno == sno">删除</a></h4>
@@ -47,9 +50,10 @@
 					<p>呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵呵</p>
 				</div>
 			</div>  -->
-			<xpagination v-show="isShowPagination && type==0" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
 			<xpagination v-show="isShowPagination && type==1" :total="model.total" :size="model.size" :page="model.page" :changge="recommandMessage"/>
 			<xpagination v-show="isShowPagination && type==2" :total="model.total" :size="model.size" :page="model.page" :changge="myMessage"/>
+			<xpagination v-show="isShowPagination && type==0" :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
+			
 		</div>
 	</div>
 </template>
@@ -94,20 +98,8 @@ export default {
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		success(data) {
+	    			console.log(data[0].count)
 	    			_this.model.total = data[0].count
-	    		}
-	    	})
-			this.sno = sessionStorage.getItem('sno')
-			$.ajax({
-	    		url: 'http://localhost:5555/getMemberBySno',
-	    		type: 'POST',
-	    		dataType: 'json',
-	    		data: {
-	    			sno: _this.sno
-	    		},
-	    		success(data) {
-	    			_this.memberName = data[0].name
-	    			_this.head = data[0].head
 	    		}
 	    	})
 			$.ajax({
@@ -275,7 +267,6 @@ export default {
 	    		type: 'POST',
 	    		dataType: 'json',
 	    		success(data) {
-	    			console.log('count', data[0].count)
 	    			_this.model.total = data[0].count
 	    		}
 	    	})
@@ -288,7 +279,6 @@ export default {
 	    			page: _this.model.page
 	    		},
 				success(data){
-					console.log('message', data)
 					_this.messageData = data
 				}
 			})
@@ -349,7 +339,23 @@ export default {
 		}
 	},
 	mounted() {
-		type = 0
+		this.type = 0
+		this.sno = sessionStorage.getItem('sno')
+		var _this = this
+		if(this.sno != null) {
+			$.ajax({
+	    		url: 'http://localhost:5555/getMemberBySno',
+	    		type: 'POST',
+	    		dataType: 'json',
+	    		data: {
+	    			sno: _this.sno
+	    		},
+	    		success(data) {
+	    			_this.memberName = data[0].name
+	    			_this.head = data[0].head
+	    		}
+	    	})
+		}
 	}
 }
 </script>

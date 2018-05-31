@@ -17,19 +17,19 @@
 			<tr v-if="freeData.length<=0 && (identify=='党员'||identify=='书记')" style="text-align:center;">
 				<td style="line-height:50px;font-size:20px" colspan="5">您暂无缴费记录</td>
 			</tr>
-			<tr v-if="currentData.length>0" v-for="item in currentData">
+			<tr v-if="currentData.length>0" v-for="(item,index) in currentData">
 				<td>{{item.member}}</td>
 				<td>{{item.duration}}</td>
-				<td>{{item.price==''?'管理员还没录入哦':(item.price+'元')}}</td>
+				<td>{{item.price==''?'管理员还没录入工资哦':(item.price+'元')}}</td>
 				<td :style="{'color': item.status=='已缴费'?'green':(item.status=='未缴费'?'red':'#666'), 'font-weight': '600'}">{{item.status}}</td>
-				<td><a href="javascript" class="edit" v-if="item.status=='未缴费'">缴费</a></td>
+				<td><a href="javascript:" class="edit" v-if="item.status=='未缴费'" @click="pay(item.id, index, 1)">缴费</a></td>
 			</tr>
 			<tr v-if="freeData.length>0 && (identify=='党员'||identify=='书记')" v-for="(item,index) in freeData">
 				<td>{{item.member}}</td>
 				<td>{{item.duration}}</td>
 				<td>{{item.price==''?'管理员还没录入哦':(item.price+'元')}}</td>
 				<td :style="{'color': item.status=='已缴费'?'green':(item.status=='未缴费'?'red':'#666'), 'font-weight': '600'}">{{item.status}}</td>
-				<td><a href="javascript:" class="edit" v-if="item.status=='未缴费'" @click="pay(item.id, index)">缴费</a></td>
+				<td><a href="javascript:" class="edit" v-if="item.status=='未缴费'" @click="pay(item.id, index, 2)">缴费</a></td>
 			</tr>
 		</table>
 		<xpagination :total="model.total" :size="model.size" :page="model.page" :changge="getAll"/>
@@ -45,14 +45,14 @@ export default {
 	data(){
 		return {
 			model:{
-        total: 1, // 总页数
-        size:5, // 每页显示条目个数不传默认10
-        page:1, // 当前页码
-      },
-      memberName: '',
-      sno: '',
-      identify: '',
-      currentData: [], // 当前月的数据，若本月无记录，则先添加
+		        total: 1, // 总页数
+		        size:5, // 每页显示条目个数不传默认10
+		        page:1, // 当前页码
+		      },
+		      memberName: '',
+		      sno: '',
+		      identify: '',
+		      currentData: [], // 当前月的数据，若本月无记录，则先添加
 			freeData: [] // 缴费记录数据
 		}
 	},
@@ -110,7 +110,8 @@ export default {
 	  								memberTime: _this.freeData[i].memberTime,
 	  								type: _this.freeData[i].type,
 	  								salary: '',
-	  								price: '',
+	  								price: _this.freeData[i].type=='学生'?0.2:'',
+	  								status: _this.freeData[i].type=='学生'?'未缴费':'',
 	  								duration:str
 	  							})
 		    				}
@@ -132,23 +133,63 @@ export default {
 				this.$router.push({ path: '/login' })
 			}
 		},
-		pay(id,index) {
+		pay(id,index, type) {
 			console.log('缴费id', id)
 			let _this = this
-			$.ajax({
-    		url: 'http://localhost:5555/payFreeById',
-    		type: 'POST',
-    		dataType: 'json',
-    		data: {
-    			id: id,
-    			status: '待审核',
-    			payTime: new Date().getTime()
-    		},
-    		success(data) {
-    			alert('缴费成功，请等待管理员确认')
-    			_this.freeData[index].status='待审核'
-    		}
-    	})
+			if(type == 1){
+				// 新增的记录
+				$.ajax({
+					url: 'http://localhost:5555/addTeacherSalary',
+					type: 'POST',
+					dataType: 'json',
+					data: { 
+						sno: _this.sno,
+						member: _this.memberName,
+						memberTime: _this.currentData[index].memberTime,
+						type: _this.currentData[index].type,
+						salary: _this.currentData[index].salary, 
+						price: _this.currentData[index].price, 
+						duration: _this.currentData[index].duration,
+						status: '待审核'
+					},
+					success() {
+						alert('缴费成功，请等待管理员审核')
+						_this.currentData.splice(_this.currentData.indexOf(_this.currentData.filter(item=>item.member == _this.memberName)[0]), 1)
+					}
+				}).done(()=>{
+					$.ajax({
+			    		url: 'http://localhost:5555/getFreeBySnoName',
+			    		type: 'POST',
+			    		dataType: 'json',
+			    		data: {
+			    			size: _this.model.size,
+			    			page: _this.model.page,
+			    			sno: _this.sno,
+			    			member: _this.memberName
+			    		},
+			    		success(data) {
+			    			_this.freeData = data
+			    		}
+			    	})
+				})
+			}else {
+				// 原来的记录
+				$.ajax({
+		    		url: 'http://localhost:5555/payFreeById',
+		    		type: 'POST',
+		    		dataType: 'json',
+		    		data: {
+		    			id: id,
+		    			status: '待审核',
+		    			payTime: new Date().getTime()
+		    		},
+		    		success(data) {
+		    			alert('缴费成功，请等待管理员确认')
+		    			_this.freeData[index].status='待审核'
+		    		}
+		    	})
+			}
+			
 		}
 	},
 	mounted() {
